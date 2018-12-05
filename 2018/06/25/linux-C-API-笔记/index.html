@@ -1,0 +1,1356 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="linux,API,C,操作系统,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="linuxc编程的应用范围比较广，最近学习操作系统，把上机和可编程中用到的一些函数API做一些笔记和摘录，方便日后复习。上机的相关代码在:https://github.com/IversionBY/linux_systemlearning_c_programe/">
+<meta name="keywords" content="linux,API,C,操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux C API 笔记">
+<meta property="og:url" content="http://yoursite.com/2018/06/25/linux-C-API-笔记/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="linuxc编程的应用范围比较广，最近学习操作系统，把上机和可编程中用到的一些函数API做一些笔记和摘录，方便日后复习。上机的相关代码在:https://github.com/IversionBY/linux_systemlearning_c_programe/">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/myimages/linux_c_api/index.png">
+<meta property="og:updated_time" content="2018-12-05T14:52:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux C API 笔记">
+<meta name="twitter:description" content="linuxc编程的应用范围比较广，最近学习操作系统，把上机和可编程中用到的一些函数API做一些笔记和摘录，方便日后复习。上机的相关代码在:https://github.com/IversionBY/linux_systemlearning_c_programe/">
+<meta name="twitter:image" content="http://yoursite.com/myimages/linux_c_api/index.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/25/linux-C-API-笔记/">
+
+
+
+
+
+  <title>linux C API 笔记 | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/25/linux-C-API-笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux C API 笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-25T15:28:17+08:00">
+                Jun 25 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/25/linux-C-API-笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/25/linux-C-API-笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/linux_c_api/index.png" height="400" width="400">  </p>
+<blockquote>
+<p>linuxc编程的应用范围比较广，最近学习操作系统，把上机和可编程中用到的一些函数API做一些笔记和摘录，方便日后复习。上机的相关代码在:<a href="https://github.com/IversionBY/linux_systemlearning_c_programe/" target="_blank" rel="noopener">https://github.com/IversionBY/linux_systemlearning_c_programe/</a></p>
+</blockquote>
+<a id="more"></a>
+<h1 id="温故而知新"><a href="#温故而知新" class="headerlink" title="温故而知新"></a>温故而知新</h1><ul>
+<li><a href="http://blog.51cto.com/ssspure/1694224" target="_blank" rel="noopener">关于c语言指针的文章，写得很不错</a>  </li>
+<li>C语言各个数据类型占用的地址位<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">char：1字节</span><br><span class="line"></span><br><span class="line">int：2字节</span><br><span class="line"></span><br><span class="line">short int：2字节</span><br><span class="line"></span><br><span class="line">long int：4字节</span><br><span class="line"></span><br><span class="line">unsigned: 2字节</span><br><span class="line"></span><br><span class="line">unsigned long：4字节</span><br><span class="line"></span><br><span class="line">float：4字节</span><br><span class="line"></span><br><span class="line">double：8字节</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="函数API"><a href="#函数API" class="headerlink" title="函数API"></a>函数API</h1><ul>
+<li><h3 id="basename"><a href="#basename" class="headerlink" title="basename()"></a><code>basename()</code></h3><p>实现对文件名的获取</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;libgen.h&gt;   </span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">basename</span><span class="params">(<span class="keyword">char</span> *path)</span></span>;</span><br><span class="line"><span class="comment">//参数是文件的路径</span></span><br><span class="line"><span class="comment">//返回值是一个字符串类型，即文件名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="stat-lstat-fstat"><a href="#stat-lstat-fstat" class="headerlink" title="stat() lstat() fstat()"></a><code>stat()</code> <code>lstat()</code> <code>fstat()</code></h3><p>返回一个文件的基本信息，包括文件的大小，文件类型等，操作系统上机题目中用到的是目录的判定，最常用的结构体成员是<code>st_mode</code>。与其相类似的是<code>lstat()</code>,<code>fstat()</code>功能和<code>stat()</code>差不多。fstat区别于另外两个系统调用的地方在于，<code>fstat</code>系统调用接受的是一个“文件描述符”（进程通过open系统调用返回的文件描述符，int类型。），而另外两个则直接接受“文件全路径”。<code>stat</code>和<code>lstat</code>的区别：当文件是一个符号链接时，<code>lstat</code>返回的是该符号链接本身的信息；而<code>stat</code>返回的是该链接指向的文件的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">stat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * file_name, struct stat *buf)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fstat</span><span class="params">(<span class="keyword">int</span> filedes, struct stat *buf)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lstat</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *path, struct stat *buf)</span></span>; </span><br><span class="line"><span class="comment">/*参数解释</span></span><br><span class="line"><span class="comment">path：文件路径名。 </span></span><br><span class="line"><span class="comment">filedes：文件描述词。 </span></span><br><span class="line"><span class="comment">buf：保存文件信息的结构体 </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//执行成功则返回0，失败返回-1，错误代码存于errno</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*错误代码</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">ENOENT         参数file_name指定的文件不存在</span></span><br><span class="line"><span class="comment">ENOTDIR        路径中的目录存在但却非真正的目</span></span><br><span class="line"><span class="comment">ELOOP          欲打开的文件有过多符号连接问题，上限为16符号连接</span></span><br><span class="line"><span class="comment"> EFAULT         参数buf为无效指针，指向无法存在的内存空间</span></span><br><span class="line"><span class="comment">EACCESS        存取文件时被拒绝</span></span><br><span class="line"><span class="comment">ENOMEM         核心内存不足</span></span><br><span class="line"><span class="comment">ENAMETOOLONG   参数file_name的路径名称太长数值</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*结构体定义</span></span><br><span class="line"><span class="comment">struct stat</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    dev_t st_dev; //device 文件的设备编号</span></span><br><span class="line"><span class="comment">    ino_t st_ino; //inode 文件的i-node</span></span><br><span class="line"><span class="comment">    mode_t st_mode; //protection 文件的类型和存取的权限</span></span><br><span class="line"><span class="comment">    nlink_t st_nlink; //number of hard links 连到该文件的硬连接数目, 刚建立的文件值为1.</span></span><br><span class="line"><span class="comment">    uid_t st_uid; //user ID of owner 文件所有者的用户识别码</span></span><br><span class="line"><span class="comment">    gid_t st_gid; //group ID of owner 文件所有者的组识别码</span></span><br><span class="line"><span class="comment">    dev_t st_rdev; //device type 若此文件为装置设备文件, 则为其设备编号</span></span><br><span class="line"><span class="comment">    off_t st_size; //total size, in bytes 文件大小, 以字节计算</span></span><br><span class="line"><span class="comment">    unsigned long st_blksize; //blocksize for filesystem I/O 文件系统的I/O 缓冲区大小.</span></span><br><span class="line"><span class="comment">    unsigned long st_blocks; //number of blocks allocated 占用文件区块的个数, 每一区块大小为512 个字节.</span></span><br><span class="line"><span class="comment">    time_t st_atime; //time of lastaccess 文件最近一次被存取或被执行的时间, 一般只有在用mknod、utime、read、write 与tructate 时改变.</span></span><br><span class="line"><span class="comment">    time_t st_mtime; //time of last modification 文件最后一次被修改的时间, 一般只有在用mknod、utime 和write 时才会改变</span></span><br><span class="line"><span class="comment">    time_t st_ctime; //time of last change i-node 最近一次被更改的时间, 此参数会在文件所有者、组、权限被更改时更新</span></span><br><span class="line"><span class="comment">&#125;;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*st_mode的类型标识</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">S_IFMT   0170000    文件类型的位遮罩  </span></span><br><span class="line"><span class="comment">S_IFSOCK 0140000    scoket  </span></span><br><span class="line"><span class="comment">S_IFLNK 0120000     符号连接  </span></span><br><span class="line"><span class="comment">S_IFREG 0100000     一般文件  </span></span><br><span class="line"><span class="comment">S_IFBLK 0060000     区块装置  </span></span><br><span class="line"><span class="comment">S_IFDIR 0040000     目录  </span></span><br><span class="line"><span class="comment">S_IFCHR 0020000     字符装置  </span></span><br><span class="line"><span class="comment">S_IFIFO 0010000     先进先出  </span></span><br><span class="line"><span class="comment">S_ISUID 04000     文件的(set user-id on execution)位  </span></span><br><span class="line"><span class="comment">S_ISGID 02000     文件的(set group-id on execution)位  </span></span><br><span class="line"><span class="comment">S_ISVTX 01000     文件的sticky位  </span></span><br><span class="line"><span class="comment">S_IRUSR(S_IREAD) 00400     文件所有者具可读取权限  </span></span><br><span class="line"><span class="comment">S_IWUSR(S_IWRITE)00200     文件所有者具可写入权限  </span></span><br><span class="line"><span class="comment">S_IXUSR(S_IEXEC) 00100     文件所有者具可执行权限  </span></span><br><span class="line"><span class="comment">S_IRGRP 00040             用户组具可读取权限  </span></span><br><span class="line"><span class="comment">S_IWGRP 00020             用户组具可写入权限  </span></span><br><span class="line"><span class="comment">S_IXGRP 00010             用户组具可执行权限  </span></span><br><span class="line"><span class="comment">S_IROTH 00004             其他用户具可读取权限  </span></span><br><span class="line"><span class="comment">S_IWOTH 00002             其他用户具可写入权限  </span></span><br><span class="line"><span class="comment">S_IXOTH 00001             其他用户具可执行权限  </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*linux中检查上述st_mode成员类型的宏定义函数</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">S_ISLNK(st_mode)    判断是否为符号连接  </span></span><br><span class="line"><span class="comment">S_ISREG(st_mode)    是否为一般文件  </span></span><br><span class="line"><span class="comment">S_ISDIR(st_mode)    是否为目录  </span></span><br><span class="line"><span class="comment">S_ISCHR(st_mode)    是否为字符三设备文件  </span></span><br><span class="line"><span class="comment">S_ISBLK(st_mode)    是否为先进先出  </span></span><br><span class="line"><span class="comment">S_ISSOCK(st_mode)   是否为socket  </span></span><br><span class="line"><span class="comment">S_ISUID(st_mode)    文件设置了SUID位</span></span><br><span class="line"><span class="comment">S_ISGID(st_mode)    文件设置了SGID位</span></span><br><span class="line"><span class="comment">S_ISVTX(st_mode)    文件设置了sticky位</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="open"><a href="#open" class="headerlink" title="open()"></a><code>open()</code></h3><p>打开一个文件，可以指定打开的flag和权限</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * pathname, <span class="keyword">int</span> flags, <span class="keyword">mode_t</span> mode)</span></span>;</span><br><span class="line"><span class="comment">/*参数解释</span></span><br><span class="line"><span class="comment">pathname:需要打开的文件路径</span></span><br><span class="line"><span class="comment">flags:打开的标志位</span></span><br><span class="line"><span class="comment">mode:打开的权限方式</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//返回值：正确返回打开的文件句柄，打开失败返回-1，注意返回的句柄默认从整数3开始。其中标识符`0，1，2`分别被`标准输入`，`标准输出`，`标准错误输出`占用。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*flags</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">O_RDONLY 以只读方式打开文件</span></span><br><span class="line"><span class="comment">O_WRONLY 以只写方式打开文件</span></span><br><span class="line"><span class="comment">O_RDWR 以可读写方式打开文件. 上述三种旗标是互斥的, 也就是不可同时使用, 但可与下列的旗标利用OR(|)运算符组合.</span></span><br><span class="line"><span class="comment">O_CREAT 若欲打开的文件不存在则自动建立该文件.</span></span><br><span class="line"><span class="comment">O_EXCL 如果O_CREAT 也被设置, 此指令会去检查文件是否存在. 文件若不存在则建立该文件, 否则将导致打开文件错误. 此外, 若O_CREAT 与O_EXCL 同时设置, 并且欲打开的文件为符号连接, 则会打开文件失败.</span></span><br><span class="line"><span class="comment">O_NOCTTY 如果欲打开的文件为终端机设备时, 则不会将该终端机当成进程控制终端机.</span></span><br><span class="line"><span class="comment">O_TRUNC 若文件存在并且以可写的方式打开时, 此旗标会令文件长度清为0, 而原来存于该文件的资料也会消失.</span></span><br><span class="line"><span class="comment">O_APPEND 当读写文件时会从文件尾开始移动, 也就是所写入的数据会以附加的方式加入到文件后面.</span></span><br><span class="line"><span class="comment">O_NONBLOCK 以不可阻断的方式打开文件, 也就是无论有无数据读取或等待, 都会立即返回进程之中.</span></span><br><span class="line"><span class="comment">O_NDELAY 同O_NONBLOCK.</span></span><br><span class="line"><span class="comment">O_SYNC 以同步的方式打开文件.</span></span><br><span class="line"><span class="comment">O_NOFOLLOW 如果参数pathname 所指的文件为一符号连接, 则会令打开文件失败.</span></span><br><span class="line"><span class="comment">O_DIRECTORY 如果参数pathname 所指的文件并非为一目录, 则会令打开文件失败</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*mode</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">S_IRWXU00700 权限, 代表该文件所有者具有可读、可写及可执行的权限.</span></span><br><span class="line"><span class="comment">S_IRUSR 或S_IREAD, 00400 权限, 代表该文件所有者具有可读取的权限.</span></span><br><span class="line"><span class="comment">S_IWUSR 或S_IWRITE, 00200 权限, 代表该文件所有者具有可写入的权限.</span></span><br><span class="line"><span class="comment">S_IXUSR 或S_IEXEC, 00100 权限, 代表该文件所有者具有可执行的权限.</span></span><br><span class="line"><span class="comment">S_IRWXG 00070 权限, 代表该文件用户组具有可读、可写及可执行的权限.</span></span><br><span class="line"><span class="comment">S_IRGRP 00040 权限, 代表该文件用户组具有可读的权限.</span></span><br><span class="line"><span class="comment">S_IWGRP 00020 权限, 代表该文件用户组具有可写入的权限.</span></span><br><span class="line"><span class="comment">S_IXGRP 00010 权限, 代表该文件用户组具有可执行的权限.</span></span><br><span class="line"><span class="comment">S_IRWXO 00007 权限, 代表其他用户具有可读、可写及可执行的权限.</span></span><br><span class="line"><span class="comment">S_IROTH 00004 权限, 代表其他用户具有可读的权限</span></span><br><span class="line"><span class="comment">S_IWOTH 00002 权限, 代表其他用户具有可写入的权限.</span></span><br><span class="line"><span class="comment">S_IXOTH 00001 权限, 代表其他用户具有可执行的权限.</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="access"><a href="#access" class="headerlink" title="access()"></a><code>access()</code></h3><p>检查调用进程是否可以对指定的文件执行某种操作，也可以判断一个文件是否存在。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">access</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *pathname, <span class="keyword">int</span> mode)</span></span>;</span><br><span class="line"><span class="comment">/*参数</span></span><br><span class="line"><span class="comment">pathname: 需要测试的文件路径名。   </span></span><br><span class="line"><span class="comment">mode: 需要测试的操作模式</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//返回：成功执行时，返回0。失败返回-1。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*error 类型</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">成功执行时，返回0。失败返回-1，errno被设为以下的某个值 </span></span><br><span class="line"><span class="comment">EINVAL： 模式值无效   </span></span><br><span class="line"><span class="comment">EACCES： 文件或路径名中包含的目录不可访问 </span></span><br><span class="line"><span class="comment">ELOOP ： 解释路径名过程中存在太多的符号连接 </span></span><br><span class="line"><span class="comment">ENAMETOOLONG：路径名太长 </span></span><br><span class="line"><span class="comment">ENOENT：  路径名中的目录不存在或是无效的符号连接 </span></span><br><span class="line"><span class="comment">ENOTDIR： 路径名中当作目录的组件并非目录 </span></span><br><span class="line"><span class="comment">EROFS： 文件系统只读 </span></span><br><span class="line"><span class="comment">EFAULT： 路径名指向可访问的空间外 </span></span><br><span class="line"><span class="comment">EIO：  输入输出错误 </span></span><br><span class="line"><span class="comment">ENOMEM： 不能获取足够的内核内存 </span></span><br><span class="line"><span class="comment">ETXTBSY：对程序写入出错</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="close"><a href="#close" class="headerlink" title="close()"></a><code>close()</code></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> fd)</span></span>;</span><br><span class="line"><span class="comment">/*参数</span></span><br><span class="line"><span class="comment">fd:open函数返回的文件描述符</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//返回值：若文件顺利关闭则返回0, 发生错误时返回-1.</span></span><br><span class="line"><span class="comment">//错误代码：EBADF 参数fd 非有效的文件描述词或该文件已关闭.</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="perror"><a href="#perror" class="headerlink" title="perror()"></a><code>perror()</code></h3><p>可以打印出最近一次异常信息，如果提供了指定的字符串，就可以在指定的字符串后面输出异常信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">perror</span><span class="params">(<span class="keyword">char</span> *<span class="built_in">string</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="read"><a href="#read" class="headerlink" title="read()"></a><code>read()</code></h3><p>read函数从指定的打开的文件fd中读取指定大小count的字节到从buf开始的缓冲，缓冲区可以是用户自定义的一个数据形式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">ssize_t</span> read(<span class="keyword">int</span> fd, <span class="keyword">void</span> * buf, <span class="keyword">size_t</span> count);</span><br><span class="line"><span class="comment">/*参数说明</span></span><br><span class="line"><span class="comment">fd:文件描述符</span></span><br><span class="line"><span class="comment">buf:定义的缓冲区</span></span><br><span class="line"><span class="comment">count: 需要读取的字节</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//返回值:若读取失败则返回-1.读取成功则返回实际读取到的字节数.</span></span><br><span class="line"><span class="comment">/*错误代码</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">EINTR 此调用被信号所中断.</span></span><br><span class="line"><span class="comment">EAGAIN 当使用不可阻断I/O 时(O_NONBLOCK), 若无数据可读取则返回此值.</span></span><br><span class="line"><span class="comment">EBADF 参数fd 非有效的文件描述词, 或该文件已关闭.</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="write"><a href="#write" class="headerlink" title="write()"></a><code>write()</code></h3><p>把参数buf 所指的内存写入count 个字节到参数fd所指的文件内。当然,文件读写位置也会随之移动。这个函数和上个函数有一点是需要注意的就是缓冲区的大小可能比文件的内容大小要小，这个时候会有一个特征值<code>-1</code>返回给程序员。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ssize_t</span> write (<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> * buf, <span class="keyword">size_t</span> count);</span><br><span class="line"><span class="comment">/*参数</span></span><br><span class="line"><span class="comment">fd:文件描述符</span></span><br><span class="line"><span class="comment">buf:缓冲区</span></span><br><span class="line"><span class="comment">count:需要写入的字节数</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">//返回值：成功的话就会返回写入字节大小，数组溢出返回-1.</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="getcwd"><a href="#getcwd" class="headerlink" title="getcwd()"></a><code>getcwd()</code></h3><p>获取当前目录名</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">getcwd</span><span class="params">(<span class="keyword">char</span> * buf, <span class="keyword">size_t</span> size)</span></span>;</span><br><span class="line"><span class="comment">/*参数定义：</span></span><br><span class="line"><span class="comment">buf：为一个缓存数组</span></span><br><span class="line"><span class="comment">size：为数组的大小</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><h3 id="getpwuid"><a href="#getpwuid" class="headerlink" title="getpwuid()"></a><code>getpwuid()</code></h3></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pwd.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">定义函数：<span class="function">struct passwd * <span class="title">getpwuid</span><span class="params">(<span class="keyword">uid_t</span> uid)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h3 id="getuid"><a href="#getuid" class="headerlink" title="getuid()"></a><code>getuid()</code></h3></li>
+</ul>
+<p>用来取得执行目前进程的用户识别码.没有返回值来指示错误。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;    </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><h3 id="uname"><a href="#uname" class="headerlink" title="uname()"></a><code>uname()</code></h3><p>返回一个关于系统信息的结构体，非负表示调用成功，负数表示返回失败。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/utsname.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uname</span><span class="params">(struct utsname *name )</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">utsname</span>&#123;</span></span><br><span class="line">    <span class="keyword">char</span> sysname[];</span><br><span class="line">    <span class="keyword">char</span> nodename[];</span><br><span class="line">    <span class="keyword">char</span> release[];</span><br><span class="line">    <span class="keyword">char</span> version[];</span><br><span class="line">    <span class="keyword">char</span> machine[];</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">ifdef</span> _GNU_SOURCE</span></span><br><span class="line">    <span class="keyword">char</span> domainname[];</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="dup-与dup2"><a href="#dup-与dup2" class="headerlink" title="dup()与dup2()"></a><code>dup()</code>与<code>dup2()</code></h3><p>复制一个现存的文件描述符。其中标识符<code>0，1，2</code>分别被<code>标准输入</code>，<code>标准输出</code>，<code>标准错误输出</code>占用<br>dup()用来复制参数oldfd 所指的文件描述词, 并将它返回. 此新的文件描述词和参数oldfd 指的是同一个文件, 共享所有的锁定、读写位置和各项权限或旗标. 例如, 当利用lseek()对某个文件描述词作用时, 另一个文件描述词的读写位置也会随着改变。<br>dup2只是多指定了newfd而已，程序员可以直接将oldfd文件符copy到一个自定义的文件符上，若参数newfd为一已打开的文件描述词, 则newfd 所指的文件会先被关闭. dup2()所复制的文件描述词。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup</span><span class="params">(<span class="keyword">int</span> oldfd)</span></span>;</span><br><span class="line"><span class="comment">//返回值：当复制成功时, 则返回最小及尚未使用的文件描述词. 若有错误则返回-1, errno 会存放错误代码.</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dup2</span><span class="params">(<span class="keyword">int</span> oldfd, <span class="keyword">int</span> newfd)</span></span>;</span><br><span class="line"><span class="comment">//返回值：当复制成功时, 则返回newfd文件描述词. 若有错误则返回-1, errno 会存放错误代码.</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><h3 id="strtok"><a href="#strtok" class="headerlink" title="strtok()"></a><code>strtok()</code></h3><p>用于对字符串进行拆分</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">strtok</span><span class="params">(<span class="keyword">char</span> *s, <span class="keyword">const</span> <span class="keyword">char</span> *delim)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*例子</span></span><br><span class="line"><span class="comment">#include &lt;string.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">int main()</span></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">   const char str[80] = "This is - www.w3cschool.cc - website";</span></span><br><span class="line"><span class="comment">   const char s[2] = "-";</span></span><br><span class="line"><span class="comment">   char *token;</span></span><br><span class="line"><span class="comment">   </span></span><br><span class="line"><span class="comment">   /* 获取第一个子字符串 */</span></span><br><span class="line">   token = strtok(str, s);</span><br><span class="line">   </span><br><span class="line">   <span class="comment">/* 继续获取其他的子字符串 */</span></span><br><span class="line">   <span class="keyword">while</span>( token != <span class="literal">NULL</span> ) </span><br><span class="line">   &#123;</span><br><span class="line">      <span class="built_in">printf</span>( <span class="string">" %s\n"</span>, token );</span><br><span class="line">    </span><br><span class="line">      token = strtok(<span class="literal">NULL</span>, s);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="setbuf"><a href="#setbuf" class="headerlink" title="setbuf()"></a><code>setbuf()</code></h3><p>程序输出有两种方式：一种是即时处理方式，另一种是先暂存起来，然后再大块写入的方式，前者往往造成较高的系统负担。因此，c语言实现通常都允许程序员进行实际的写操作之前控制产生的输出数据量。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">setbuf(<span class="built_in">stdout</span>，buf);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">语句将通知输入/输出库，所有写入到stdout的输出都应该使用buf作为输出缓冲区，直到buf缓冲区被填满或者程序员直接调用fflush（译注：对于由写操作打开的文件，调用fflush将导致输出缓冲区的内容被实际地写入该文件），buf缓冲区中的内容才实际写入到stdout中。缓冲区的大小由系统头文件&lt;stdio.h&gt;中的BUFSIZ定义。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="execve"><a href="#execve" class="headerlink" title="execve()"></a><code>execve()</code></h3><p>在父进程中fork一个子进程，在子进程中调用exec函数启动新的程序。exec函数一共有六个，其中execve为内核级系统调用，其他（execl，execle，execlp，execv，execvp）都是调用execve的库函数。</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">char</span> *<span class="keyword">const</span> argv[ ], <span class="keyword">char</span> *<span class="keyword">const</span> envp[ ])</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*参数</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">filename:需要执行的二进制文件路径</span></span><br><span class="line"><span class="comment">argv:二进制执行时的参数设置</span></span><br><span class="line"><span class="comment">envp:</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">//返回值 函数执行成功时没有返回值，执行失败时的返回值为-1</span></span><br></pre></td></tr></table></figure>
+<p>execve()用来执行参数filename字符串所代表的文件路径，第二个参数是利用数组指针来传递给执行文件，并且需要以空指针(NULL)结束，这里应该特别注意，因为在c语言中的字符串默认是<code>\0</code>结尾，所以很多时候是需要编程人员自己去设置结尾符，最后一个参数则为传递给执行文件的新环境变量数组。</p>
+<ul>
+<li><h3 id="waitpid-与wait"><a href="#waitpid-与wait" class="headerlink" title="waitpid()与wait()"></a><code>waitpid()</code>与<code>wait()</code></h3><p>wait等待第一个终止的子进程，而waitpid可以通过pid参数指定等待哪一个子进程。当pid=-1、option=0时，waitpid函数等同于wait，可以把wait看作waitpid实现的特例。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *status, <span class="keyword">int</span> options);</span><br><span class="line"></span><br><span class="line"><span class="comment">/*参数</span></span><br><span class="line"><span class="comment">int类型的status 是用来保存子进程的返回码</span></span><br><span class="line"><span class="comment">pid标识了需要等待的进程</span></span><br><span class="line"><span class="comment">option参数可以用来进行一些wait设置</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*常用的option有：</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">1、pid&lt;-1 等待进程组识别码为pid绝对值的任何子进程.</span></span><br><span class="line"><span class="comment">2、pid=-1 等待任何子进程, 相当于wait().</span></span><br><span class="line"><span class="comment">3、pid=0 等待进程组识别码与目前进程相同的任何子进程.</span></span><br><span class="line"><span class="comment">4、pid&gt;0 等待任何子进程识别码为pid 的子进程.</span></span><br><span class="line"><span class="comment">参数option 可以为0 或下面的OR 组合：</span></span><br><span class="line"><span class="comment">1、WNOHANG：如果没有任何已经结束的子进程则马上返回, 不予以等待；</span></span><br><span class="line"><span class="comment">2、WUNTRACED：如果子进程进入暂停执行情况则马上返回, 但结束状态不予以理会. 子进程的结束状态返回后存于status, 底下有几个宏可判别结束情况；</span></span><br><span class="line"><span class="comment">3、WIFEXITED(status)：如果子进程正常结束则为非0 值；</span></span><br><span class="line"><span class="comment">4、WEXITSTATUS(status)：取得子进程exit()返回的结束代码, 一般会先用WIFEXITED 来判断是否正常结束才能使用此宏；</span></span><br><span class="line"><span class="comment">5、WIFSIGNALED(status)：如果子进程是因为信号而结束则此宏值为真；</span></span><br><span class="line"><span class="comment">6、WTERMSIG(status)：取得子进程因信号而中止的信号代码, 一般会先用WIFSIGNALED 来判断后才使用此宏；</span></span><br><span class="line"><span class="comment">7、WIFSTOPPED(status)：如果子进程处于暂停执行情况则此宏值为真. 一般只有使用WUNTRACED时才会有此情况；</span></span><br><span class="line"><span class="comment">8、WSTOPSIG(status)：取得引发子进程暂停的信号代码, 一般会先用；</span></span><br><span class="line"><span class="comment">9、WIFSTOPPED 来判断后才使使用此宏。</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="mmset"><a href="#mmset" class="headerlink" title="mmset()"></a><code>mmset()</code></h3><p>在一段内存块中填充某个给定的值，它是对较大的结构体或数组进行清零操作的一种最快方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;/*in c*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;/*in c++*/</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">memset</span><span class="params">(<span class="keyword">void</span> *s, <span class="keyword">int</span> ch, <span class="keyword">size_t</span> n)</span></span>;</span><br><span class="line"><span class="comment">/*参数</span></span><br><span class="line"><span class="comment">s :将要被填充任意数据类型指针</span></span><br><span class="line"><span class="comment">ch:用来填充的字符，通常是0</span></span><br><span class="line"><span class="comment">n:将要填充的字节数</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="bzero"><a href="#bzero" class="headerlink" title="bzero()"></a><code>bzero()</code></h3><p>用于将一个字节字符串的前n个字节置零，配合sizeof或者strlen常常用于buf缓冲区的初始化，这个函数的出现可以很大程度的减少c语言里面数组溢出的危险。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">bzero</span><span class="params">(<span class="keyword">void</span> *s, <span class="keyword">int</span> n)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/06/25/linux-C-API-笔记/">linux C API 笔记</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年06月25日 - 15:06
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月05日 - 22:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/06/25/linux-C-API-笔记/" title="linux C API 笔记">http://yoursite.com/2018/06/25/linux-C-API-笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/API/" rel="tag"># API</a>
+          
+            <a href="/tags/C/" rel="tag"># C</a>
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/23/linux防火墙/" rel="next" title="linux防火墙">
+                <i class="fa fa-chevron-left"></i> linux防火墙
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/21/vulnbox/" rel="prev" title="vulnbox">
+                vulnbox <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#温故而知新"><span class="nav-number">1.</span> <span class="nav-text">温故而知新</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数API"><span class="nav-number">2.</span> <span class="nav-text">函数API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#basename"><span class="nav-number">2.0.1.</span> <span class="nav-text">basename()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stat-lstat-fstat"><span class="nav-number">2.0.2.</span> <span class="nav-text">stat() lstat() fstat()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#open"><span class="nav-number">2.0.3.</span> <span class="nav-text">open()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#access"><span class="nav-number">2.0.4.</span> <span class="nav-text">access()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#close"><span class="nav-number">2.0.5.</span> <span class="nav-text">close()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#perror"><span class="nav-number">2.0.6.</span> <span class="nav-text">perror()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#read"><span class="nav-number">2.0.7.</span> <span class="nav-text">read()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#write"><span class="nav-number">2.0.8.</span> <span class="nav-text">write()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getcwd"><span class="nav-number">2.0.9.</span> <span class="nav-text">getcwd()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getpwuid"><span class="nav-number">2.0.10.</span> <span class="nav-text">getpwuid()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getuid"><span class="nav-number">2.0.11.</span> <span class="nav-text">getuid()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uname"><span class="nav-number">2.0.12.</span> <span class="nav-text">uname()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dup-与dup2"><span class="nav-number">2.0.13.</span> <span class="nav-text">dup()与dup2()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strtok"><span class="nav-number">2.0.14.</span> <span class="nav-text">strtok()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setbuf"><span class="nav-number">2.0.15.</span> <span class="nav-text">setbuf()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#execve"><span class="nav-number">2.0.16.</span> <span class="nav-text">execve()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#waitpid-与wait"><span class="nav-number">2.0.17.</span> <span class="nav-text">waitpid()与wait()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mmset"><span class="nav-number">2.0.18.</span> <span class="nav-text">mmset()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bzero"><span class="nav-number">2.0.19.</span> <span class="nav-text">bzero()</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/06/25/linux-C-API-笔记/';
+          this.page.identifier = '2018/06/25/linux-C-API-笔记/';
+          this.page.title = 'linux C API 笔记';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

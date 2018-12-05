@@ -1,0 +1,1265 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="网络配置文件123456789101112131415161718192021222324252627282930#ip ,netmast,dhcp,gateway/etc/sysconfig/network-scripts/ifcfg-&amp;lt;interface-name&amp;gt;#ifup,ifdown系列自动启动/关闭网络接口脚本/etc/syysconfig/network-scripts/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux修炼">
+<meta property="og:url" content="http://yoursite.com/2018/03/07/linux修炼/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="网络配置文件123456789101112131415161718192021222324252627282930#ip ,netmast,dhcp,gateway/etc/sysconfig/network-scripts/ifcfg-&amp;lt;interface-name&amp;gt;#ifup,ifdown系列自动启动/关闭网络接口脚本/etc/syysconfig/network-scripts/">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/myimages/iptable/firewall_01.png">
+<meta property="og:image" content="http://yoursite.com/myimages/iptable/firewall_02.png">
+<meta property="og:image" content="http://yoursite.com/myimages/iptable/firewall_03.png">
+<meta property="og:updated_time" content="2018-10-29T05:28:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux修炼">
+<meta name="twitter:description" content="网络配置文件123456789101112131415161718192021222324252627282930#ip ,netmast,dhcp,gateway/etc/sysconfig/network-scripts/ifcfg-&amp;lt;interface-name&amp;gt;#ifup,ifdown系列自动启动/关闭网络接口脚本/etc/syysconfig/network-scripts/">
+<meta name="twitter:image" content="http://yoursite.com/myimages/iptable/firewall_01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/07/linux修炼/">
+
+
+
+
+
+  <title>linux修炼 | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/07/linux修炼/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux修炼</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T11:00:52+08:00">
+                Mar 7 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/07/linux修炼/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/07/linux修炼/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="网络配置文件"><a href="#网络配置文件" class="headerlink" title="网络配置文件"></a>网络配置文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#ip ,netmast,dhcp,gateway</span><br><span class="line"></span><br><span class="line">/etc/sysconfig/network-scripts/ifcfg-&lt;interface-name&gt;</span><br><span class="line"></span><br><span class="line">#ifup,ifdown系列自动启动/关闭网络接口脚本</span><br><span class="line">/etc/syysconfig/network-scripts/ifdown-xxx or ifup-xxx</span><br><span class="line"></span><br><span class="line">#主机网络基本配置</span><br><span class="line">/etc/sysconfig/network</span><br><span class="line"></span><br><span class="line">#DNS IP</span><br><span class="line">/etc/resolv.conf</span><br><span class="line"></span><br><span class="line">#私有ip对应的主机名,实现本机静态查询</span><br><span class="line">/etc/hosts</span><br><span class="line"></span><br><span class="line">#针对ubuntu的独有的网络配置文件</span><br><span class="line">/etc/network/interfaces</span><br><span class="line"></span><br><span class="line">#用于重新启动服务的目录</span><br><span class="line">/etc/init.d/network </span><br><span class="line">#或者使用内置脚本</span><br><span class="line">ifup &lt;interface&gt; </span><br><span class="line">ifdown &lt;interface&gt;</span><br><span class="line"></span><br><span class="line">#几个固定协议文件，一般不需要修改</span><br><span class="line">#网络协议定义文件，包括默认端口的信息</span><br><span class="line">/etc/services</span><br><span class="line">#网络数据包默认协议</span><br><span class="line">/etc/protocols</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h1 id="进程配置文件"><a href="#进程配置文件" class="headerlink" title="进程配置文件"></a>进程配置文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#服务启动脚本</span><br><span class="line">/etc/init.d/&lt;deamon&gt;</span><br><span class="line"></span><br><span class="line">#服务初始化配置</span><br><span class="line">/etc/sysconfig/*</span><br><span class="line"></span><br><span class="line">#superdeamon 配置文件</span><br><span class="line">/etc/xinetd.config #大体配置</span><br><span class="line">/etc/xinetd.d/*    #具体到superdeamon 管辖下的每个服务的具体配置</span><br><span class="line"></span><br><span class="line">#服务本身的配置文件</span><br><span class="line">/etc/&lt;deamon&gt;</span><br><span class="line"></span><br><span class="line">#服务数据存放</span><br><span class="line">/var/lib/*</span><br><span class="line"></span><br><span class="line">#服务的pid记录处</span><br><span class="line">/var/run/*</span><br></pre></td></tr></table></figure>
+<p><strong>linux重要守护进程</strong></p>
+<table><br><tbody><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> acpi-support</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 高级电源管理支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> acpid</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> acpi 守护程序.这两个用于电源管理，非常重要</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> apmd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> acpi 的扩展</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> alsa</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 声音子系统</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> alsa-utils</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 声音子系统实用工具</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> cron</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 任务调度系统，建议开启</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> anacron</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> cron 的子系统，将系统关闭期间的计划任务，在下一次系统运行时执行</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> atd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 类似于 cron 的任务调度系统。建议关闭</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> binfmt-support</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 核心支持其他二进制的文件格式</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> bluez-utiles</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 蓝牙设备支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> bootlogd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 启动日志。开启它</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> syslog-ng</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 系统日志，建议开启</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> klogd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 同上，使用一种就可以了</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> cupsys</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 打印机子系统</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> dbus</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 消息总线系统(message bus system)。非常重要</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> dns-clean</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 使用拨号连接时，清除 dns信息</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> evms</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 企业卷管理系统</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> fetchmail</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 邮件用户代理守护进程，用于收取邮件</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> gdm</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> gnome 登录管理器</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> gpm</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 终端中的鼠标支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> halt</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 关闭系统</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> hdparm</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 调整硬盘的脚本，配置文件为&nbsp;/etc/hdparm.conf</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> hibernate</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 系统休眠</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> hotplug and hotplug-net</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 即插即用支持，比较复杂，建议不要动它</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> ifrename</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 网络接口重命名脚本。如果您有十块网卡，您应该开启它</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> inetd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 配置文件为&nbsp;/etc/inetd.conf</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> linux-restricted-modules-common</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 受限模块支持。</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> lvm</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 逻辑卷管理系统支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> makedev</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 创建设备文件，非常重要</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> mdamd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 磁盘阵列</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> module-init-tools</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 从/etc/modules加载扩展模块，建议开启</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> networking</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 网络支持。按&nbsp;/etc/network/interfaces&nbsp;文件预设激活网络，非常重要</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> ntpdate</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 时间同步服务，建议关闭</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> pcmcia</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> pcmcia 设备支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> powernowd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 移动 CPU 节能支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> ppp</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 拨号连接</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> readahead</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 预加载库文件</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> reboot</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 别动它</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> resolvconf</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 自动配置 DNS</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> rmnologin</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 清除 nologin</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> rsync</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> rsync 守护程序</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> sendsigs</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 在重启和关机期间发送信号</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> single</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 激活单用户模式</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> sshd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> ssh服务器</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> sudo</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 检查 sudo 状态</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> udev</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 用户空间 dev文件系统（userspace dev filesystem）。重要</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> umountfs</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 卸载文件系统</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> urandom</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 随机数生成器</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> usplash</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 开机画面支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> vbesave</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 显卡 BIOS 配置工具。保存显卡的状态</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> xorg-common</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 设置 X 服务 ICE socket</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> adjtimex</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 调整核心时钟的工具</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> dirmngr</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 证书列表管理工具</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> hwtools</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> irqs 优化工具</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> libpam-devperm</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 系统崩溃之后，用于修理设备文件许可的守护程序</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> lm-sensors</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 板载传感器支持</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> mdadm-raid</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 磁盘陈列管理器</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> screen-cleanup</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 清除开机屏幕的脚本</td><br>  </tr><br>  <tr><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> xinetd</td><br>   <td style="border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:rgb(221,221,221); border-right-style:solid; border-right-width:1px; border-right-color:rgb(221,221,221); padding:5px 10px"> 新一代的网络守护进程服务程序（extended internet daemon）</td><br>  </tr><br> </tbody><br></table>
+
+
+<p>super deamon 具体配置文件（/etc/xinetd.d/*）里面的参数选项</p>
+<ul>
+<li><strong>文件格式</strong>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">service &lt;service_name&gt;</span><br><span class="line">&#123;</span><br><span class="line">    &lt;attribute&gt; &lt;option&gt; &lt;value&gt; &lt;value&gt; ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#-------------------------------------------------------</span><br><span class="line">#其中option 有以下几种:</span><br><span class="line">=: </span><br><span class="line">+=:</span><br><span class="line">-=:</span><br><span class="line"></span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<table><br><tbody><tr align="center" bgcolor="#182448"><br>    <td width="120"><font color="#000">attribute (功能)</font></td><td><font color="#0">说明与范例</font></td></tr><br><tr bgcolor="#182448"><td colspan="2"><span class="text_import1"><font color="#000000">一般配置项目：服务的识别、启动与程序</font></span></td></tr><br><tr><br>    <td align="center"><span class="text_import1" style="font-family: '细明体';">disable<br>(启动与否)</span></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[yes|no]，默认 disable = yes</li></ul><br>        disable 为取消的意思，此值可配置该服务是否要启动。默认所有的 super daemon 管理的服务都不启动的。<br>        若要启动就得要配置为『 disable = no 』</td></tr><br><tr><br>    <td align="center"><font face="细明体">id<br>(服务识别)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[服务的名称]</li></ul><br>        虽然服务在配置文件开头『 service 服务名称』已经指定了，不过有时后会有重复的配置值，此时可以用 id 来取代服务名称。<br>        你可以参考一下 /etc/xinetd.d/time-stream 来思考一下原理。</td></tr><br><tr><br>    <td align="center"><span class="text_import1" style="font-family: '细明体';">server<br>(程序文件名)</span></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[program 的完整檔名]</li></ul><br>        这个就是指出这个服务的启动程序！例如 /usr/bin/rsync 为启动 rsync 服务的命令，所以这个配置值就会成为：<br>        『 server = /usr/bin/rsync 』</td></tr><br><tr><br>    <td align="center"><font face="细明体">server_args<br>(程序参数)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[程序相关的参数]</li></ul><br>        这里应该输入的就是你的 server 那里需要输入的一些参数啦！例如 rsync 需要加入 –daemon ，<br>        所以这里就配置：『 server_args = –daemon 』。与上面 server 搭配，最终启动服务的方式『/usr/bin/rsync –daemon』</td></tr><br><tr><br>    <td align="center"><font face="细明体">user<br>(服务所属UID)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[使用者账号]</li></ul><br>        如果 xinetd 是以 root 的身份启动来管理的，那么这个项目可以配置为其他用户。此时这个 daemon<br>        将会以此配置值指定的身份来启动该服务的程序喔！举例来说，你启动 rsync 时会以这个配置值作为该程序的 UID。</td></tr><br><tr><br>    <td align="center"><font face="细明体">group</font></td><br>    <td>跟 user 的意思相同！此项目填入组名即可。</td></tr><br><br><tr bgcolor="#182448"><td colspan="2"><span class="text_import1"><font color="#FFFFFF">一般配置项目：联机方式与联机封包协议</font></span></td></tr><br><tr><br>    <td align="center"><font face="细明体">socket_type<br>(封包类型)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[stream|dgram|raw]，与封包有关</li></ul><br>        stream 为联机机制较为可靠的 TCP 封包，若为 UDP 封包则使用 dgram 机制。raw 代表 server 需要与 IP<br>        直接对谈！举例来说 rsync 使用 TCP ，故配置为『socket_type = stream 』</td></tr><br><tr><br>    <td align="center"><font face="细明体">protocol<br>(封包类型)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[tcp|udp]，通常使用 socket_type 取代此配置</li></ul><br>        使用的网络协议，需参考 /etc/protocols 内的通讯协议，一般使用 tcp 或 udp。由于与 socket_type 重复，<br>        因此这个项目可以不指定。</td></tr><br><tr><br>    <td align="center"><font face="细明体">wait<br>(联机机制)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[yes(single)|no(multi)]，默认 wait = no</li></ul><br>        这就是我们刚刚提到的 <b>Multi-threaded</b> 与 <b>single-threaded</b><br>        ！一般来说，我们希望大家的要求都可以同时被激活，所以可以配置『 wait = no 』<br>        此外，一般 udp 配置为 yes 而 tcp 配置为 no。</td></tr><br><tr><br>    <td align="center"><font face="细明体">instances<br>(最大联机数)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[数字或 UNLIMITED]</li></ul><br>        这个服务可接受的最大联机数量。如果你只想要开放 30 个人联机 rsync 时，可在配置文件内加入：『<br>        instances = 30 』</td></tr><br><tr><br>    <td align="center"><font face="细明体">per_source<br>(单一用户来源)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[一个数字或 UNLIMITED]</li></ul><br>        如果想要控制每个来源 IP 仅能有一个最大的同时联机数，就指定这个项目吧！例如同一个 IP 最多只能连 10 条联机『<br>        per_source = 10 』</td></tr><br><tr><br>    <td align="center"><font face="细明体">cps<br>(新联机限制)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[两个数字]</li></ul><br>        为了避免短时间内大量的联机要求导致系统出现忙碌的状态而有这个 cps 的配置值。第一个数字为一秒内能够接受的最多新联机要求，<br>        第二个数字则为，若超过第一个数字那暂时关闭该服务的秒数。</td></tr><br><br><tr bgcolor="#182448"><td colspan="2"><span class="text_import1"><font color="#FFFFFF">一般配置项目：登录文件的记录</font></span></td></tr><br><tr><br>    <td align="center"><font face="细明体">log_type<br>(登录档类型)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[登录项目  等级]</li></ul><br>        当数据记录时，以什么登录项目记载？且需要记载的等级为何(默认为 info 等级)。这两个配置值得要看过<a href="http://cn.linux.vbird.org/linux_basic/0570syslog.php" target="_blank" rel="noopener">下一章登录档</a>后才会知道哩！这边你先有印象即可。</td></tr><br><tr><br>    <td align="center"><font face="细明体">log_on_success<br>log_on_failure<br>(登录状态)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[PID,HOST,USERID,EXIT,DURATION]</li></ul><br>        在『成功登陆』或『失败登陆』之后，需要记录的项目：PID 为纪录该 server 启动时候的 process ID ，<br>        HOST 为远程主机的 IP、USERID 为登陆者的账号、EXIT 为离开的时候记录的项目、DURATION 为该用户使用此服务多久？</td></tr><br><br><tr bgcolor="#182448"><td colspan="2"><span class="text_import1"><font color="#FFFFFF">进阶配置项目：环境、网络端口口与联机机制等</font></span></td></tr><br><tr><br>    <td align="center"><font face="细明体">env<br>(额外变量配置)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[变量名称=变量内容]</li></ul><br>        这一个项目可以让你配置环境变量，环境变量的配置守则可以参考<a href="http://cn.linux.vbird.org/linux_basic/0320bash.php#variable_rule" target="_blank" rel="noopener">第十一章</a>。</td></tr><br><tr><br>    <td align="center"><font face="细明体">port<br>(非正规埠号)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[一组数字(小于 65534)]</li></ul><br>        这里可以配置不同的服务与对应的 port ，但是请记住你的 port 与服务名称必须与 /etc/services<br>        内记载的相同才行！不过，若服务名称是你自定义的，那么这个 port 就可以随你指定</td></tr><br><tr><br>    <td align="center"><font face="细明体">redirect<br>(服务转址)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[IP port]</li></ul><br>        将 client 端对我们 server 的要求，转到另一部主机上去！呵呵！这个好玩呦！<br>        例如当有人要使用你的 ftp 时，你可以将他转到另一部机器上面去！那个 IP_Address<br>        就代表另一部远程主机的 IP 啰！</td></tr><br><tr><br>    <td align="center"><font face="细明体">includedir<br>(呼叫外部配置)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[目录名称]</li></ul><br>        表示将某个目录底下的所有文件都给他塞进来 xinetd.conf 这个配置里头！这东西有用多了，<br>        如此一来我们可以一个一个配置不同的项目！而不需要将所有的服务都写在 xinetd.conf<br>        当中！你可以在 /etc/xinetd.conf 发现这个配置呦！</td></tr><br><br><tr bgcolor="#182448"><td colspan="2"><span class="text_import1"><font color="#000000">安全控管项目：</font></span></td></tr><br><tr><br>    <td align="center"><font face="细明体">bind<br>(服务接口锁定)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[IP]</li></ul><br>        这个是配置『允许使用此一服务的适配卡』的意思！举个例子来说，你的 Linux<br>        主机上面有两个 IP ，而你只想要让 IP1 可以使用此一服务，但 IP2<br>        不能使用此服务，这里就可以将 IP1 写入即可！那么 IP2 就不可以使用此一 server 啰</td></tr><br><tr><br>    <td align="center"><font face="细明体">interface</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[IP]</li></ul><br>        与 bind 相同</td></tr><br><tr><br>    <td align="center"><font face="细明体">only_from<br>(防火墙机制)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[0.0.0.0, 192.168.1.0/24, hostname, domainname]</li></ul><br>        这东西用在安全机制上面，也就是管制『只有这里面规定的 IP 或者是主机名可以登陆！』如果是<br>        0.0.0.0 表示所有的 PC 皆可登陆，如果是 192.168.1.0/24 则表示为 C class 的网域！亦即由<br>        192.168.1.1 ~ 192.168.1.255 皆可登陆！另外，也可以选择 domain name ，例如<br>        .dic.ksu.edu.tw 就可以允许昆山资传系网域的 IP 登陆你的主机使用该 server ！</td></tr><br><tr><br>    <td align="center"><font face="细明体">no_access<br>(防火墙机制)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[0.0.0.0, 192.168.1.0/24, hostname, domainname]</li></ul><br>        跟 only_from 差不多啦！就是用来管理可否进入你的 Linux 主机激活你的 server 服务的管理项目！<br>        no_access 表示『不可登陆』的 PC 啰！</td></tr><br><tr><br>    <td align="center"><font face="细明体">access_times<br>(时间控管)</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[00:00-12:00, HH:MM-HH:MM]</li></ul><br>        这个项目在配置『该服务 server 启动的时间』，使用的是 24 小时的配置！例如你的 ftp 要在<br>        8 点到 16 点开放的话，就是： 08:00-16:00。</td></tr><br><tr><br>    <td align="center"><font face="细明体">umask</font></td><br>    <td><ul style="margin: 5px 0pt; padding-left: 25px; font-family: '细明体'; color: rgb(0, 0, 136);"><br>        <li>配置值：[000, 777, 022]</li></ul><br>        还记得在<a href="http://cn.linux.vbird.org/linux_basic/0220filemanager.php#umask" target="_blank" rel="noopener">第七章提到的 umask</a> 这个东西吗？呵呵！没错！<br>        就是那个鬼玩意儿啰！可以配置用户创建目录或者是文件时候的属性！系统建议值是 022 。</td></tr><br></tbody></table>
+
+<h1 id="日志配置文件"><a href="#日志配置文件" class="headerlink" title="日志配置文件"></a>日志配置文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#syslogd 服务的配置文件(记录了日志的危险等级以及存储的文件path)</span><br><span class="line">/etc/syslog.conf</span><br><span class="line"></span><br><span class="line">#日志轮替logrotate 服务的配置文件</span><br><span class="line">/etc/logrotate.conf #主要配置</span><br><span class="line">/etc/logrotate.d/* #详细配置</span><br><span class="line"></span><br><span class="line">#常用日志文件位于/var/log/*</span><br><span class="line"></span><br><span class="line">boot.log #启动日志</span><br><span class="line">cron #例行性工作日志</span><br><span class="line">maillog #系统邮件发送日志</span><br><span class="line">syslog #系统生成日志</span><br><span class="line">dmseg  #系统内核日志</span><br><span class="line">wtmp   #记录用户登陆的信息</span><br></pre></td></tr></table></figure>
+<h1 id="防火墙设置"><a href="#防火墙设置" class="headerlink" title="防火墙设置"></a>防火墙设置</h1><p>三种基础防火墙形式：Netfilter (封包过滤机制)，TCP Wrappers (程序控管)，Proxy (代理服务器)<br>三种常见的防火墙布线：</p>
+<h3 id="仅一个防火墙部署在路由器"><a href="#仅一个防火墙部署在路由器" class="headerlink" title="仅一个防火墙部署在路由器"></a>仅一个防火墙部署在路由器</h3><p><img src="/myimages/iptable/firewall_01.png" alt="sdsdsd"></p>
+<h3 id="内部需要保护的网络再多加一个防火墙"><a href="#内部需要保护的网络再多加一个防火墙" class="headerlink" title="内部需要保护的网络再多加一个防火墙"></a>内部需要保护的网络再多加一个防火墙</h3><p><img src="/myimages/iptable/firewall_02.png" alt="image"></p>
+<h3 id="隔离态的网络服务器型防火墙部署（DMZ）"><a href="#隔离态的网络服务器型防火墙部署（DMZ）" class="headerlink" title="隔离态的网络服务器型防火墙部署（DMZ）"></a>隔离态的网络服务器型防火墙部署（DMZ）</h3><p><img src="/myimages/iptable/firewall_03.png" alt="image"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/03/07/linux修炼/">linux修炼</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年03月07日 - 11:03
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年10月29日 - 13:10
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/03/07/linux修炼/" title="linux修炼">http://yoursite.com/2018/03/07/linux修炼/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/01/python代码纠错琐碎/" rel="next" title="python代码纠错琐碎">
+                <i class="fa fa-chevron-left"></i> python代码纠错琐碎
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/09/cpp/" rel="prev" title="cpp">
+                cpp <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网络配置文件"><span class="nav-number">1.</span> <span class="nav-text">网络配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进程配置文件"><span class="nav-number">2.</span> <span class="nav-text">进程配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日志配置文件"><span class="nav-number">3.</span> <span class="nav-text">日志配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#防火墙设置"><span class="nav-number">4.</span> <span class="nav-text">防火墙设置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#仅一个防火墙部署在路由器"><span class="nav-number">4.0.1.</span> <span class="nav-text">仅一个防火墙部署在路由器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内部需要保护的网络再多加一个防火墙"><span class="nav-number">4.0.2.</span> <span class="nav-text">内部需要保护的网络再多加一个防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隔离态的网络服务器型防火墙部署（DMZ）"><span class="nav-number">4.0.3.</span> <span class="nav-text">隔离态的网络服务器型防火墙部署（DMZ）</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/03/07/linux修炼/';
+          this.page.identifier = '2018/03/07/linux修炼/';
+          this.page.title = 'linux修炼';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>

@@ -1,0 +1,1316 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="1.0.0 宏观看区块链涉及分布式系统的共识，密码学传输加密，去中心化的一种新式的数据结构。建立在现如今大数据背景下分布式存储，以及一系列相对较为成熟的可以解决拜占庭结点问题分布式共识机制下，发展而来的，去中心化，更公开，更公正，也更安全的数据存储技术。区块链作为一个分布式数据存储，传输和分发的解决方案，其核心就是我们上面所说的如何在一个分布式的，无受信结点的环境下，自动达成共识的机制。尽管现在还">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫步区块链">
+<meta property="og:url" content="http://yoursite.com/2018/02/28/漫步区块链/index.html">
+<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:description" content="1.0.0 宏观看区块链涉及分布式系统的共识，密码学传输加密，去中心化的一种新式的数据结构。建立在现如今大数据背景下分布式存储，以及一系列相对较为成熟的可以解决拜占庭结点问题分布式共识机制下，发展而来的，去中心化，更公开，更公正，也更安全的数据存储技术。区块链作为一个分布式数据存储，传输和分发的解决方案，其核心就是我们上面所说的如何在一个分布式的，无受信结点的环境下，自动达成共识的机制。尽管现在还">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-11T14:11:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="漫步区块链">
+<meta name="twitter:description" content="1.0.0 宏观看区块链涉及分布式系统的共识，密码学传输加密，去中心化的一种新式的数据结构。建立在现如今大数据背景下分布式存储，以及一系列相对较为成熟的可以解决拜占庭结点问题分布式共识机制下，发展而来的，去中心化，更公开，更公正，也更安全的数据存储技术。区块链作为一个分布式数据存储，传输和分发的解决方案，其核心就是我们上面所说的如何在一个分布式的，无受信结点的环境下，自动达成共识的机制。尽管现在还">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/28/漫步区块链/">
+
+
+
+
+
+  <title>漫步区块链 | BLOG of little potato</title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BLOG of little potato</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/28/漫步区块链/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="little potato">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BLOG of little potato">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">漫步区块链</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-28T20:37:53+08:00">
+                Feb 28 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/blockchain/" itemprop="url" rel="index">
+                    <span itemprop="name">blockchain</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/28/漫步区块链/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/02/28/漫步区块链/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-0-0-宏观看区块链"><a href="#1-0-0-宏观看区块链" class="headerlink" title="1.0.0 宏观看区块链"></a>1.0.0 宏观看区块链</h1><p>涉及分布式系统的共识，密码学传输加密，去中心化的一种新式的数据结构。建立在现如今大数据背景下分布式存储，以及一系列相对较为成熟的可以解决拜占庭结点问题分布式共识机制下，发展而来的，去中心化，更公开，更公正，也更安全的数据存储技术。<br>区块链作为一个分布式数据存储，传输和分发的解决方案，其核心就是我们上面所说的如何在一个分布式的，无受信结点的环境下，自动达成共识的机制。尽管现在还处于发展萌芽阶段，但是比特币的“红遍大江南北”，使得这个技术逐渐进入人们的视线，引起了一大批研发人员的兴致，预言并参与这个技术革命的浪潮。<br><a id="more"></a></p>
+<h2 id="1-1-0-为什么区块链会广泛的受到关注？"><a href="#1-1-0-为什么区块链会广泛的受到关注？" class="headerlink" title="1.1.0  为什么区块链会广泛的受到关注？"></a>1.1.0  为什么区块链会广泛的受到关注？</h2><p>第一，区块链具有去中心化的特征，不以任何参与方为中心。这点可以和以往的中心化管理的数据库系统进行对比理解。所谓的去中心化，就是没有一个特定的结点去管理整个数据系统，任何一个结点都有对整个数据的备份，在满足协议的以及相关共识条件下，都可以进行对数据的查询或者修改的权利。去中心化的数据库可以带来一定效率的提升和成本的降低，从而提高利润。<br>第二，区块链具有其也许吧热播的特征，也就是假定参与交易的任何一方都是不可信任的，通过共识机制，我们最后可以达成共识。这就很好的回应了互联网的痛点——诚信问题。<br>总的来说就是，其核心特征：去中心化和去信任化，智能合约等特性很好的满足了未来互联网的发展所需要的信息高度自动化和高度程序化的安全流转需求。（以上部分参考了《区块链核心算法解析——推荐序二，推荐序三》）<!--more--></p>
+<h2 id="1-2-0-分布式系统"><a href="#1-2-0-分布式系统" class="headerlink" title="1.2.0 分布式系统"></a>1.2.0 分布式系统</h2><p>所谓的分布式的概念理解其实不难，就是原来一个机器的工作现在分给了很多台机器去共同完成，但是在逻辑上这些机器仍旧对外看来具有“只有一个机器在工作”的效果。这就好比算法里面的分而治之思想，只是这些物理层面上分散的，分布开的工作设备在逻辑上是一个设备，这些“资产”（暂且把这些设备看作一个分布式系统的资产）就组成了一个分布式系统。</p>
+<h3 id="1-2-1-分布式系统的产生"><a href="#1-2-1-分布式系统的产生" class="headerlink" title="1.2.1 分布式系统的产生"></a>1.2.1 分布式系统的产生</h3><p>分布式系统是随着信息产业的发展而演变而来的必然结果，受限于硬件性能优化的逐渐变得困难(即使摩尔定律至今还在有效)，但是人们对数据存储和cpu等硬件的性能需求在大数据时代是飞速的发展，那么为了解决这个问题，分布式系统就自然而然诞生了，并且承担了大数据信息时代的压力。也是分布式系统的逐渐完善，配合其他相关技术的发展，我们的信息化步伐才得以稳步前进。</p>
+<h3 id="1-2-2分布式系统需要解决的一个问题重要问题：如何在存在不可靠的（可控故障），甚至是不可信的（拜占庭结点）结点直接建立共识机制来协调分布式系统的正常工作。"><a href="#1-2-2分布式系统需要解决的一个问题重要问题：如何在存在不可靠的（可控故障），甚至是不可信的（拜占庭结点）结点直接建立共识机制来协调分布式系统的正常工作。" class="headerlink" title="1.2.2分布式系统需要解决的一个问题重要问题：如何在存在不可靠的（可控故障），甚至是不可信的（拜占庭结点）结点直接建立共识机制来协调分布式系统的正常工作。"></a>1.2.2分布式系统需要解决的一个问题重要问题：如何在存在不可靠的（可控故障），甚至是不可信的（拜占庭结点）结点直接建立共识机制来协调分布式系统的正常工作。</h3><p>不可靠结点：结点因物理故障等原因消息传递或者说是节点间通讯延迟或者中断<br>不可信结点：也即拜占庭结点，结点会自发产生不可预见性的行为，其行为异常可以不符合协议的约定（针对这种异常，比较容易通过检测机制察觉出来）。但是也有一些符合协议约定内容的，但是信息是编造的也就是我们平时所说的hacking行为，这种结点需要有特定的算法来达成共识，每个结点具有正确的一致性。  </p>
+<h2 id="1-3-0-达成共识需要满足的三个条件："><a href="#1-3-0-达成共识需要满足的三个条件：" class="headerlink" title="1.3.0 达成共识需要满足的三个条件："></a>1.3.0 达成共识需要满足的三个条件：</h2><h4 id="一致性：所有好的结点（好结点区别于不可靠和不可信结点，是可以按照我们期望的行为去工作的结点）决策值必定相同。"><a href="#一致性：所有好的结点（好结点区别于不可靠和不可信结点，是可以按照我们期望的行为去工作的结点）决策值必定相同。" class="headerlink" title="一致性：所有好的结点（好结点区别于不可靠和不可信结点，是可以按照我们期望的行为去工作的结点）决策值必定相同。"></a>一致性：所有好的结点（好结点区别于不可靠和不可信结点，是可以按照我们期望的行为去工作的结点）决策值必定相同。</h4><h4 id="可终止性：所有的好结点在有限的时间内结束决策过程"><a href="#可终止性：所有的好结点在有限的时间内结束决策过程" class="headerlink" title="可终止性：所有的好结点在有限的时间内结束决策过程"></a>可终止性：所有的好结点在有限的时间内结束决策过程</h4><h4 id="有效性：选择出的值必须是某个节点的输入值"><a href="#有效性：选择出的值必须是某个节点的输入值" class="headerlink" title="有效性：选择出的值必须是某个节点的输入值"></a>有效性：选择出的值必须是某个节点的输入值</h4><h2 id="1-4-0-需要明白的一些原理"><a href="#1-4-0-需要明白的一些原理" class="headerlink" title="1.4.0 需要明白的一些原理"></a>1.4.0 需要明白的一些原理</h2><h5 id="1-4-1-FLP-不可能原理：在网络可靠，存在节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。"><a href="#1-4-1-FLP-不可能原理：在网络可靠，存在节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。" class="headerlink" title="1.4.1 FLP 不可能原理：在网络可靠，存在节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。"></a>1.4.1 FLP 不可能原理：在网络可靠，存在节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。</h5><h5 id="1-4-2-CAP原理：分布式计算系统不可能同时确保一致性（Consistency）、可用性（Availablity）和分区容忍性（Partition），设计中往往需要弱化对某个特性的保证。"><a href="#1-4-2-CAP原理：分布式计算系统不可能同时确保一致性（Consistency）、可用性（Availablity）和分区容忍性（Partition），设计中往往需要弱化对某个特性的保证。" class="headerlink" title="1.4.2 CAP原理：分布式计算系统不可能同时确保一致性（Consistency）、可用性（Availablity）和分区容忍性（Partition），设计中往往需要弱化对某个特性的保证。"></a>1.4.2 CAP原理：分布式计算系统不可能同时确保一致性（Consistency）、可用性（Availablity）和分区容忍性（Partition），设计中往往需要弱化对某个特性的保证。</h5><blockquote>
+<p>一致性（Consistency）：任何操作应该都是原子的，发生在后面的事件能看到前面事件发生导致的结果，注意这里指的是强一致性；  </p>
+</blockquote>
+<blockquote>
+<p>可用性（Availablity）：在有限时间内，任何非失败节点都能应答请求；  </p>
+</blockquote>
+<blockquote>
+<p>分区容忍性（Partition）：网络可能发生分区，即节点之间的通信不可保障。  </p>
+</blockquote>
+<h5 id="1-4-3-目前主要有几大类共识机制：Pow、Pos、DPos、Pool、PBFT"><a href="#1-4-3-目前主要有几大类共识机制：Pow、Pos、DPos、Pool、PBFT" class="headerlink" title="1.4.3 目前主要有几大类共识机制：Pow、Pos、DPos、Pool、PBFT"></a>1.4.3 目前主要有几大类共识机制：Pow、Pos、DPos、Pool、PBFT</h5><h5 id="1-4-4-有效性"><a href="#1-4-4-有效性" class="headerlink" title="1.4.4 有效性"></a>1.4.4 有效性</h5><p>任何输入有效性：最终的决策值必须是某个节点的输入值<br>正确输入有效性：决策值必须是某个好节点的输入值<br>全部相同有效性：如果所有好结点起始具有相同的输入值v,则决策值也必须是v</p>
+<h2 id="1-5-0-比特币，以太坊和超级账本-hyperledger"><a href="#1-5-0-比特币，以太坊和超级账本-hyperledger" class="headerlink" title="1.5.0 比特币，以太坊和超级账本(hyperledger)"></a>1.5.0 比特币，以太坊和超级账本(hyperledger)</h2><ul>
+<li>区块链的第一代——比特币，比特币是日本中本聪之作，它是区块链的骇世之作，也是目前最为成 熟的的区块链应用之一。<a href="https://github.com/GammaGao/bitcoinwhitepaper/blob/master/bitcoin_cn.pdf" target="_blank" rel="noopener">比特币白皮书  </a></li>
+<li>区块链的第二代——以太坊,以太坊的诞生一定程度上是为了解决比特币的拓展性不足的问题。<a href="https://github.com/ethereum/wiki/wiki/%5B%E4%B8%AD%E6%96%87%5D-%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%99%BD%E7%9A%AE%E4%B9%A6" target="_blank" rel="noopener">以太坊白皮书</a></li>
+<li>区块链的第三代——超级账本，<a href="https://zh.scribd.com/document/350572873/%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%ACHyperledger%E7%99%BD%E7%9A%AE%E4%B9%A6-%E4%B8%AD%E6%96%87%E7%89%88" target="_blank" rel="noopener">超级账本（hyperledger）白皮书</a></li>
+</ul>
+<p><a href="http://blog.csdn.net/u012412689/article/details/73010695" target="_blank" rel="noopener">衍生阅读1：以太坊和hyperledger的比对</a><br><a href="http://note.youdao.com/" target="_blank" rel="noopener">衍生阅读2: thinking in blockchain</a></p>
+<h2 id="1-6-0-10步建立自己的区块链（参考IBM-blockchain1-pdf）"><a href="#1-6-0-10步建立自己的区块链（参考IBM-blockchain1-pdf）" class="headerlink" title="1.6.0 10步建立自己的区块链（参考IBM blockchain1.pdf）"></a>1.6.0 10步建立自己的区块链（参考IBM blockchain1.pdf）</h2><ul>
+<li>区块链技术我的应用是否真的需要</li>
+<li>在我的网络应用中交易行为是否面临这挑战，有哪些挑战</li>
+<li>思考区块链会如何帮助我们应对这些挑战</li>
+<li>Choosing an Appropriate Use Case</li>
+<li>建立一个明确的区块链网络的宏观目标或者规划</li>
+<li>思考区块链的建立始末相关的依赖性问题</li>
+<li>选择一个现如今提供API的区块链项目平台，例如以太坊和超级账本等等</li>
+<li>逐步完善和发展你的区块链代码</li>
+<li>对你的产品进行测试</li>
+<li><p>加入超级账本的交流社区，去里面交流技术，为区块链社区的发展贡献自己的一份力</p>
+<h2 id="1-7-0-核心算法笔记"><a href="#1-7-0-核心算法笔记" class="headerlink" title="1.7.0 核心算法笔记"></a>1.7.0 核心算法笔记</h2></li>
+<li><h3 id="两阶段协议与分布式容错算法Paxos"><a href="#两阶段协议与分布式容错算法Paxos" class="headerlink" title="两阶段协议与分布式容错算法Paxos"></a>两阶段协议与分布式容错算法Paxos</h3><h4 id="两阶段协议"><a href="#两阶段协议" class="headerlink" title="两阶段协议"></a>两阶段协议</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">阶段1：</span><br><span class="line">客户端像所有的服务器请求锁</span><br><span class="line"></span><br><span class="line">阶段2：</span><br><span class="line">if 如果客户端获得了所有服务的锁 then </span><br><span class="line">    该客户端以可靠的方式向每个服务器发送命令，与此同时释锁</span><br><span class="line">else </span><br><span class="line">    该客户端释放已经获得的锁</span><br><span class="line">    该客户端等待一段时间，重新进入阶段1</span><br><span class="line">end if</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="朴素的基于票的协议"><a href="#朴素的基于票的协议" class="headerlink" title="朴素的基于票的协议"></a>朴素的基于票的协议</h4><p>票：一种弱化的锁，一个服务器可以发布多个票，即使之前的票还没有释放。而锁的话服务器只能等上一个锁释放后才可以发放下一个。客户端通过票来取得与服务器的联络凭据。同时票具有时效性，也即服务器只认识最新发布的票。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">阶段1：</span><br><span class="line">客户端向所有服务器请求一张票</span><br><span class="line"></span><br><span class="line">阶段2：</span><br><span class="line">if 收到超过半数的服务器回复then </span><br><span class="line">    客户端将获得票与命令一起发送给每个服务器</span><br><span class="line">    服务器检查票的状态，如果票仍然有效（也即最新），则储存命令并给该客户一个积极反馈（该反馈信息作为服务器可执行的通知）</span><br><span class="line">else </span><br><span class="line">    客户端等待，重新进入阶段1</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">阶段3：</span><br><span class="line">if 客户端从过半数的服务处得到了正反馈then </span><br><span class="line">    客户端告诉所有的服务器执行之前的存储的命令</span><br><span class="line">else </span><br><span class="line">    客户端等待，然后重新进入阶段1</span><br><span class="line">end if</span><br></pre></td></tr></table></figure></p>
+<h4 id="Paxos算法"><a href="#Paxos算法" class="headerlink" title="Paxos算法"></a>Paxos算法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">初始化阶段：</span><br><span class="line"></span><br><span class="line">客户端（提案者）：</span><br><span class="line"></span><br><span class="line">c 待执行命令c(commmend)</span><br><span class="line">t=0 当前尝试的票号t</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">服务器（接受者）</span><br><span class="line"></span><br><span class="line">T_max=0 当前发布的最大票号代码</span><br><span class="line">C_Memory 当前存储的命令</span><br><span class="line">T_cmemory 用来存储命令c的票</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">阶段1：</span><br><span class="line"></span><br><span class="line">客户端：</span><br><span class="line"></span><br><span class="line">t=t+1</span><br><span class="line">向所有的服务器发送消息，请求得到编号为t的票</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">服务器：</span><br><span class="line">if t &gt; T_max then</span><br><span class="line">    T_max=t</span><br><span class="line">    回复ok(T_cmemory,C_Memeory)</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">阶段2：</span><br><span class="line">客户端：</span><br><span class="line">if 过半数的服务器回复ok then</span><br><span class="line">    选择T_cmemory值最大的ok携带的信息流，也即(T_cmemory,C_Memeory)</span><br><span class="line">    if T_cmemory&gt;0 then</span><br><span class="line">    c=C</span><br><span class="line">    end if </span><br><span class="line">    向这些回复了ok的服务器发送提案：propose(t,c)</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">服务器：</span><br><span class="line">if t =  T_max then </span><br><span class="line">    c=c</span><br><span class="line">    T_cmemory=t </span><br><span class="line">    回复：sucecss</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">阶段3：</span><br><span class="line"></span><br><span class="line">客户端：</span><br><span class="line">if 过半数的服务器回复success then</span><br><span class="line">    向每个服务器发送信息：excute(c)</span><br><span class="line">end if</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h3 id="随机共识机制-bool类型的决策"><a href="#随机共识机制-bool类型的决策" class="headerlink" title="随机共识机制(bool类型的决策)"></a>随机共识机制(bool类型的决策)</h3>因为之前有提到LFP不可能存在一个确定的算法解决一致性问题。所以在公式的达成上面我们的算法一定是不确定的，这就是随机共识机制中“随机”的精妙之处。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">vi=0 or 1</span><br><span class="line">round=1</span><br><span class="line">decided=false</span><br><span class="line">在分布式系统中广播myvalue(vi,round)</span><br><span class="line">while true do</span><br><span class="line">    </span><br><span class="line">    1.提案</span><br><span class="line">    </span><br><span class="line">    持续等待，直到收到过半数当前轮（round）的myvalue消息</span><br><span class="line">    if 所有的消息包含相同的值v then</span><br><span class="line">    广播提议propose(v,round)</span><br><span class="line">    else </span><br><span class="line">    广播propose(本机存储的vi,round)</span><br><span class="line">    end if</span><br><span class="line">    if decided then</span><br><span class="line">    广播myvalue(vi，round+1)</span><br><span class="line">    确定决策之为vi,并且终止算法</span><br><span class="line">    end if </span><br><span class="line">    </span><br><span class="line">    2.调整</span><br><span class="line">    </span><br><span class="line">    持续等待，直到收到超过半数的当前轮（round）的propose消息</span><br><span class="line">    if 所有消息的提案（propose）同样的值v then</span><br><span class="line">        vi=v</span><br><span class="line">        decided=true</span><br><span class="line">    else if 至少一个提案包含v then</span><br><span class="line">        vi=v</span><br><span class="line">    else </span><br><span class="line">        随机等可能的选择本地vi的决策值</span><br><span class="line">    end if </span><br><span class="line">    round=round+1</span><br><span class="line">    广播myalue(vi,round)</span><br><span class="line">end while</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">针对上述算法的改进，在随机选择本地决策值的部分可以采用共享硬币的算法加速决策效率，减少轮数，具体如下：</span><br><span class="line"></span><br><span class="line">以1/n的概率使得本地硬币（或者说是决策）c_x=0,否则c_x=1</span><br><span class="line">结点x广播mycoin（c_x）</span><br><span class="line">等待n-f个硬币的到来，并将他们存储在本地的硬币集合Cx中</span><br><span class="line">广播myset(Cx)</span><br><span class="line">等待n-f个硬币集合（n为结点数，f为最多故障结点数）</span><br><span class="line">if 在这些集合中，至少有一个硬币为0 then</span><br><span class="line">    return 0</span><br><span class="line">else </span><br><span class="line">    return 1</span><br><span class="line">end if</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h3 id="同步-异步模式下的拜占庭协定"><a href="#同步-异步模式下的拜占庭协定" class="headerlink" title="同步,异步模式下的拜占庭协定"></a>同步,异步模式下的拜占庭协定</h3>同步模式下国王算法（King algorithm）（容忍范围：f &lt; n/3 ）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">x=本结点的输入值</span><br><span class="line">for 从第一轮到第f+1个阶段 do</span><br><span class="line">    第一轮</span><br><span class="line">    广播value(x)</span><br><span class="line">    </span><br><span class="line">    第二轮</span><br><span class="line">    if 接收到了value（y）至少n-f次 then</span><br><span class="line">        广播propose(y)</span><br><span class="line">    end if</span><br><span class="line">    if 接收到propose(z)至少f次 then</span><br><span class="line">        x=z</span><br><span class="line">    end if</span><br><span class="line">    </span><br><span class="line">    第三轮：</span><br><span class="line">    设结点vi是预先设定好的第i阶段的国王</span><br><span class="line">    国王vi广播它的当前值w</span><br><span class="line">    if 接收到propose(x)的次数严格少于n-f then</span><br><span class="line">        x=w</span><br><span class="line">    end if</span><br><span class="line">    </span><br><span class="line">end for</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>异步模式下的拜占庭协定算法（bool型,容忍范围f&lt; n/10）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">xi=(0|1)</span><br><span class="line">r =1  </span><br><span class="line">decided=false</span><br><span class="line">广播propose(xi,r)</span><br><span class="line">repeat </span><br><span class="line">    持续等待，直到接收到n-f条当前轮r的propose 消息，</span><br><span class="line">    if 至少n/2+3f+1 propose 消息包含相同的值x then</span><br><span class="line">        xi=x,decided=true</span><br><span class="line">    else if 至少n/2+f+1 propose 消息包含同样的值x then</span><br><span class="line">        xi=x</span><br><span class="line">    else</span><br><span class="line">        随机选择xi,服从等概率</span><br><span class="line">    end if</span><br><span class="line">    </span><br><span class="line">    r=r+1</span><br><span class="line">    广播propose(xi，r)</span><br><span class="line">until decided(第8行)</span><br><span class="line">decision =xi</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><h3 id="带认证的拜占庭协定"><a href="#带认证的拜占庭协定" class="headerlink" title="带认证的拜占庭协定"></a>带认证的拜占庭协定</h3>同步模式下使用认证的拜占庭协定（bool型，容忍范围：f&lt;n）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">主节点下:</span><br><span class="line">if 输入值为1 then </span><br><span class="line">    广播value(1)p</span><br><span class="line">    将1设为决策值并终止运行</span><br><span class="line">else </span><br><span class="line">    将0设为决策值并终止运行</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">其他所有节点上v上运行的代码：</span><br><span class="line"></span><br><span class="line">for all rounds i 属于1，2，......，f+1 do</span><br><span class="line">    S是所有value(1)u的消息集合</span><br><span class="line">    if |S|&gt;=i 并且value(1)p 属于S then</span><br><span class="line">        广播S与&#123;value(1)v&#125;</span><br><span class="line">        将1设为决策值并且终止运行</span><br><span class="line">    end if</span><br><span class="line">end for</span><br><span class="line">将0设置为决策值</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>Zyzzyva算法（可以支持非bool型）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">在时刻t,客户端u希望执行命令c</span><br><span class="line">客户u将请求R=request(c,t)发送到主节点p</span><br><span class="line">主节点p将c增加到它的本地历史中，hp=(hp,c)</span><br><span class="line">主节点p向所有的副本发送OR=orderedrequest(hp,c,r)_p</span><br><span class="line">point1:</span><br><span class="line">每个副本r将命令c增加到它的本地历史中，hr=(hr,c),并且检查hr=hp是否成立</span><br><span class="line">每个副本r执行命令ck,并得到运行结果a</span><br><span class="line">每个副本r向客户端发送Response(a，OR)_r</span><br><span class="line">客户端u将接收到的Response(a，OR)_r消息存放到结合S中</span><br><span class="line">客户端检查所有的历史hr是否一致</span><br><span class="line">if |S|=3f+1 then</span><br><span class="line">    客户端认为命令c以及完成</span><br><span class="line">end if </span><br><span class="line"></span><br><span class="line">if 2f+1&lt;=|S|&lt;3f+1 then</span><br><span class="line">    客户端u向所有的副本发送Commit(S)_u</span><br><span class="line">    每个副本r向u回复LocalCommit(S)_r</span><br><span class="line">    客户端u至少收集到2f+1条LocalCommit(S)_r消息，于是认为命令c已经完成</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">if |S|&lt;2f+1 then</span><br><span class="line">    客户端u向所有的副本发送原始的R=Requst(c,t)_u消息</span><br><span class="line">    每个副本r向主节点发送一条ConfirmRequest(R)_r</span><br><span class="line">    if 主节点p回复消息OR then</span><br><span class="line">        副本r将OR转发给所有的其他副本</span><br><span class="line">        goto point1</span><br><span class="line">    else </span><br><span class="line">        副本r广播IHatePrimary_r以启动视图改变</span><br><span class="line">    end if</span><br><span class="line">    </span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">视图改变协定</span><br><span class="line"></span><br><span class="line">所有副本持续接收IHatatePrimary_r消息，并将它们存放于集合H中</span><br><span class="line">if 某个副本接收到了|H|&gt;f消息或者接收到了一条有效的ViewChange消息 then</span><br><span class="line">    副本广播ViewChange(Hr,hr,Sr)_r</span><br><span class="line">    副本停止参与当前的视图格局</span><br><span class="line">    副本切换到下一个主节点p=p+1</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">执行视图改变</span><br><span class="line">新的主结点p将收集到的ViewChange(Hr,hr,Sr)_r消息存入集合C</span><br><span class="line">if 新的主节点p接收到|C|&gt;=2f+1消息 then</span><br><span class="line">    新的主节点p向所有副本发送NewView(C)_p消息</span><br><span class="line">end if</span><br><span class="line"></span><br><span class="line">if 副本r接收到一条NewView(C)_p消息 then</span><br><span class="line">    </span><br><span class="line">    副本r恢复新的历史h_new：</span><br><span class="line">        C=包含NewView(C)_p中2f+1ViewChange(Hr,hr,Sr)_r条消息的集合</span><br><span class="line">        R=C中的副本</span><br><span class="line">        S_l=C中的汇报的最近提交证书</span><br><span class="line">        h_new=S_l中包含的历史h_l</span><br><span class="line">        k=l+1,下一个序列号</span><br><span class="line">        while 命令c_k 存在于C do</span><br><span class="line">            if c_k被至少f+1个副本汇报 then</span><br><span class="line">                从R中删除哪些不支持c_k的副本</span><br><span class="line">                h_new=(h_new,c_k)</span><br><span class="line">            end if</span><br><span class="line">            k=k+1</span><br><span class="line">        end while</span><br><span class="line">        return h_new</span><br><span class="line">    </span><br><span class="line">    副本r向所有的副本广播ViewConfirm(h_new)_r</span><br><span class="line">    </span><br><span class="line">if 副本接收到2f+1 ViewConfirm(h_new)_r消息 then</span><br><span class="line">        副本开始采用hr=h_new作为新的视图历史</span><br><span class="line">        副本r开始参与新的视图</span><br><span class="line">end if</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/02/28/漫步区块链/">漫步区块链</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    little potato
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年02月28日 - 20:02
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年09月11日 - 22:09
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/02/28/漫步区块链/" title="漫步区块链">http://yoursite.com/2018/02/28/漫步区块链/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/25/python序列化的疑惑/" rel="next" title="python序列化的疑惑">
+                <i class="fa fa-chevron-left"></i> python序列化的疑惑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/01/python代码纠错琐碎/" rel="prev" title="python代码纠错琐碎">
+                python代码纠错琐碎 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
+          <p class="site-author-name" itemprop="name">little potato</p>
+           
+              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.anquanquan.info/" title="infor" target="_blank">infor</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.freebuf.com/" title="freebuf" target="_blank">freebuf</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-0-0-宏观看区块链"><span class="nav-number">1.</span> <span class="nav-text">1.0.0 宏观看区块链</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-0-为什么区块链会广泛的受到关注？"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.0  为什么区块链会广泛的受到关注？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-0-分布式系统"><span class="nav-number">1.2.</span> <span class="nav-text">1.2.0 分布式系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-分布式系统的产生"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1 分布式系统的产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2分布式系统需要解决的一个问题重要问题：如何在存在不可靠的（可控故障），甚至是不可信的（拜占庭结点）结点直接建立共识机制来协调分布式系统的正常工作。"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2分布式系统需要解决的一个问题重要问题：如何在存在不可靠的（可控故障），甚至是不可信的（拜占庭结点）结点直接建立共识机制来协调分布式系统的正常工作。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-0-达成共识需要满足的三个条件："><span class="nav-number">1.3.</span> <span class="nav-text">1.3.0 达成共识需要满足的三个条件：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一致性：所有好的结点（好结点区别于不可靠和不可信结点，是可以按照我们期望的行为去工作的结点）决策值必定相同。"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">一致性：所有好的结点（好结点区别于不可靠和不可信结点，是可以按照我们期望的行为去工作的结点）决策值必定相同。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可终止性：所有的好结点在有限的时间内结束决策过程"><span class="nav-number">1.3.0.2.</span> <span class="nav-text">可终止性：所有的好结点在有限的时间内结束决策过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#有效性：选择出的值必须是某个节点的输入值"><span class="nav-number">1.3.0.3.</span> <span class="nav-text">有效性：选择出的值必须是某个节点的输入值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-0-需要明白的一些原理"><span class="nav-number">1.4.</span> <span class="nav-text">1.4.0 需要明白的一些原理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-1-FLP-不可能原理：在网络可靠，存在节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。"><span class="nav-number">1.4.0.0.1.</span> <span class="nav-text">1.4.1 FLP 不可能原理：在网络可靠，存在节点失效（即便只有一个）的最小化异步模型系统中，不存在一个可以解决一致性问题的确定性算法。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-2-CAP原理：分布式计算系统不可能同时确保一致性（Consistency）、可用性（Availablity）和分区容忍性（Partition），设计中往往需要弱化对某个特性的保证。"><span class="nav-number">1.4.0.0.2.</span> <span class="nav-text">1.4.2 CAP原理：分布式计算系统不可能同时确保一致性（Consistency）、可用性（Availablity）和分区容忍性（Partition），设计中往往需要弱化对某个特性的保证。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-3-目前主要有几大类共识机制：Pow、Pos、DPos、Pool、PBFT"><span class="nav-number">1.4.0.0.3.</span> <span class="nav-text">1.4.3 目前主要有几大类共识机制：Pow、Pos、DPos、Pool、PBFT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-4-有效性"><span class="nav-number">1.4.0.0.4.</span> <span class="nav-text">1.4.4 有效性</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-0-比特币，以太坊和超级账本-hyperledger"><span class="nav-number">1.5.</span> <span class="nav-text">1.5.0 比特币，以太坊和超级账本(hyperledger)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-0-10步建立自己的区块链（参考IBM-blockchain1-pdf）"><span class="nav-number">1.6.</span> <span class="nav-text">1.6.0 10步建立自己的区块链（参考IBM blockchain1.pdf）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-7-0-核心算法笔记"><span class="nav-number">1.7.</span> <span class="nav-text">1.7.0 核心算法笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段协议与分布式容错算法Paxos"><span class="nav-number">1.7.1.</span> <span class="nav-text">两阶段协议与分布式容错算法Paxos</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#两阶段协议"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">两阶段协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#朴素的基于票的协议"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">朴素的基于票的协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Paxos算法"><span class="nav-number">1.7.1.3.</span> <span class="nav-text">Paxos算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机共识机制-bool类型的决策"><span class="nav-number">1.7.2.</span> <span class="nav-text">随机共识机制(bool类型的决策)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步-异步模式下的拜占庭协定"><span class="nav-number">1.7.3.</span> <span class="nav-text">同步,异步模式下的拜占庭协定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#带认证的拜占庭协定"><span class="nav-number">1.7.4.</span> <span class="nav-text">带认证的拜占庭协定</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">little potato</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/02/28/漫步区块链/';
+          this.page.identifier = '2018/02/28/漫步区块链/';
+          this.page.title = '漫步区块链';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+</div></body></html>
