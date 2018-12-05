@@ -78,13 +78,13 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="代码审计,php,web安全,安全编码规范,">
+  <meta name="keywords" content="php,web安全,代码审计,安全编码规范,">
 
 
 
 
 
-  <link rel="alternate" href="/atom.xml" title="BLOG of little potato" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="1ypt0蜗牛壳" type="application/atom+xml">
 
 
 
@@ -97,19 +97,19 @@
 
 
 <meta name="description" content="php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10">
-<meta name="keywords" content="代码审计,php,web安全,安全编码规范">
+<meta name="keywords" content="php,web安全,代码审计,安全编码规范">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈php安全">
-<meta property="og:url" content="http://yoursite.com/2018/09/05/浅谈php安全/index.html">
-<meta property="og:site_name" content="BLOG of little potato">
+<meta property="og:url" content="http://lypto.me/2018/09/05/浅谈php安全/index.html">
+<meta property="og:site_name" content="1ypt0蜗牛壳">
 <meta property="og:description" content="php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/myimages/php/1.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/php/1.jpg">
 <meta property="og:updated_time" content="2018-12-05T14:58:05.896Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈php安全">
 <meta name="twitter:description" content="php天生支持web应用的开发，以其简单易学，开发效率高而备受喜爱。使其占据了大片的市场。但是php本身的安全问题却一直备受诟病，以及编写不规范的php程序，使得web应用漏洞百出，这篇文章从配置文件和代码编写等角度总结前人的经验以及自己的感悟体会，但是不会十分细致的讲解每个漏洞的具体原理，也不会过多的涉及php语法讲解（除了部分关键函数），所以最好能够有一定php基础和对OWASP top10">
-<meta name="twitter:image" content="http://yoursite.com/myimages/php/1.jpg">
+<meta name="twitter:image" content="http://lypto.me/myimages/php/1.jpg">
 
 
 
@@ -137,13 +137,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/05/浅谈php安全/">
+  <link rel="canonical" href="http://lypto.me/2018/09/05/浅谈php安全/">
 
 
 
 
 
-  <title>浅谈php安全 | BLOG of little potato</title>
+  <title>浅谈php安全 | 1ypt0蜗牛壳</title>
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -189,7 +189,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">BLOG of little potato</span>
+        <span class="site-title">1ypt0蜗牛壳</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -314,16 +314,16 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/浅谈php安全/">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/09/05/浅谈php安全/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="little potato">
+      <meta itemprop="name" content="1ypt0">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/109.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="BLOG of little potato">
+      <meta itemprop="name" content="1ypt0蜗牛壳">
     </span>
 
     
@@ -407,7 +407,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  
+                  9.1k
                 </span>
               
 
@@ -423,7 +423,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  
+                  42
                 </span>
               
             </div>
@@ -470,12 +470,12 @@
 <li>Low level</li>
 </ul>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_REQUEST[ <span class="string">'Submit'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_REQUEST[ <span class="string">'id'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = '$id';"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Get values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p>在这个例子中，是最low安全等级的php代码编写样例，可以看到，代码中并没有对用户输入的id变量进行检查和过滤，同时使用的是<code>$_REQUEST</code>全局数组的方式，如果不是特别需要，我们编程的时候尽量不要使用<code>$_REQUEST</code>获取用户的参数，因为<code>$_REQUEST</code>的参数比较杂，包括<code>$_GET</code>,<code>$_POST</code>，<code>$_COOKIE</code>等超全局变量，并且二者还存在变量获取顺序的不一致，受配置文件中<code>variables_order</code>的约定，在存在waf的环境下，容易造成绕过，具体可以参看之前写的文章——<a href="http://lypto.me/2018/01/25/CTF/" target="_blank" rel="noopener">CTF（第三条tips）</a>。未经处理的用户输入直接与sql语句拼接交互，造成sql注入漏洞，十分危险。</p>
+<p>在这个例子中，是最low安全等级的php代码编写样例，可以看到，代码中并没有对用户输入的id变量进行检查和过滤，同时使用的是<code>$_REQUEST</code>全局数组的方式，如果不是特别需要，我们编程的时候尽量不要使用<code>$_REQUEST</code>获取用户的参数，因为<code>$_REQUEST</code>的参数比较杂，包括<code>$_GET</code>,<code>$_POST</code>，<code>$_COOKIE</code>等超全局变量，并且二者还存在变量获取顺序的不一致，受配置文件中<code>variables_order</code>的约定，在存在waf的环境下，容易造成绕过，具体可以参看之前写的文章——<a href="http://lypto.me/2018/01/25/CTF/">CTF（第三条tips）</a>。未经处理的用户输入直接与sql语句拼接交互，造成sql注入漏洞，十分危险。</p>
 <ul>
 <li>Medium level<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_POST[ <span class="string">'id'</span> ]; </span><br><span class="line">    $id = mysql_real_escape_string( $id ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = $id;"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Display values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>这个版本的代码，与之前的相比只是多了个<code>mysql_real_escape_string</code>函数的过滤，但是要知道这里的$id在sql语句中是数字类型，这样<code>mysql_real_escape_string</code>的转义就会形同虚设，注入仍旧是一马平川。当然不恰当的字符编码，可能会造成宽字节注入，详细可以看之前的文章——<a href="http://lypto.me/2017/11/23/SQL%E6%8D%A3%E9%BC%93/" target="_blank" rel="noopener">sql注入捣鼓</a></p>
+<p>这个版本的代码，与之前的相比只是多了个<code>mysql_real_escape_string</code>函数的过滤，但是要知道这里的$id在sql语句中是数字类型，这样<code>mysql_real_escape_string</code>的转义就会形同虚设，注入仍旧是一马平川。当然不恰当的字符编码，可能会造成宽字节注入，详细可以看之前的文章——<a href="http://lypto.me/2017/11/23/SQL%E6%8D%A3%E9%BC%93/">sql注入捣鼓</a></p>
 <ul>
 <li>High leval<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_SESSION [ <span class="string">'id'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_SESSION[ <span class="string">'id'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = '$id' LIMIT 1;"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;Something went wrong.&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Get values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
@@ -632,7 +632,7 @@
   </li>
   <li class="post-copyright-author">
     <strong>本文作者：</strong>
-    little potato
+    1ypt0
   </li>
   <li class="post-copyright-author">
     <strong>发布时间:</strong>
@@ -644,7 +644,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2018/09/05/浅谈php安全/" title="浅谈php安全">http://yoursite.com/2018/09/05/浅谈php安全/</a>
+    <a href="http://lypto.me/2018/09/05/浅谈php安全/" title="浅谈php安全">http://lypto.me/2018/09/05/浅谈php安全/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -660,11 +660,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/代码审计/" rel="tag"># 代码审计</a>
-          
             <a href="/tags/php/" rel="tag"># php</a>
           
             <a href="/tags/web安全/" rel="tag"># web安全</a>
+          
+            <a href="/tags/代码审计/" rel="tag"># 代码审计</a>
           
             <a href="/tags/安全编码规范/" rel="tag"># 安全编码规范</a>
           
@@ -779,10 +779,10 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="little potato">
-          <p class="site-author-name" itemprop="name">little potato</p>
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
            
-              <p class="site-description motion-element" itemprop="description">The true man wants two things:danger and play.</p>
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
           
         </div>
         <nav class="site-state motion-element">
@@ -801,7 +801,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -812,7 +812,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -936,7 +936,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">little potato</span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
 </div>
 
         
@@ -1037,7 +1037,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2018/09/05/浅谈php安全/';
+          this.page.url = 'http://lypto.me/2018/09/05/浅谈php安全/';
           this.page.identifier = '2018/09/05/浅谈php安全/';
           this.page.title = '浅谈php安全';
         };
@@ -1088,7 +1088,7 @@
     var isfetched = false;
     var isXml = true;
     // Search DB path;
-    var search_path = "";
+    var search_path = "search.xml";
     if (search_path.length === 0) {
       search_path = "search.xml";
     } else if (search_path.endsWith("json")) {
