@@ -105,10 +105,10 @@
 <meta property="og:description" content="在之前的一篇文章中，大致上介绍了客户端通过Tor网络实现匿名访问，以及服务器实现匿名服务的大致过程。在其中忽略了结点之间的连接细节，这篇文章将要针对结点间链路的建立细节展开叙述。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/index.jpg">
-<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/cells.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/cell.jpg">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/fixed_cell.jpg">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/lianjie.jpg">
-<meta property="og:updated_time" content="2018-12-06T09:09:30.509Z">
+<meta property="og:updated_time" content="2018-12-06T09:43:35.039Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tor匿名协议理解二">
 <meta name="twitter:description" content="在之前的一篇文章中，大致上介绍了客户端通过Tor网络实现匿名访问，以及服务器实现匿名服务的大致过程。在其中忽略了结点之间的连接细节，这篇文章将要针对结点间链路的建立细节展开叙述。">
@@ -451,7 +451,7 @@
 <p>这里出现了三个比较容易混淆的概念：连接，链路，流，搞清这三个概念十分重要。连接的建立靠传输层TLS协议，保证了两节点间物理可通，是这一切的基础；而链路是通过Cells机制逐跳拓展的，链路真正实现了匿名性，在Cells中会有一个固定的字段标识一条链路；流是传输在链路之上的应用层数据，用来实现应用的通信，也会在Cells中唯一标识。所以从上到下的依赖关系为：流—-&gt;链路—-&gt;连接。</p>
 </blockquote>
 <h1 id="Cells"><a href="#Cells" class="headerlink" title="Cells"></a>Cells</h1><p>Cell是Tor中通信单元，也可以直接理解为。其本身在tcp/ip协议里面是应用层data部分。然后Tor通过把data也进行了字段的划分，如下图所示，把一些控制字段放在前，真正的数据部分放在payload字段。</p>
-<p><img src="/myimages/tor协议理解/2/cells.jpg" alt="image"></p>
+<p><img src="/myimages/tor协议理解/2/cell.jpg" alt="image"></p>
 <p>如图，Tor协议中的数据包有两种，一种是定长Cell,一种是不定长Cell。链路的建立，拓展销毁，数据流的传送主要还是通过定长的Cells；而不定长的Cells主要用在握手协议上。</p>
 <h2 id="数据格式中的CMD"><a href="#数据格式中的CMD" class="headerlink" title="数据格式中的CMD"></a>数据格式中的CMD</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">定长 Cell:</span><br><span class="line"></span><br><span class="line">0--PADDING （ Padding）</span><br><span class="line">1--CREATE （ Create acircuit）</span><br><span class="line">2--CREATED （ Acknowledge create）</span><br><span class="line">3--RELAY （ End-to-end data）</span><br><span class="line">4--DESTROY （ Stop using acircuit）</span><br><span class="line">5--CREATE_FAST（ Create acircuit， no PK）</span><br><span class="line">6--CREATED_FAST （ Circuit created， no PK）</span><br><span class="line">8--NETINFO （ Time andaddress info）</span><br><span class="line">9--RELAY_EARLY （ End-to-end data； limited）</span><br><span class="line">10--CREATE2 （ Extended CREATEcell）</span><br><span class="line">11--CREATED2 （ Extended CREATEDcell）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">不定长Cell:</span><br><span class="line"></span><br><span class="line">7--VERSIONS （ Negotiateprotocol version）</span><br><span class="line">128--VPADDING （ Variable-length padding）</span><br><span class="line">129--CERTS （ Certificates）</span><br><span class="line">130--AUTH_CHALLENGE（ Challenge value）</span><br><span class="line">131--AUTHENTICATE （ Client authenticate）</span><br><span class="line">132--AUTHORIZE （ Client authorization</span><br></pre></td></tr></table></figure>
 <p>以上是Cell中的CMD字段的值，前面的数字是命令代号，也就是直接显示在CMD位上的数值。通过两种Cell的不同命令设计，我们可以比较直观的看到两者的侧重点不一样，定长的Cell控制链路，而不定长的Cell偏向于连接的建立和认证。</p>
