@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -96,13 +96,13 @@
 
 
 
-<meta name="description" content="常见的网络服务以及端口表格   服务 默认开放的端口 说明     ftp 21/tcp FTP控制 文件传输协议   ftp 20/tcp FTP数据   Telnet 23 Telnet 不安全的文本传送   ssh 22/tcp SSH 安全登录、文件传送(SCP)和端口重定向   smtp 25/tcp SMTP 简单邮件传输协议(Simple Mail Transfer Protoco">
+<meta name="description" content="常见的网络服务以及端口表格    服务 默认开放的端口 说明     ftp 21/tcp FTP控制 文件传输协议   ftp 20/tcp FTP数据   Telnet 23 Telnet 不安全的文本传送   ssh 22/tcp SSH 安全登录、文件传送(SCP)和端口重定向   smtp 25/tcp SMTP 简单邮件传输协议(Simple Mail Transfer Protoc">
 <meta name="keywords" content="linux,安全,运维,防火墙">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux防火墙">
 <meta property="og:url" content="http://lypto.me/2018/06/23/linux防火墙/index.html">
 <meta property="og:site_name" content="Blog of 1ypt0">
-<meta property="og:description" content="常见的网络服务以及端口表格   服务 默认开放的端口 说明     ftp 21/tcp FTP控制 文件传输协议   ftp 20/tcp FTP数据   Telnet 23 Telnet 不安全的文本传送   ssh 22/tcp SSH 安全登录、文件传送(SCP)和端口重定向   smtp 25/tcp SMTP 简单邮件传输协议(Simple Mail Transfer Protoco">
+<meta property="og:description" content="常见的网络服务以及端口表格    服务 默认开放的端口 说明     ftp 21/tcp FTP控制 文件传输协议   ftp 20/tcp FTP数据   Telnet 23 Telnet 不安全的文本传送   ssh 22/tcp SSH 安全登录、文件传送(SCP)和端口重定向   smtp 25/tcp SMTP 简单邮件传输协议(Simple Mail Transfer Protoc">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lypto.me/myimages/iptable/index.jpg">
 <meta property="og:image" content="http://lypto.me/myimages/iptable/firewall_01.png">
@@ -115,7 +115,7 @@
 <meta property="og:updated_time" content="2018-12-05T14:59:17.635Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux防火墙">
-<meta name="twitter:description" content="常见的网络服务以及端口表格   服务 默认开放的端口 说明     ftp 21/tcp FTP控制 文件传输协议   ftp 20/tcp FTP数据   Telnet 23 Telnet 不安全的文本传送   ssh 22/tcp SSH 安全登录、文件传送(SCP)和端口重定向   smtp 25/tcp SMTP 简单邮件传输协议(Simple Mail Transfer Protoco">
+<meta name="twitter:description" content="常见的网络服务以及端口表格    服务 默认开放的端口 说明     ftp 21/tcp FTP控制 文件传输协议   ftp 20/tcp FTP数据   Telnet 23 Telnet 不安全的文本传送   ssh 22/tcp SSH 安全登录、文件传送(SCP)和端口重定向   smtp 25/tcp SMTP 简单邮件传输协议(Simple Mail Transfer Protoc">
 <meta name="twitter:image" content="http://lypto.me/myimages/iptable/index.jpg">
 
 
@@ -150,7 +150,7 @@
 
 
 
-  <title>linux防火墙 | Blog of 1ypt0</title>
+  <title>linux防火墙 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +161,7 @@
 
 
 
-  <script type="text/javascript">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -449,7 +449,8 @@
 
       
         <p><img style="margin: auto;" src="/myimages/iptable/index.jpg" height="500" width="500"></p>
-<h1 id="常见的网络服务以及端口表格"><a href="#常见的网络服务以及端口表格" class="headerlink" title="常见的网络服务以及端口表格"></a>常见的网络服务以及端口表格</h1><table>
+<h1 id="常见的网络服务以及端口表格"><a href="#常见的网络服务以及端口表格" class="headerlink" title="常见的网络服务以及端口表格"></a>常见的网络服务以及端口表格</h1><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>服务</th>
@@ -530,6 +531,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <a id="more"></a>
 <ul>
 <li><a href="https://cnbin.github.io/blog/2015/08/22/wang-luo-chang-yong-duan-kou-hao-da-quan/" target="_blank" rel="noopener">更多有关端口与对应的网络服务的信息</a>  <h1 id="防火墙设置"><a href="#防火墙设置" class="headerlink" title="防火墙设置"></a>防火墙设置</h1>三种基础防火墙形式：Netfilter (封包过滤机制)，TCP Wrappers (程序控管)，Proxy (代理服务器)  </li>
@@ -568,7 +570,7 @@
 </li>
 </ol>
 <p><img src="/myimages/iptable/iptables_01.png" alt="image"></p>
-<ol start="3">
+<ol>
 <li>表的分布逻辑<br><img src="/myimages/iptable/iptables_03.gif" alt="image"><br>去掉mangle攻击者表后的简化模型<br><img src="/myimages/iptable/iptables_04.gif" alt="image"></li>
 </ol>
 <h1 id="iptables-ip6tables的使用细节和一些大致概念"><a href="#iptables-ip6tables的使用细节和一些大致概念" class="headerlink" title="iptables/ip6tables的使用细节和一些大致概念"></a>iptables/ip6tables的使用细节和一些大致概念</h1><ul>
@@ -784,7 +786,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -795,7 +797,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -806,7 +808,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -889,7 +891,7 @@
                 </li>
               
                 <li class="links-of-blogroll-item">
-                  <a href="https://dimo233.github.io/" title="去师傅" target="_blank">去师傅</a>
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
                 </li>
               
                 <li class="links-of-blogroll-item">
@@ -910,6 +912,10 @@
               
                 <li class="links-of-blogroll-item">
                   <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
                 </li>
               
             </ul>
@@ -1446,9 +1452,28 @@
 
 
   
+  
+
 
   
 
   
 
-</div></body></html>
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

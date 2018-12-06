@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -140,7 +140,7 @@
 
 
 
-  <title>hello blog | Blog of 1ypt0</title>
+  <title>hello blog | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +151,7 @@
 
 
 
-  <script type="text/javascript">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -441,7 +441,7 @@
         <h4 id="兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式："><a href="#兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式：" class="headerlink" title="兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式："></a>兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式：</h4><ul>
 <li><p>去新浪，blogz等博客网站去申请账号开始大众化的博客之路。这方式最简单，当然自由度不高，无法获取源代码，也无法做很多关于基层的代码操作，界面也无法实现个性化，总之就是比较受限制。</p>
 </li>
-<li><p>自己买服务器，数据库，虚拟主机（现在有较多国内国外的提供服务商：阿里云，百度云，腾讯云，亚马逊云，凡科建站and so on）&lt;!–这类方式就是花钱买服务，比如服务器流量与内存。如果是购买云之类的话，用wordpress搭建还算简单的，就是有点小贵，不算买域名，就是说运用人家的二级域名的话，一年也要好几百，感觉是有点贵的。当然如果你想去自己买个实体服务器来折腾也是可以的，前提是有足够的money，而且还要自己去搭建环境，总的来说似乎是不适合我们学生群体的。</p>
+<li><p>自己买服务器，数据库，虚拟主机（现在有较多国内国外的提供服务商：阿里云，百度云，腾讯云，亚马逊云，凡科建站and so on）&lt;!—这类方式就是花钱买服务，比如服务器流量与内存。如果是购买云之类的话，用wordpress搭建还算简单的，就是有点小贵，不算买域名，就是说运用人家的二级域名的话，一年也要好几百，感觉是有点贵的。当然如果你想去自己买个实体服务器来折腾也是可以的，前提是有足够的money，而且还要自己去搭建环境，总的来说似乎是不适合我们学生群体的。</p>
 </li>
 <li><p>该类方法就是通过开源社区作为网站挂载平台，例如cording，github，……，不需要像上面第二点提到的那样自己去管理网站，它寄人篱下却又能给你极大的自主性，代码开源，就意味着你完全可以自己去搭建想要的blog，最最重要的是你不买域名的话基本花不了一分钱，买域名一年也不贵嘛，星巴克一两杯coffee的钱就搞定了。而且由于是开源，这类blog的建立就会受到社区的大力支持，他们各种的开源工具也会为你提供方便，很多代码都是集成的的，只需要改点个性化的参数就可以了，很是便利的呢！</p>
 <a id="more"></a>
@@ -460,8 +460,8 @@
 <p>(当然也还有各种博客里说了这种建站方式，很多方法大同小异)</p>
 <hr>
 <p>具体的部署过程上面的链接基本都会有介绍下面就来说说我目前建站的坑吧：</p>
-<p>1.在本地clone的库里部署好hexo后_config.yml的参数设置需要谨慎，一定记得在item：后加个空格再修改参数，还有就是最好留个备份。<br>2.在下载hexo时最好和git关联：<br>npm install hexo-server –save</p>
-<p>  npm install hexo-deployer-git –save不然的话在后期上传时，使用hexo deploy时出现cannot find the git<br>的错误呢</p>
+<p>1.在本地clone的库里部署好hexo后_config.yml的参数设置需要谨慎，一定记得在item：后加个空格再修改参数，还有就是最好留个备份。<br>2.在下载hexo时最好和git关联：<br>npm install hexo-server —save</p>
+<p>  npm install hexo-deployer-git —save不然的话在后期上传时，使用hexo deploy时出现cannot find the git<br>的错误呢</p>
 <p>3.下载git时最好还是在安装过程中：into path选项打勾，不然要自己去设置环境path参数，即把git文件里bin文件的位置添加到path（所谓path即为我的计算机里的高级设置里的环境变量的设置）</p>
 
       
@@ -643,7 +643,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -654,7 +654,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -665,7 +665,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -748,7 +748,7 @@
                 </li>
               
                 <li class="links-of-blogroll-item">
-                  <a href="https://dimo233.github.io/" title="去师傅" target="_blank">去师傅</a>
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
                 </li>
               
                 <li class="links-of-blogroll-item">
@@ -769,6 +769,10 @@
               
                 <li class="links-of-blogroll-item">
                   <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
                 </li>
               
             </ul>
@@ -1305,9 +1309,28 @@
 
 
   
+  
+
 
   
 
   
 
-</div></body></html>
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -143,7 +143,7 @@
 
 
 
-  <title>浅谈php安全 | Blog of 1ypt0</title>
+  <title>浅谈php安全 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -154,7 +154,7 @@
 
 
 
-  <script type="text/javascript">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -465,10 +465,10 @@
 <h3 id="php内置协议-伪协议"><a href="#php内置协议-伪协议" class="headerlink" title="php内置协议(伪协议)"></a>php内置协议(伪协议)</h3><p>以下伪协议在很多绕过场景下发挥着举足轻重的作用，如后面提到的文件包含file://协议绕过，以及最近才提出的phar协议对象注入，我们可以在不存在可控unserialization（）函数的情况下利用phar反序列化对象，实现对象注入。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">file:///var/www/html  访问本地文件系统</span><br><span class="line">ftp://&lt;login&gt;:&lt;password&gt;@&lt;ftpserveraddress&gt;   访问FTP(s) URLs</span><br><span class="line">data://  数据流</span><br><span class="line">http:// — 访问 HTTP(s) URLs</span><br><span class="line">ftp:// — 访问 FTP(s) URLs</span><br><span class="line">php:// — 访问各个输入/输出流</span><br><span class="line">zlib:// — 压缩流</span><br><span class="line">data:// — Data (RFC 2397)</span><br><span class="line">glob:// — 查找匹配的文件路径模式</span><br><span class="line">phar:// — PHP Archive</span><br><span class="line">ssh2:// — Secure Shell 2</span><br><span class="line">rar:// — RAR</span><br><span class="line">ogg:// — Audio streams</span><br><span class="line">expect:// — 处理交互式的流</span><br></pre></td></tr></table></figure></p>
 <h1 id="向DVWA学习php安全的代码编写"><a href="#向DVWA学习php安全的代码编写" class="headerlink" title="向DVWA学习php安全的代码编写"></a>向DVWA学习php安全的代码编写</h1><blockquote>
 <p>以下样例来自于DVWA v1.9版本</p>
-</blockquote>
 <h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><ul>
 <li>Low level</li>
 </ul>
+</blockquote>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_REQUEST[ <span class="string">'Submit'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $id = $_REQUEST[ <span class="string">'id'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check database </span></span><br><span class="line">    $query  = <span class="string">"SELECT first_name, last_name FROM users WHERE user_id = '$id';"</span>; </span><br><span class="line">    $result = mysql_query( $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . mysql_error() . <span class="string">'&lt;/pre&gt;'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get results </span></span><br><span class="line">    $num = mysql_numrows( $result ); </span><br><span class="line">    $i   = <span class="number">0</span>; </span><br><span class="line">    <span class="keyword">while</span>( $i &lt; $num ) &#123; </span><br><span class="line">        <span class="comment">// Get values </span></span><br><span class="line">        $first = mysql_result( $result, $i, <span class="string">"first_name"</span> ); </span><br><span class="line">        $last  = mysql_result( $result, $i, <span class="string">"last_name"</span> ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;ID: &#123;$id&#125;&lt;br /&gt;First name: &#123;$first&#125;&lt;br /&gt;Surname: &#123;$last&#125;&lt;/pre&gt;"</span>; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Increase loop count </span></span><br><span class="line">        $i++; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    mysql_close(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 <p>在这个例子中，是最low安全等级的php代码编写样例，可以看到，代码中并没有对用户输入的id变量进行检查和过滤，同时使用的是<code>$_REQUEST</code>全局数组的方式，如果不是特别需要，我们编程的时候尽量不要使用<code>$_REQUEST</code>获取用户的参数，因为<code>$_REQUEST</code>的参数比较杂，包括<code>$_GET</code>,<code>$_POST</code>，<code>$_COOKIE</code>等超全局变量，并且二者还存在变量获取顺序的不一致，受配置文件中<code>variables_order</code>的约定，在存在waf的环境下，容易造成绕过，具体可以参看之前写的文章——<a href="http://lypto.me/2018/01/25/CTF/">CTF（第三条tips）</a>。未经处理的用户输入直接与sql语句拼接交互，造成sql注入漏洞，十分危险。</p>
 <ul>
@@ -486,7 +486,9 @@
 </li>
 </ul>
 <p>根据DVWA的说法，这样写出来的应用，是不存在sql注入的。也即这是个十分安全的php代码编写规范。why?首先，我们可以看到它使用Anti-CSRF token的方法来避免csrf攻击（具体细节会在下文csrf防御谈到），然后在sql语句的编写中，使用的是预处理语句，所谓的预处理就是通过php的pdo预处理机制<code>PDO::prepare</code>，先往数据库送出语句模板，进行解析,编译，然后第二次向数据库传入查询参数，在第二次的查询过程中可以理解为不再进行语义解析，所以即使传入sql语句，也会因为不进行语义解析而失效。所以这是一种比较推荐的数据库交互sql语句编写规范。现在很多主流的数据库已经支持预处理，即使不支持，PHP的PDO也会进行预处理模拟实现，这样对于程序员接口一致，不需了解不同数据库对预处理支持的方式差异。  </p>
-<p><br><br>更多PDO细节可以参考官网：<a href="http://php.net/manual/zh/pdo.prepared-statements.php。" target="_blank" rel="noopener">http://php.net/manual/zh/pdo.prepared-statements.php。</a><br><br><br><br><br>参数bind的细节可以查看：<a href="http://php.net/manual/zh/pdo.constants.php。" target="_blank" rel="noopener">http://php.net/manual/zh/pdo.constants.php。</a><br><br></p>
+<p><br><br>更多PDO细节可以参考官网：<a href="http://php.net/manual/zh/pdo.prepared-statements.php。" target="_blank" rel="noopener">http://php.net/manual/zh/pdo.prepared-statements.php。</a>  
+<br><br><br><br>参数bind的细节可以查看：<a href="http://php.net/manual/zh/pdo.constants.php。" target="_blank" rel="noopener">http://php.net/manual/zh/pdo.constants.php。</a>
+<br></p>
 <h3 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h3><p>(完整的攻击过程，可以看这篇前辈的文章：<a href="http://www.freebuf.com/articles/web/118352.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/web/118352.html</a>)</p>
 <ul>
 <li>Low level</li>
@@ -790,7 +792,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -801,7 +803,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -812,7 +814,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -895,7 +897,7 @@
                 </li>
               
                 <li class="links-of-blogroll-item">
-                  <a href="https://dimo233.github.io/" title="去师傅" target="_blank">去师傅</a>
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
                 </li>
               
                 <li class="links-of-blogroll-item">
@@ -916,6 +918,10 @@
               
                 <li class="links-of-blogroll-item">
                   <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
                 </li>
               
             </ul>
@@ -1452,9 +1458,28 @@
 
 
   
+  
+
 
   
 
   
 
-</div></body></html>
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

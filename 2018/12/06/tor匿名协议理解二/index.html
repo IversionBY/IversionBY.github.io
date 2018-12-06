@@ -1,0 +1,1365 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="网络协议,匿名通信,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="在之前的一篇文章中，大致上介绍了客户端通过Tor网络实现匿名访问，以及服务器实现匿名服务的大致过程。在其中忽略了结点之间的连接细节，这篇文章将要针对结点间链路的建立细节展开叙述。">
+<meta name="keywords" content="网络协议,匿名通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tor匿名协议理解二">
+<meta property="og:url" content="http://lypto.me/2018/12/06/tor匿名协议理解二/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="在之前的一篇文章中，大致上介绍了客户端通过Tor网络实现匿名访问，以及服务器实现匿名服务的大致过程。在其中忽略了结点之间的连接细节，这篇文章将要针对结点间链路的建立细节展开叙述。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/index.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/cells.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/fixed_cell.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/2/lianjie.jpg">
+<meta property="og:updated_time" content="2018-12-06T09:09:30.509Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tor匿名协议理解二">
+<meta name="twitter:description" content="在之前的一篇文章中，大致上介绍了客户端通过Tor网络实现匿名访问，以及服务器实现匿名服务的大致过程。在其中忽略了结点之间的连接细节，这篇文章将要针对结点间链路的建立细节展开叙述。">
+<meta name="twitter:image" content="http://lypto.me/myimages/tor协议理解/index.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/06/tor匿名协议理解二/">
+
+
+
+
+
+  <title>tor匿名协议理解二 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/06/tor匿名协议理解二/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">tor匿名协议理解二</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-06T16:56:28+08:00">
+                Dec 6 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/协议/" itemprop="url" rel="index">
+                    <span itemprop="name">协议</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/06/tor匿名协议理解二/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/06/tor匿名协议理解二/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/tor协议理解/index.jpg" height="450" width="450"></p>
+<blockquote>
+<p>在之前的一篇文章中，大致上介绍了客户端通过Tor网络实现匿名访问，以及服务器实现匿名服务的大致过程。在其中忽略了结点之间的连接细节，这篇文章将要针对结点间链路的建立细节展开叙述。<br><a id="more"></a></p>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Tor匿名协议是建立在tcp连接之上的，在tcp之上运行着TLS传输层加密协议，保证Tor网络的对外加密性。注意到这里的对外加密和匿名性不是一个概念。对外加密是TLS实现，而匿名性则是通过链路机制实现。而链路是靠Cells建立的。所谓的Cells,可以直接理解成为了实现tor的匿名性而特意构建数据包（当然这不算严谨，后面会看到）。在这之中包含了一些标识位，这些标识位中的command字段，是整个网络的灵魂。控制着链路的创建，拓展，销毁；流的建立和应用数据的传输等等。</p>
+<p>这里出现了三个比较容易混淆的概念：连接，链路，流，搞清这三个概念十分重要。连接的建立靠传输层TLS协议，保证了两节点间物理可通，是这一切的基础；而链路是通过Cells机制逐跳拓展的，链路真正实现了匿名性，在Cells中会有一个固定的字段标识一条链路；流是传输在链路之上的应用层数据，用来实现应用的通信，也会在Cells中唯一标识。所以从上到下的依赖关系为：流—-&gt;链路—-&gt;连接。</p>
+</blockquote>
+<h1 id="Cells"><a href="#Cells" class="headerlink" title="Cells"></a>Cells</h1><p>Cell是Tor中通信单元，也可以直接理解为。其本身在tcp/ip协议里面是应用层data部分。然后Tor通过把data也进行了字段的划分，如下图所示，把一些控制字段放在前，真正的数据部分放在payload字段。</p>
+<p><img src="/myimages/tor协议理解/2/cells.jpg" alt="image"></p>
+<p>如图，Tor协议中的数据包有两种，一种是定长Cell,一种是不定长Cell。链路的建立，拓展销毁，数据流的传送主要还是通过定长的Cells；而不定长的Cells主要用在握手协议上。</p>
+<h2 id="数据格式中的CMD"><a href="#数据格式中的CMD" class="headerlink" title="数据格式中的CMD"></a>数据格式中的CMD</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">定长 Cell:</span><br><span class="line"></span><br><span class="line">0--PADDING （ Padding）</span><br><span class="line">1--CREATE （ Create acircuit）</span><br><span class="line">2--CREATED （ Acknowledge create）</span><br><span class="line">3--RELAY （ End-to-end data）</span><br><span class="line">4--DESTROY （ Stop using acircuit）</span><br><span class="line">5--CREATE_FAST（ Create acircuit， no PK）</span><br><span class="line">6--CREATED_FAST （ Circuit created， no PK）</span><br><span class="line">8--NETINFO （ Time andaddress info）</span><br><span class="line">9--RELAY_EARLY （ End-to-end data； limited）</span><br><span class="line">10--CREATE2 （ Extended CREATEcell）</span><br><span class="line">11--CREATED2 （ Extended CREATEDcell）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">不定长Cell:</span><br><span class="line"></span><br><span class="line">7--VERSIONS （ Negotiateprotocol version）</span><br><span class="line">128--VPADDING （ Variable-length padding）</span><br><span class="line">129--CERTS （ Certificates）</span><br><span class="line">130--AUTH_CHALLENGE（ Challenge value）</span><br><span class="line">131--AUTHENTICATE （ Client authenticate）</span><br><span class="line">132--AUTHORIZE （ Client authorization</span><br></pre></td></tr></table></figure>
+<p>以上是Cell中的CMD字段的值，前面的数字是命令代号，也就是直接显示在CMD位上的数值。通过两种Cell的不同命令设计，我们可以比较直观的看到两者的侧重点不一样，定长的Cell控制链路，而不定长的Cell偏向于连接的建立和认证。</p>
+<h2 id="定长Cell与RELAY-Cell"><a href="#定长Cell与RELAY-Cell" class="headerlink" title="定长Cell与RELAY Cell"></a>定长Cell与RELAY Cell</h2><p>由于与匿名通信最直接相关的是定长的Cell，所以接下来我们主要分析定长的Cell的结构和链路控制的细节，从而弥补上一讲我们忽视的链路建立的细节。</p>
+<p><img src="/myimages/tor协议理解/2/fixed_cell.jpg" alt="image"></p>
+<p>定长CELL的固定长度为 512字节，其中链路 ID域占 2字节，数据指令域占1字节，负载占509字节。定长CELL主要用于链路相关操作：建立链路，维护链路，数据传输，断开链路等。另外，定长CELL还根据命令类型的不同分为控制数据Cell和转发数据Cell。其中， 控制数据Cell由洋葱路由器OR负责解释并处理， 转发数据Cell则用来发送端到端的数据（如图可以看到转发数据包的特殊格式）。注意到的是，每一种命令的Cell都会有自己的类似图中RELAY的自定义结构，这里为了解释链路的建立大致过程，抓住主要思想，详细解析RELAY转发Cell的细节，在之后的系列文章中，会逐渐把每种包的结构和细节进行阐述。</p>
+<p>转发数据包头部共 11个字节， 分别为： CMD， 转发指令； Recog， 指定某个洋葱路由器接收的标志位； SID，数据流ID编号； CheckSum，数据流端到端验证用到的校验和； Len，负载中真实数据的长度。整个转发数据包，包括头部和负载， 在Tor网络传输过程中均利用CRT模式下的128-bit AES加密方式进行加密。 数据包延数据链路传递， 被逐跳解密，直到某一跳的洋葱路由器OR成功获得全 0的标志位 Recog，并成功验证数据包的校验和。该洋葱路由器再读取转发数据包头部的具体信息进行相应操作。</p>
+<ul>
+<li>Relay CELL的指令域<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">1--RELAY_BEGIN [forward]</span><br><span class="line">2--RELAY_DATA [forward orbackward]</span><br><span class="line">3--RELAY_END [forward orbackward]</span><br><span class="line">4--RELAY_CONNECTED [backward]</span><br><span class="line">5--RELAY_SENDME [forward orbackward][control]</span><br><span class="line">6--RELAY_EXTEND [forward]</span><br><span class="line">7--RELAY_EXTENDED [backward]</span><br><span class="line">8--RELAY_TRUNCATE [forward]</span><br><span class="line">9--RELAY_TRUNCATED [backward]</span><br><span class="line">10 --RELAY_DROP [forward orbackward][control]</span><br><span class="line">11 --RELAY_RESOLVE [forward]</span><br><span class="line">12 --RELAY_RESOLVED [backward]</span><br><span class="line">13 --RELAY_BEGIN_DIR [forward]</span><br><span class="line">14 --RELAY_EXTEND2 [forward][control]</span><br><span class="line">15 --RELAY_EXTENDED2 [backward][control]</span><br><span class="line">32..40 -- 用于Hidden Service的Relay指令第二章 第二代洋葱路</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>其中， <code>RELAY_BEGIN</code>用于打开一个应用数据流；<code>RELAY_DATA</code>用于传送应用数据；<code>RELAY_END</code>用于彻底关闭一个应用数据流； <code>RELAY_EXTEND和RELAY_EXTENDED</code>用于将链路进行一跳的拓展；<code>RELAY_TRUNCATE和RELAY_TRUNCATED</code>用于将链路进行截断处理，也用于链路错误消息响应；<code>RELAY_SENDME</code>用于流量控制； <code>RELAY_BIGIN_DIR</code>用于开启到目录服务器的数据链路。同时，上述指令中仅被标记为forward的指令只能由链路发起者发送；仅被标记为 backward的指令只能由链路中的结点发送回链路发起者。另外，control标记主要表示该命令是用于链路相关控制，和应用层数据并无关系。</p>
+<h2 id="链路的建立与应用通信"><a href="#链路的建立与应用通信" class="headerlink" title="链路的建立与应用通信"></a>链路的建立与应用通信</h2><p>为了解析链路的建立细节，我们看官方设计文档的一张图：</p>
+<p><img src="/myimages/tor协议理解/2/lianjie.jpg" alt="image"></p>
+<p>Alice是通信的发起者，并希望通过Tor 网络匿名地浏览 Website的内容。Alice的洋葱代理 OP首先选择Tor网络的中间转发结点并与之协商短期会话密钥，从而逐步建立一条通向Website的链路。 而后，当链路建立完成时， OP可以指示链路出口结点开启到 Website的 TCP连接，从而实现Alice与Website之间的匿名通信。具体的通信过程为（忽略了连接建立的过程，按照图中时序进行标号对应）：</p>
+<p>（1）Alice的洋葱代理OP首先发送一个Create命令数据包给它选定的第一个洋葱路由器 OR1（Bob）。其中c1表示Alice与Bob之间的链路 CircID， E(gx1)表示利用Bob洋葱密钥公钥加密的 DH 握手协议的第一部分内容。</p>
+<p>（2）当 Bob接收到Alice发送来的Create命令数据包之后，返回一个对应的 Created 数据包。该数据包中包含：c1，Alice与 Bob之间的链路CircID；DH握手协议的第二<br>部分内容的明文， gy1；临时会话密钥K1（gx1 ⋅y1）的哈希值， H(K1)。一旦链路建立， Alice和Bob就可以发送转发数据包（ Relay Cell），转发数据包的负载部分（ 509B）用其协商好的会话密钥Kl进行加密。</p>
+<p>（3）为了扩展链路，Alice发送一个用 K1加密过的Relay Extend数据包（此数据包为转发数据包）给 Bob，其中包含： c1，Alice与Bob之间的链路 CircID；Relay指令 Extend：下一跳需要拓展到的洋葱路由器（Carol）的地址OR2；利用Carol洋葱密钥公钥加密的 DH握手协议的第一部分内容E(gx2)。</p>
+<p>（4）Bob正确接收到Alice发送来的拓展命令之后，构建一个Create命令数据包。其中，c2表示Bob与Carol之间的链路CircID，E(gx2)是从 Alice处接收到的消息内容，表示利用Carol洋葱密钥公钥加密的DH握手协议的第一部分内容。Carol并不知道 Alice的存在。</p>
+<p>（5）如Bob接收到Create命令数据包时一样，Carol返回一个Created数据包，其中包含：c2，Bob与 Carol之间的链路CircID；DH握手协议的第二部分内容的明文，gy2：临时会话密钥 K2（gx2⋅y2）的哈希值，H(K2)。</p>
+<p>（6）当Bob收到 Carol响应信息后，Bob用他和Alice之间的会话密钥 Kl加密一个Relay Extended数据包（包含gy2和H(K2)），然后将它发回给 Alice。如此，原链路被拓展到了 Carol，且Alice和Carol的会话密钥为 K2。Alice只需重复上述过程，就可将虚电路长度逐步扩展，并最终与目的节点建立连接。一般说来，链路的长度应该为3以上，上图为了解释原理，进行了简化。</p>
+<p>（7）当链路建立完毕后，Alice需要与website实现TCP层面上的握手。这时利用之前建立的链路，发送一个<code>C1：Begin&lt;website&gt;:80</code>命令到Bob。</p>
+<p>（8）Bob经检验是合法的Alice传来的Begin命令后，向链路2转发<code>C2：Begin&lt;website&gt;:80</code>给Carol,然后按照这样的规律层层继续。在最后一个结点(图示中是Carol)负责开启一个TCP连接去获取网站信息。当连接建立完成，最后一个结点会层层回传连接建立成功的包。Carol回传<code>Relay C2{connected}</code>给Bob</p>
+<p>（9）Bob接收到Carol回传的连接建立Cell后，进行转发给Alice，<code>Relay C1{connected}</code></p>
+<p>（10）当Alice接收到连接建立成功的消息后，Alice上层应用的数据就可以通过OP进行分片和利用之前链路建立协商的密钥进行层层加密，如同{ { {Payload} K1} K2 }K3。依次通过链路进行信息通信。</p>
+<h1 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h1><p>这篇文章也是比较大致的阐述了链路建立的相关细节，并且使用的是官方设计文档的图例，这个图例是客户端实现匿名访问明网服务的的过程。理解了这个过程，读者可以发散思维，不难把它类比联想到客户端和匿名服务进行交互的细节。在访问匿名服务的时候，只不过是两端都建立了一条链路，通过约会结点来实现互通，而约会结点的协商则是通过客户端向介绍结点发送约会节点的ip和一次性秘密信息唯一标识一个约会结点并且通过一次性秘密信息来实现约会结点的认证。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf" target="_blank" rel="noopener">https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf</a></p>
+<p><a href="https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt" target="_blank" rel="noopener">https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/06/tor匿名协议理解二/">tor匿名协议理解二</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月06日 - 16:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月06日 - 17:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/06/tor匿名协议理解二/" title="tor匿名协议理解二">http://lypto.me/2018/12/06/tor匿名协议理解二/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/网络协议/" rel="tag"># 网络协议</a>
+          
+            <a href="/tags/匿名通信/" rel="tag"># 匿名通信</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/06/tor匿名协议理解一/" rel="next" title="tor匿名协议理解一">
+                <i class="fa fa-chevron-left"></i> tor匿名协议理解一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/06/决策树/" rel="prev" title="决策树">
+                决策树 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cells"><span class="nav-number">2.</span> <span class="nav-text">Cells</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据格式中的CMD"><span class="nav-number">2.1.</span> <span class="nav-text">数据格式中的CMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定长Cell与RELAY-Cell"><span class="nav-number">2.2.</span> <span class="nav-text">定长Cell与RELAY Cell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链路的建立与应用通信"><span class="nav-number">2.3.</span> <span class="nav-text">链路的建立与应用通信</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#回顾"><span class="nav-number">3.</span> <span class="nav-text">回顾</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/06/tor匿名协议理解二/';
+          this.page.identifier = '2018/12/06/tor匿名协议理解二/';
+          this.page.title = 'tor匿名协议理解二';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

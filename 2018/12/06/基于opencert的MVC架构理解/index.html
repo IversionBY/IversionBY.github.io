@@ -1,0 +1,1355 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="php,MVC,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="在学习了一些比较基础的web开发知识和经理一些实践之后，逐渐发觉web框架的重要性，好的框架是可以带来很大的便利的，也能够使得自己的应用变得更加的健壮。同时学习框架也使得自己在大局掌控上跟进一个台阶，同时也可以更贴近web服务的开发现状，不论是对以后的开发或者是安全审计都可以有很大的促进。在框架领域，MVC的概念是不得不深入学习的，它不只是一种技术架构，更是一种编程思想，开发思想。本文将从op">
+<meta name="keywords" content="php,MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于opencert的MVC架构理解">
+<meta property="og:url" content="http://lypto.me/2018/12/06/基于opencert的MVC架构理解/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="在学习了一些比较基础的web开发知识和经理一些实践之后，逐渐发觉web框架的重要性，好的框架是可以带来很大的便利的，也能够使得自己的应用变得更加的健壮。同时学习框架也使得自己在大局掌控上跟进一个台阶，同时也可以更贴近web服务的开发现状，不论是对以后的开发或者是安全审计都可以有很大的促进。在框架领域，MVC的概念是不得不深入学习的，它不只是一种技术架构，更是一种编程思想，开发思想。本文将从op">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/MVC/index.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/MVC/customer.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/MVC/customer_index.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/MVC/class_content.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/MVC/edit.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/MVC/success.jpg">
+<meta property="og:updated_time" content="2018-12-06T08:51:07.163Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于opencert的MVC架构理解">
+<meta name="twitter:description" content="在学习了一些比较基础的web开发知识和经理一些实践之后，逐渐发觉web框架的重要性，好的框架是可以带来很大的便利的，也能够使得自己的应用变得更加的健壮。同时学习框架也使得自己在大局掌控上跟进一个台阶，同时也可以更贴近web服务的开发现状，不论是对以后的开发或者是安全审计都可以有很大的促进。在框架领域，MVC的概念是不得不深入学习的，它不只是一种技术架构，更是一种编程思想，开发思想。本文将从op">
+<meta name="twitter:image" content="http://lypto.me/myimages/MVC/index.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/06/基于opencert的MVC架构理解/">
+
+
+
+
+
+  <title>基于opencert的MVC架构理解 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/06/基于opencert的MVC架构理解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于opencert的MVC架构理解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-06T16:38:00+08:00">
+                Dec 6 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/06/基于opencert的MVC架构理解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/06/基于opencert的MVC架构理解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  8.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  40
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/MVC/index.jpg" height="450" width="450"></p>
+<blockquote>
+<p>在学习了一些比较基础的web开发知识和经理一些实践之后，逐渐发觉web框架的重要性，好的框架是可以带来很大的便利的，也能够使得自己的应用变得更加的健壮。同时学习框架也使得自己在大局掌控上跟进一个台阶，同时也可以更贴近web服务的开发现状，不论是对以后的开发或者是安全审计都可以有很大的促进。在框架领域，MVC的概念是不得不深入学习的，它不只是一种技术架构，更是一种编程思想，开发思想。本文将从opencart的实例出发去学习MVC的架构思想，现总结如下：<br><a id="more"></a></p>
+<h1 id="MVC三层架构含义"><a href="#MVC三层架构含义" class="headerlink" title="MVC三层架构含义"></a>MVC三层架构含义</h1><p>MVC框架的作用在于分层解耦，让层与层之间的联系变得不那么紧密，同时可以很大程度的提高并行开发效率，以及更高的代码重用和方便的代码维护。</p>
+<h3 id="Model："><a href="#Model：" class="headerlink" title="Model："></a>Model：</h3><p>模型用于表示底层数据模型结构，可能会被不同的应用程序共享，一个模型应该遵循以下的原则：<br>（1）包含属性用于描述特定的数据<br>（2）应该包含业务逻辑，以确保数据能够满足表现的需要<br>（3）应该包含数据操作的逻辑，如数据的增删改等<br>（4）不应使用$_GET $POST这样的数据，是基于model的功能和重用的考虑<br>（5）不应出现Html代码，不属于model层的范畴</p>
+<h3 id="View："><a href="#View：" class="headerlink" title="View："></a>View：</h3><p>View层（视图）主要用于前端的表现：<br>（1）包含Html，以及所有负责表现的代码，可以出现php，但只是用于遍历数据<br>（2）不应该包含Db请求，数据库的操作<br>（3）不应该出现引用$_GET $_POST这类数组的代码，View只专注于表现<br>（4）如果必要，可以访问Model和Controller的属性，不过仅为了满足表现的需要</p>
+<h3 id="Controller："><a href="#Controller：" class="headerlink" title="Controller："></a>Controller：</h3><p>控制器直接负责用户的请求，对Model的调用即对View表现的控制：<br>（1）可以访问$_GET  $_POST 这样的用户请求数组<br>（2）创建模型，并决定一个模型对象的生命周期<br>（3）不应该出现SQL语句，数据库请求应该放到Model中<br>（4）不应该出现Html代码，应该将其放入View中</p>
+</blockquote>
+<h1 id="模板引擎"><a href="#模板引擎" class="headerlink" title="模板引擎"></a>模板引擎</h1><p>模板引擎（这里特指用于Web开发的模板引擎）是为了使用户界面与业务数据（内容）分离而产生的，它可以生成特定格式的文档，用于网站的模板引擎就会生成一个标准的HTML文档python与php常用模板引擎举例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//php</span><br><span class="line">Smarty,Twig,Haml,Liquid,Mustache,Plates</span><br><span class="line">//python</span><br><span class="line">Jinja2,Mako,pyTenjin,PyJade,cheetah,django</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<h1 id="web框架"><a href="#web框架" class="headerlink" title="web框架"></a><a href="https://zh.wikipedia.org/zh-sg/Web%E5%BA%94%E7%94%A8%E6%A1%86%E6%9E%B6" target="_blank" rel="noopener">web框架</a></h1><p>web服务器封装的是socket，web框架封装的是response和request。web服务器（web server）的主要作用是，接收客户端请求，而web框架（webframework）则是处理web服务器收到的请求，并生成HTML内容，将生成的内容传递给web服务器，再由web服务器返回给客户端。所以，web框架是面像开发的，而web服务器是面向连接的。现如今，类似于php，java, python这样的语言都有很多集成的框架来加速开发和使得代码更方便维护等。而在现在比较出名的框架，诸如struts,spring,django,thinkphp等都是采用MVC的设计理念，使得代码更健壮。</p>
+<h1 id="opencert为例深入理解MVC开发模式"><a href="#opencert为例深入理解MVC开发模式" class="headerlink" title="opencert为例深入理解MVC开发模式"></a>opencert为例深入理解MVC开发模式</h1><p>OpenCart 是世界著名的开源电子商务系统，系统开发语言为 PHP。早期由英国人 Daniel Kerr 个人开发，目前项目托管在 GitHub。该项目采用 MVCL 架构、代码清晰规范、安装方便，使得开发者可以轻易上手进行定制开发。<a href="https://baike.baidu.com/item/opencart" target="_blank" rel="noopener">详情参看百度百科</a></p>
+<h3 id="简化的目录结构（只专注于学习MVC需要了解到的目录结构）"><a href="#简化的目录结构（只专注于学习MVC需要了解到的目录结构）" class="headerlink" title="简化的目录结构（只专注于学习MVC需要了解到的目录结构）"></a>简化的目录结构（只专注于学习MVC需要了解到的目录结构）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">---upload/#核心代码文件夹</span><br><span class="line">|</span><br><span class="line">|</span><br><span class="line">------index.php #web应用入口，检测安装以及安装完成的MVC入口指向startup.php</span><br><span class="line">------image/    #存放构建网站所需要的图片</span><br><span class="line">------install/  #安装目录，采用MVC的布局</span><br><span class="line">------admin/    #管理后台目录，采用MVC布局</span><br><span class="line">------catalog/  #网站应用业务目录，采用MVC布局</span><br><span class="line">------system/   #MVC的架构底层实现</span><br><span class="line">        |</span><br><span class="line">        |</span><br><span class="line">        ----engine/#MVC的底层引擎实现</span><br><span class="line">        |    |</span><br><span class="line">        |    |</span><br><span class="line">        |     -----------action.php     #属于router.php的子类，主要用来进行url与内部controller的路由</span><br><span class="line">        |     -----------controller.php #controller的超类</span><br><span class="line">        |     -----------loader.php     #对象装载类</span><br><span class="line">        |     -----------model.php      #model超类</span><br><span class="line">        |     -----------router.php     #略</span><br><span class="line">        |     ......</span><br><span class="line">        ----startup.php   #MVC文件入口</span><br><span class="line">        ----framework.php #框架注册或者说是register变量的封装</span><br><span class="line">        ......</span><br></pre></td></tr></table></figure>
+<h3 id="一次完整的请求过程"><a href="#一次完整的请求过程" class="headerlink" title="一次完整的请求过程"></a>一次完整的请求过程</h3><p>下面的例子中，将会对admin管理后台下的customer管理业务进行分析。那么业务最直接的MVC架构文件是是admin下<code>/controller/customer/</code>,<code>/view/customer/</code>,以及<code>/model/customer</code>。我们可以看到在实际的管理界面访问这个网站的界面如图所示:</p>
+<p><img src="/myimages/MVC/customer.jpg" alt="image"></p>
+<p>注意到这个网站的URL<code>http://localhost/OpenCart/upload/admin/index.php?route=customer/customer&amp;user_token=S9dNbDGlubJVFpjFllGyYfgg9BCdoCCr</code></p>
+<p>根据网站的目录显示我们先跟进到<code>/upload/admin/index.php</code>这是管理后台的首页，其实在<code>upload/</code>文件下有也有一个index.php是默认对外提供服务的首页，其内容和现在我们看到的基本一样，只不过在用户标识上有细微的差别。</p>
+<p><img src="/myimages/MVC/customer_index.jpg" alt="image"></p>
+<p>在这个index界面是对配置文件的加载和安装的检查，然后include<code>upload/system/startup.php</code>,我们看下startup.php的具体内容。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// Error Reporting</span></span><br><span class="line">error_reporting(E_ALL);</span><br><span class="line"><span class="comment">// Check Version</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// Windows IIS Compatibility</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// Check if SSL</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// Modification Override</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">// Helper</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">start</span><span class="params">($application_config)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">require_once</span>(DIR_SYSTEM . <span class="string">'framework.php'</span>);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以在源文件里面看到，startup.php首先是对php版本检查，时区检查，平台检查，是否开启ssl，一些引擎，插件等的装载（直观的说是include）,然后就是include<code>upload/system/framework.php</code>。这个文件其实是注册了一个registry对象，这个对象是后面传递给controller，modle的第一个参数，里面封装了一些底层框架必须的类操作，而这些类都是继承来自<code>engine/</code>下定义的类，或其他通过startup.php <code>include</code>文件定义的类。所以说这个源文件相对重要，现在把<code>framework.php</code>全部代码展现如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// Registry</span></span><br><span class="line">$registry = <span class="keyword">new</span> Registry();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Config</span></span><br><span class="line">$config = <span class="keyword">new</span> Config();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Load the default config</span></span><br><span class="line">$config-&gt;load(<span class="string">'default'</span>);</span><br><span class="line">$config-&gt;load($application_config);</span><br><span class="line">$registry-&gt;set(<span class="string">'config'</span>, $config);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Log</span></span><br><span class="line">$log = <span class="keyword">new</span> Log($config-&gt;get(<span class="string">'error_filename'</span>));</span><br><span class="line">$registry-&gt;set(<span class="string">'log'</span>, $log);</span><br><span class="line"></span><br><span class="line">date_default_timezone_set($config-&gt;get(<span class="string">'date_timezone'</span>));</span><br><span class="line"></span><br><span class="line">set_error_handler(<span class="function"><span class="keyword">function</span><span class="params">($code, $message, $file, $line)</span> <span class="title">use</span><span class="params">($log, $config)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// error suppressed with @</span></span><br><span class="line">	<span class="keyword">if</span> (error_reporting() === <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">switch</span> ($code) &#123;</span><br><span class="line">		<span class="keyword">case</span> E_NOTICE:</span><br><span class="line">		<span class="keyword">case</span> E_USER_NOTICE:</span><br><span class="line">			$error = <span class="string">'Notice'</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> E_WARNING:</span><br><span class="line">		<span class="keyword">case</span> E_USER_WARNING:</span><br><span class="line">			$error = <span class="string">'Warning'</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> E_ERROR:</span><br><span class="line">		<span class="keyword">case</span> E_USER_ERROR:</span><br><span class="line">			$error = <span class="string">'Fatal Error'</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			$error = <span class="string">'Unknown'</span>;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ($config-&gt;get(<span class="string">'error_display'</span>)) &#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">'&lt;b&gt;'</span> . $error . <span class="string">'&lt;/b&gt;: '</span> . $message . <span class="string">' in &lt;b&gt;'</span> . $file . <span class="string">'&lt;/b&gt; on line &lt;b&gt;'</span> . $line . <span class="string">'&lt;/b&gt;'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ($config-&gt;get(<span class="string">'error_log'</span>)) &#123;</span><br><span class="line">		$log-&gt;write(<span class="string">'PHP '</span> . $error . <span class="string">':  '</span> . $message . <span class="string">' in '</span> . $file . <span class="string">' on line '</span> . $line);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Event</span></span><br><span class="line">$event = <span class="keyword">new</span> Event($registry);</span><br><span class="line">$registry-&gt;set(<span class="string">'event'</span>, $event);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Event Register</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;has(<span class="string">'action_event'</span>)) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($config-&gt;get(<span class="string">'action_event'</span>) <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">		<span class="keyword">foreach</span> ($value <span class="keyword">as</span> $priority =&gt; $action) &#123;</span><br><span class="line">			$event-&gt;register($key, <span class="keyword">new</span> Action($action), $priority);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Loader</span></span><br><span class="line">$loader = <span class="keyword">new</span> Loader($registry);</span><br><span class="line">$registry-&gt;set(<span class="string">'load'</span>, $loader);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Request</span></span><br><span class="line">$registry-&gt;set(<span class="string">'request'</span>, <span class="keyword">new</span> Request());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Response</span></span><br><span class="line">$response = <span class="keyword">new</span> Response();</span><br><span class="line">$response-&gt;addHeader(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);</span><br><span class="line">$response-&gt;setCompression($config-&gt;get(<span class="string">'config_compression'</span>));</span><br><span class="line">$registry-&gt;set(<span class="string">'response'</span>, $response);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Database</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;get(<span class="string">'db_autostart'</span>)) &#123;</span><br><span class="line">	$registry-&gt;set(<span class="string">'db'</span>, <span class="keyword">new</span> DB($config-&gt;get(<span class="string">'db_engine'</span>), $config-&gt;get(<span class="string">'db_hostname'</span>), $config-&gt;get(<span class="string">'db_username'</span>), $config-&gt;get(<span class="string">'db_password'</span>), $config-&gt;get(<span class="string">'db_database'</span>), $config-&gt;get(<span class="string">'db_port'</span>)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Session</span></span><br><span class="line">$session = <span class="keyword">new</span> Session($config-&gt;get(<span class="string">'session_engine'</span>), $registry);</span><br><span class="line">$registry-&gt;set(<span class="string">'session'</span>, $session);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;get(<span class="string">'session_autostart'</span>)) &#123;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	We are adding the session cookie outside of the session class as I believe</span></span><br><span class="line"><span class="comment">	PHP messed up in a big way handling sessions. Why in the hell is it so hard to</span></span><br><span class="line"><span class="comment">	have more than one concurrent session using cookies!</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	Is it not better to have multiple cookies when accessing parts of the system</span></span><br><span class="line"><span class="comment">	that requires different cookie sessions for security reasons.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">	Also cookies can be accessed via the URL parameters. So why force only one cookie</span></span><br><span class="line"><span class="comment">	for all sessions!</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">isset</span>($_COOKIE[$config-&gt;get(<span class="string">'session_name'</span>)])) &#123;</span><br><span class="line">		$session_id = $_COOKIE[$config-&gt;get(<span class="string">'session_name'</span>)];</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		$session_id = <span class="string">''</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	$session-&gt;start($session_id);</span><br><span class="line"></span><br><span class="line">	setcookie($config-&gt;get(<span class="string">'session_name'</span>), $session-&gt;getId(), (ini_get(<span class="string">'session.cookie_lifetime'</span>) ? (time() + ini_get(<span class="string">'session.cookie_lifetime'</span>)) : <span class="number">0</span>), ini_get(<span class="string">'session.cookie_path'</span>), ini_get(<span class="string">'session.cookie_domain'</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Cache</span></span><br><span class="line">$registry-&gt;set(<span class="string">'cache'</span>, <span class="keyword">new</span> Cache($config-&gt;get(<span class="string">'cache_engine'</span>), $config-&gt;get(<span class="string">'cache_expire'</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Url</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;get(<span class="string">'url_autostart'</span>)) &#123;</span><br><span class="line">	$registry-&gt;set(<span class="string">'url'</span>, <span class="keyword">new</span> Url($config-&gt;get(<span class="string">'site_url'</span>)));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Language</span></span><br><span class="line">$language = <span class="keyword">new</span> Language($config-&gt;get(<span class="string">'language_directory'</span>));</span><br><span class="line">$registry-&gt;set(<span class="string">'language'</span>, $language);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Document</span></span><br><span class="line">$registry-&gt;set(<span class="string">'document'</span>, <span class="keyword">new</span> Document());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Config Autoload</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;has(<span class="string">'config_autoload'</span>)) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($config-&gt;get(<span class="string">'config_autoload'</span>) <span class="keyword">as</span> $value) &#123;</span><br><span class="line">		$loader-&gt;config($value);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Language Autoload</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;has(<span class="string">'language_autoload'</span>)) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($config-&gt;get(<span class="string">'language_autoload'</span>) <span class="keyword">as</span> $value) &#123;</span><br><span class="line">		$loader-&gt;language($value);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Library Autoload</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;has(<span class="string">'library_autoload'</span>)) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($config-&gt;get(<span class="string">'library_autoload'</span>) <span class="keyword">as</span> $value) &#123;</span><br><span class="line">		$loader-&gt;library($value);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Model Autoload</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;has(<span class="string">'model_autoload'</span>)) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($config-&gt;get(<span class="string">'model_autoload'</span>) <span class="keyword">as</span> $value) &#123;</span><br><span class="line">		$loader-&gt;model($value);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Route</span></span><br><span class="line">$route = <span class="keyword">new</span> Router($registry);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Pre Actions</span></span><br><span class="line"><span class="keyword">if</span> ($config-&gt;has(<span class="string">'action_pre_action'</span>)) &#123;</span><br><span class="line">	<span class="keyword">foreach</span> ($config-&gt;get(<span class="string">'action_pre_action'</span>) <span class="keyword">as</span> $value) &#123;</span><br><span class="line">		$route-&gt;addPreAction(<span class="keyword">new</span> Action($value));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Dispatch</span></span><br><span class="line">$route-&gt;dispatch(<span class="keyword">new</span> Action($config-&gt;get(<span class="string">'action_router'</span>)), <span class="keyword">new</span> Action($config-&gt;get(<span class="string">'action_error'</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Output</span></span><br><span class="line">$response-&gt;output();</span><br></pre></td></tr></table></figure>
+<p>前面说到这个文件主要实例化了一个register类，而这个类以继承的方式实现了一些底层MVC的架构（这些会慢慢的在后面的分析中得以诠释），Register类封装的是一个在View和Controller中进行数据交换的接口<code>$data</code>(在下面来源于/engine/registry.php代码中，可以在Registery类的定义中看到Registry类实际上是围绕<code>$data</code>变量来进行一些赋值和取值操作)，也可以把Register看成一种数据结构，它在类之间传递数据。在<code>$data</code>这个字典类型中的key表示的是一些变量名称，但是为了方便理解，我们更愿意称之为对象名,因为这些变量存储的数据类型很杂，包括一些底层MVC的超类，如Loader,Config,Event,Language,Route等等，特别是Loader与Route类，Loader类实现了对Model，Language，View，Controller等的实例化，而Route则提供了URL的参数路由规则（这些也会在后面有所涉及）。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Registry</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $data = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span><span class="params">($key)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;data[$key]) ? <span class="keyword">$this</span>-&gt;data[$key] : <span class="keyword">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">set</span><span class="params">($key, $value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;data[$key] = $value;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">has</span><span class="params">($key)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;data[$key]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很好，那么到了这里，我们可以回头看下我们如果访问<code>http://localhost/OpenCart/upload/admin/index.php?route=customer/customer&amp;user_token=S9dNbDGlubJVFpjFllGyYfgg9BCdoCCr</code>中<code>index.php</code>中的相关后台运行原理已经解释得差不多了，那么route参数后的一堆东西，后台是如何处理的呢？这里就需要知道web框架MVC思想中的Route规则。首先来谈下为何需要这个路由，因为MVC中的C是十分重要的，负责处理用户请求，载入Model获取数据，然后通过<code>$data</code>接口交付给View,然后由渲染引擎，在这里是twig进行网页的渲染。而在众多的业务逻辑里面（我们可以在admin/controller目录中看到很多的controller），怎么通过URL来实现对不同业务的特定controller的处理一一对应？这时route规则应运而生。所以现在我们就来看下与route规则紧密相关的两个引擎源文件，<code>system/engine/router.php</code>和<code>system/engine/action.php</code>。首先来看下router.php:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Router</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $registry;</span><br><span class="line">	<span class="keyword">private</span> $pre_action = <span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">private</span> $error;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($registry)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;registry = $registry;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addPreAction</span><span class="params">(Action $pre_action)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;pre_action[] = $pre_action;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">dispatch</span><span class="params">(Action $action, Action $error)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;error = $error;</span><br><span class="line">		<span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;pre_action <span class="keyword">as</span> $pre_action) &#123;</span><br><span class="line">			$result = <span class="keyword">$this</span>-&gt;execute($pre_action);</span><br><span class="line">			<span class="keyword">if</span> ($result <span class="keyword">instanceof</span> Action) &#123;</span><br><span class="line">				$action = $result;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">while</span> ($action <span class="keyword">instanceof</span> Action) &#123;</span><br><span class="line">			$action = <span class="keyword">$this</span>-&gt;execute($action);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">execute</span><span class="params">(Action $action)</span> </span>&#123;</span><br><span class="line">		$result = $action-&gt;execute(<span class="keyword">$this</span>-&gt;registry);</span><br><span class="line">		<span class="keyword">if</span> ($result <span class="keyword">instanceof</span> Action) &#123;</span><br><span class="line">			<span class="keyword">return</span> $result;</span><br><span class="line">		&#125; </span><br><span class="line">		<span class="keyword">if</span> ($result <span class="keyword">instanceof</span> <span class="keyword">Exception</span>) &#123;</span><br><span class="line">			$action = <span class="keyword">$this</span>-&gt;error;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;error = <span class="keyword">null</span>;</span><br><span class="line">			<span class="keyword">return</span> $action;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个文件其实把很多的实现细节放在了action.php,所以我们重点来看action.php,以上的代码作为参考阅读。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Action</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> $id;</span><br><span class="line">	<span class="keyword">private</span> $route;</span><br><span class="line">	<span class="keyword">private</span> $method = <span class="string">'index'</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($route)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;id = $route;</span><br><span class="line">		$parts = explode(<span class="string">'/'</span>, preg_replace(<span class="string">'/[^a-zA-Z0-9_\/]/'</span>, <span class="string">''</span>, (string)$route));</span><br><span class="line">		<span class="comment">// Break apart the route</span></span><br><span class="line">		<span class="keyword">while</span> ($parts) &#123;</span><br><span class="line">			$file = DIR_APPLICATION . <span class="string">'controller/'</span> . implode(<span class="string">'/'</span>, $parts) . <span class="string">'.php'</span>;</span><br><span class="line">			<span class="keyword">if</span> (is_file($file)) &#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;route = implode(<span class="string">'/'</span>, $parts);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;method = array_pop($parts);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">execute</span><span class="params">($registry, array $args = array<span class="params">()</span>)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Stop any magical methods being called</span></span><br><span class="line">		<span class="keyword">if</span> (substr(<span class="keyword">$this</span>-&gt;method, <span class="number">0</span>, <span class="number">2</span>) == <span class="string">'__'</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> \<span class="keyword">Exception</span>(<span class="string">'Error: Calls to magic methods are not allowed!'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		$file = DIR_APPLICATION . <span class="string">'controller/'</span> . <span class="keyword">$this</span>-&gt;route . <span class="string">'.php'</span>;</span><br><span class="line">		$class = <span class="string">'Controller'</span> . preg_replace(<span class="string">'/[^a-zA-Z0-9]/'</span>, <span class="string">''</span>, <span class="keyword">$this</span>-&gt;route);</span><br><span class="line">		<span class="comment">// Initialize the class</span></span><br><span class="line">		<span class="keyword">if</span> (is_file($file)) &#123;</span><br><span class="line">			<span class="keyword">include_once</span>($file);</span><br><span class="line">			$controller = <span class="keyword">new</span> $class($registry);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> \<span class="keyword">Exception</span>(<span class="string">'Error: Could not call '</span> . <span class="keyword">$this</span>-&gt;route . <span class="string">'/'</span> . <span class="keyword">$this</span>-&gt;method . <span class="string">'!'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		$reflection = <span class="keyword">new</span> ReflectionClass($class);</span><br><span class="line">		<span class="keyword">if</span> ($reflection-&gt;hasMethod(<span class="keyword">$this</span>-&gt;method) &amp;&amp; $reflection-&gt;getMethod(<span class="keyword">$this</span>-&gt;method)-&gt;getNumberOfRequiredParameters() &lt;= count($args)) &#123;</span><br><span class="line">			<span class="keyword">return</span> call_user_func_array(<span class="keyword">array</span>($controller, <span class="keyword">$this</span>-&gt;method), $args);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> \<span class="keyword">Exception</span>(<span class="string">'Error: Could not call '</span> . <span class="keyword">$this</span>-&gt;route . <span class="string">'/'</span> . <span class="keyword">$this</span>-&gt;method . <span class="string">'!'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其实不必要把整个架构的细节都给看完，因为其中涉及了比较多的校验和错误捕捉和处理。所以以上代码实际处理业务的部分就是router后参数的拆分，然后进行一些校验，合格的话就去include一个controller类然后实例化它，最后以拆分好的形式传入<code>call_user_func_array</code>。其实拆分的原则就是通过router参数以<code>/</code>进行拆分，然后字符串连接，到admin的相应文件夹下去获取相应类的文件路径。在这里<code>?route=customer/customer</code>其实就是调用customer/customer.php文件里定义的类，然后通过<code>$controller = new $class($registry);</code>实例化它。然后就是条用<code>call_func_array</code>来执行controller类里面的method，传入的参数为$args，这里有个点就是在默认的情况下，调用的方法为<code>index</code>。接下来我们就要进入admin/contorller/customer/customer.php一探究竟，弄个清楚到底这个controller处理了哪些业务逻辑以及如何和Model，View进行交互。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class ControllerCustomerCustomer extends Controller &#123;</span><br><span class="line">	private $error = array();</span><br><span class="line"></span><br><span class="line">	public function index() &#123;</span><br><span class="line">		$this-&gt;load-&gt;language(&apos;customer/customer&apos;);</span><br><span class="line"></span><br><span class="line">		$this-&gt;document-&gt;setTitle($this-&gt;language-&gt;get(&apos;heading_title&apos;));</span><br><span class="line"></span><br><span class="line">		$this-&gt;load-&gt;model(&apos;customer/customer&apos;);</span><br><span class="line"></span><br><span class="line">		$this-&gt;getList();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>这个文件内容比较多，不太适合全部copy到这里来进行分析，但是通过ControllerCustomerCustomer类的一些方法举例来阐述MVC的概念就可以起到不错的分析效果。当然在深入解析这个过程的时候，我们首先需要理解一下$this-&gt;load方法的实现原理。了解过面像对象编程的兄弟可能一时无法理解基类没有load方法，而本类也没有实现该方法，那么这个方法是如何得以调用实现的呢？先不急，我们先来看个比较神奇的php魔术方法举例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $a=<span class="string">'h'</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">        $c=<span class="string">'hello'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($key)</span></span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> $key;</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$b=<span class="keyword">new</span> test();</span><br><span class="line">$b-&gt;load;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>试想一下，运行这段代码，我们会得到什么结果？答案是:load。是的，在调用一个不存在的或者没有访问权限的对象的时候，类会主动调用<strong>get().方法，而load就会作为参数传入</strong>get()函数。那么举这个例子和我们理解上面代码有什么关系呢？我们可以看到Controller基类的代码实现如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $registry;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($registry)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;registry = $registry;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($key)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;registry-&gt;get($key);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__set</span><span class="params">($key, $value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;registry-&gt;set($key, $value);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>是的同样实现了__get()方法，这样我们就会调用它，最后他会返回一个registry-&gt;get(“load”)传回的对象，参考上面的Register类的定义以及framework.php的注册变量过程，我们可以发现，这里其实返回的是一个Loader对象，而Loader对象的定义如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Loader</span> </span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> $registry;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Constructor</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span>    object $registry</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($registry)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;registry = $registry;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">controller</span><span class="params">($route)</span> </span>&#123;</span><br><span class="line">		$args = func_get_args();</span><br><span class="line"></span><br><span class="line">		array_shift($args);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Sanitize the call</span></span><br><span class="line">		$route = preg_replace(<span class="string">'/[^a-zA-Z0-9_\/]/'</span>, <span class="string">''</span>, (string)$route);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Keep the original trigger</span></span><br><span class="line">		$trigger = $route;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Trigger the pre events</span></span><br><span class="line">		$result = <span class="keyword">$this</span>-&gt;registry-&gt;get(<span class="string">'event'</span>)-&gt;trigger(<span class="string">'controller/'</span> . $trigger . <span class="string">'/before'</span>, <span class="keyword">array</span>(&amp;$route, &amp;$args));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Make sure its only the last event that returns an output if required.</span></span><br><span class="line">		<span class="keyword">if</span> ($result != <span class="keyword">null</span> &amp;&amp; !$result <span class="keyword">instanceof</span> <span class="keyword">Exception</span>) &#123;</span><br><span class="line">			$output = $result;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$action = <span class="keyword">new</span> Action($route);</span><br><span class="line">			$output = $action-&gt;execute(<span class="keyword">$this</span>-&gt;registry, $args);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Trigger the post events</span></span><br><span class="line">		$result = <span class="keyword">$this</span>-&gt;registry-&gt;get(<span class="string">'event'</span>)-&gt;trigger(<span class="string">'controller/'</span> . $trigger . <span class="string">'/after'</span>, <span class="keyword">array</span>(&amp;$route, &amp;$args, &amp;$output));</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> ($result &amp;&amp; !$result <span class="keyword">instanceof</span> <span class="keyword">Exception</span>) &#123;</span><br><span class="line">			$output = $result;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!$output <span class="keyword">instanceof</span> <span class="keyword">Exception</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> $output;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">model</span><span class="params">($route)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Sanitize the call</span></span><br><span class="line">		$route = preg_replace(<span class="string">'/[^a-zA-Z0-9_\/]/'</span>, <span class="string">''</span>, (string)$route);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;registry-&gt;has(<span class="string">'model_'</span> . str_replace(<span class="string">'/'</span>, <span class="string">'_'</span>, $route))) &#123;</span><br><span class="line">			$file = DIR_APPLICATION . <span class="string">'model/'</span> . $route . <span class="string">'.php'</span>;</span><br><span class="line">			$class = <span class="string">'Model'</span> . preg_replace(<span class="string">'/[^a-zA-Z0-9]/'</span>, <span class="string">''</span>, $route);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (is_file($file)) &#123;</span><br><span class="line">				<span class="keyword">include_once</span>($file);</span><br><span class="line"></span><br><span class="line">				$proxy = <span class="keyword">new</span> Proxy();</span><br><span class="line"></span><br><span class="line">				<span class="comment">// Overriding models is a little harder so we have to use PHP's magic methods</span></span><br><span class="line">				<span class="comment">// In future version we can use runkit</span></span><br><span class="line">				<span class="keyword">foreach</span> (get_class_methods($class) <span class="keyword">as</span> $method) &#123;</span><br><span class="line">					$proxy-&gt;&#123;$method&#125; = <span class="keyword">$this</span>-&gt;callback($route . <span class="string">'/'</span> . $method);</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">$this</span>-&gt;registry-&gt;set(<span class="string">'model_'</span> . str_replace(<span class="string">'/'</span>, <span class="string">'_'</span>, (string)$route), $proxy);</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> \<span class="keyword">Exception</span>(<span class="string">'Error: Could not load model '</span> . $route . <span class="string">'!'</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">view</span><span class="params">($route, $data = array<span class="params">()</span>)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// Sanitize the call</span></span><br><span class="line">		$route = preg_replace(<span class="string">'/[^a-zA-Z0-9_\/]/'</span>, <span class="string">''</span>, (string)$route);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Keep the original trigger</span></span><br><span class="line">		$trigger = $route;</span><br><span class="line"></span><br><span class="line">		$template = <span class="keyword">new</span> Template(<span class="keyword">$this</span>-&gt;registry-&gt;get(<span class="string">'config'</span>)-&gt;get(<span class="string">'template_engine'</span>));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Trigger the pre events</span></span><br><span class="line">		$result = <span class="keyword">$this</span>-&gt;registry-&gt;get(<span class="string">'event'</span>)-&gt;trigger(<span class="string">'view/'</span> . $trigger . <span class="string">'/before'</span>, <span class="keyword">array</span>(&amp;$route, &amp;$data, &amp;$template));</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Make sure its only the last event that returns an output if required.</span></span><br><span class="line">		<span class="keyword">if</span> ($result &amp;&amp; !$result <span class="keyword">instanceof</span> <span class="keyword">Exception</span>) &#123;</span><br><span class="line">			$output = $result;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">foreach</span> ($data <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">				$template-&gt;set($key, $value);</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			$output = $template-&gt;render(<span class="keyword">$this</span>-&gt;registry-&gt;get(<span class="string">'config'</span>)-&gt;get(<span class="string">'template_directory'</span>) . $route, <span class="keyword">$this</span>-&gt;registry-&gt;get(<span class="string">'config'</span>)-&gt;get(<span class="string">'template_cache'</span>));</span><br><span class="line">		&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<p>所以到这里就可以大致了解load方法调用的本质。所以说Loader是和Router类是在MVC架构中十分重要的两个组件。理解到这里，我们就来继续看下ControllerCustomerCustomer类的具体实现，了解它和view,modle的交互。通过下图可以看到整个ControllerCustomerCustomer 的代码量比较大，为了理解MVC没有必要把每一个方法的实现都理解透彻，我们可以举几个比较典型的方法的实现来阐述MVC的实现过程。</p>
+<p><img src="/myimages/MVC/class_content.jpg" alt="image"></p>
+<p>为了演示，在前端界面我们点击edit图标，可以看到对应的url参数有了变化,变成了<code>localhost/OpenCart/upload/admin/index.php?route=customer/customer/edit&amp;user_token=QcODkXWS5tEYdqb03TXRXdqgzsoaGAMp&amp;customer_id=1</code>,同样的界面变化如下：</p>
+<p><img src="/myimages/MVC/edit.jpg" alt="image"></p>
+<p>根据我们之前的了解，这里是调用了ControllerCustomerCustomer类的edit方法，而edit方法的实现代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">edit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;load-&gt;language(<span class="string">'customer/customer'</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;document-&gt;setTitle(<span class="keyword">$this</span>-&gt;language-&gt;get(<span class="string">'heading_title'</span>));</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;load-&gt;model(<span class="string">'customer/customer'</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> ((<span class="keyword">$this</span>-&gt;request-&gt;server[<span class="string">'REQUEST_METHOD'</span>] == <span class="string">'POST'</span>) &amp;&amp; <span class="keyword">$this</span>-&gt;validateForm()) &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;model_customer_customer-&gt;editCustomer(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>], <span class="keyword">$this</span>-&gt;request-&gt;post);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'success'</span>] = <span class="keyword">$this</span>-&gt;language-&gt;get(<span class="string">'text_success'</span>);</span><br><span class="line"></span><br><span class="line">			$url = <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_name'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;filter_name='</span> . urlencode(html_entity_decode(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_name'</span>], ENT_QUOTES, <span class="string">'UTF-8'</span>));</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_email'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;filter_email='</span> . urlencode(html_entity_decode(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_email'</span>], ENT_QUOTES, <span class="string">'UTF-8'</span>));</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_customer_group_id'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;filter_customer_group_id='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_customer_group_id'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_status'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;filter_status='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_status'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_ip'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;filter_ip='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_ip'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_date_added'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;filter_date_added='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_date_added'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'sort'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;sort='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'sort'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'order'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;order='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'order'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'page'</span>])) &#123;</span><br><span class="line">				$url .= <span class="string">'&amp;page='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'page'</span>];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">$this</span>-&gt;response-&gt;redirect(<span class="keyword">$this</span>-&gt;url-&gt;link(<span class="string">'customer/customer'</span>, <span class="string">'user_token='</span> . <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>] . $url));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;getForm();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到在这个函数中加载了<code>model_customer_customer</code>这个Model接口来进行相关的数据查询（至于为啥是这样一个方法，这是一个开发时候的规定，通过特定的方法来实现Model中ModelCustomerCustomer映射成为controller里面的类model_customer_customer），然后其他的一些逻辑是通过获取post,get获取的参数做一些逻辑判断（这一部分的代码实现在system/library里面，有兴趣的可以自己去看下，post,get,session等的底层封装实现），最后调用了getFrom的方法来实现与View的连接。另外需要注意的是，在opencart中除了MVC外还有个L部分，就是language。所谓的language就是一些需要在不同业务逻辑中显示在客户端的语句，这里也单独进行了分离编写，通过$this-&gt;load-&gt;language(‘customer/customer’)调用。在这里admin/language/customer/customer/customer.php language的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// Heading</span><br><span class="line">$_[&apos;heading_title&apos;]         = &apos;Customers&apos;;</span><br><span class="line"></span><br><span class="line">// Text</span><br><span class="line">$_[&apos;text_success&apos;]          = &apos;Success: You have modified customers!&apos;;</span><br><span class="line">$_[&apos;text_list&apos;]             = &apos;Customer List&apos;;</span><br><span class="line">$_[&apos;text_add&apos;]              = &apos;Add Customer&apos;;</span><br><span class="line">$_[&apos;text_edit&apos;]             = &apos;Edit Customer&apos;;</span><br><span class="line">$_[&apos;text_default&apos;]          = &apos;Default&apos;;</span><br><span class="line">$_[&apos;text_account&apos;]          = &apos;Customer Details&apos;;</span><br><span class="line">$_[&apos;text_password&apos;]         = &apos;Password&apos;;</span><br><span class="line">$_[&apos;text_other&apos;]            = &apos;Other&apos;;</span><br><span class="line">$_[&apos;text_balance&apos;]          = &apos;Balance&apos;;</span><br><span class="line">$_[&apos;text_address&apos;]          = &apos;Address&apos;;</span><br><span class="line">$_[&apos;text_history&apos;]          = &apos;History&apos;;</span><br><span class="line">$_[&apos;text_history_add&apos;]      = &apos;Add History&apos;;</span><br><span class="line">$_[&apos;text_transaction&apos;]      = &apos;Transactions&apos;;</span><br><span class="line">$_[&apos;text_transaction_add&apos;]  = &apos;Add Transaction&apos;;</span><br><span class="line">$_[&apos;text_reward&apos;]           = &apos;Reward Points&apos;;</span><br><span class="line">$_[&apos;text_reward_add&apos;]       = &apos;Add Reward Points&apos;;</span><br><span class="line">$_[&apos;text_ip&apos;]               = &apos;IP&apos;;</span><br><span class="line">$_[&apos;text_option&apos;]           = &apos;Options&apos;;</span><br><span class="line">$_[&apos;text_login&apos;]            = &apos;Login into Store&apos;;</span><br><span class="line">$_[&apos;text_unlock&apos;]           = &apos;Unlock Account&apos;;</span><br><span class="line"></span><br><span class="line">// Column</span><br><span class="line">$_[&apos;column_name&apos;]           = &apos;Customer Name&apos;;</span><br><span class="line">$_[&apos;column_email&apos;]          = &apos;E-Mail&apos;;</span><br><span class="line">$_[&apos;column_customer_group&apos;] = &apos;Customer Group&apos;;</span><br><span class="line">$_[&apos;column_status&apos;]         = &apos;Status&apos;;</span><br><span class="line">$_[&apos;column_date_added&apos;]     = &apos;Date Added&apos;;</span><br><span class="line">$_[&apos;column_comment&apos;]        = &apos;Comment&apos;;</span><br><span class="line">$_[&apos;column_description&apos;]    = &apos;Description&apos;;</span><br><span class="line">$_[&apos;column_amount&apos;]         = &apos;Amount&apos;;</span><br><span class="line">$_[&apos;column_points&apos;]         = &apos;Points&apos;;</span><br><span class="line">$_[&apos;column_ip&apos;]             = &apos;IP&apos;;</span><br><span class="line">$_[&apos;column_account&apos;]        = &apos;Accounts&apos;;</span><br><span class="line">$_[&apos;column_store&apos;]          = &apos;Store&apos;;</span><br><span class="line">$_[&apos;column_country&apos;]        = &apos;Country&apos;;</span><br><span class="line">$_[&apos;column_action&apos;]         = &apos;Action&apos;;</span><br><span class="line"></span><br><span class="line">// Entry</span><br><span class="line">$_[&apos;entry_customer_group&apos;]  = &apos;Customer Group&apos;;</span><br><span class="line">$_[&apos;entry_firstname&apos;]       = &apos;First Name&apos;;</span><br><span class="line">$_[&apos;entry_lastname&apos;]        = &apos;Last Name&apos;;</span><br><span class="line">$_[&apos;entry_email&apos;]           = &apos;E-Mail&apos;;</span><br><span class="line">$_[&apos;entry_telephone&apos;]       = &apos;Telephone&apos;;</span><br><span class="line">$_[&apos;entry_newsletter&apos;]      = &apos;Newsletter&apos;;</span><br><span class="line">$_[&apos;entry_status&apos;]          = &apos;Status&apos;;</span><br><span class="line">$_[&apos;entry_safe&apos;]            = &apos;Safe&apos;;</span><br><span class="line">$_[&apos;entry_password&apos;]        = &apos;Password&apos;;</span><br><span class="line">$_[&apos;entry_confirm&apos;]         = &apos;Confirm&apos;;</span><br><span class="line">$_[&apos;entry_company&apos;]         = &apos;Company&apos;;</span><br><span class="line">$_[&apos;entry_address_1&apos;]       = &apos;Address 1&apos;;</span><br><span class="line">$_[&apos;entry_address_2&apos;]       = &apos;Address 2&apos;;</span><br><span class="line">$_[&apos;entry_city&apos;]            = &apos;City&apos;;</span><br><span class="line">$_[&apos;entry_postcode&apos;]        = &apos;Postcode&apos;;</span><br><span class="line">$_[&apos;entry_country&apos;]         = &apos;Country&apos;;</span><br><span class="line">$_[&apos;entry_zone&apos;]            = &apos;Region / State&apos;;</span><br><span class="line">$_[&apos;entry_default&apos;]         = &apos;Default Address&apos;;</span><br><span class="line">$_[&apos;entry_comment&apos;]         = &apos;Comment&apos;;</span><br><span class="line">$_[&apos;entry_description&apos;]     = &apos;Description&apos;;</span><br><span class="line">$_[&apos;entry_amount&apos;]          = &apos;Amount&apos;;</span><br><span class="line">$_[&apos;entry_points&apos;]          = &apos;Points&apos;;</span><br><span class="line">$_[&apos;entry_name&apos;]            = &apos;Customer Name&apos;;</span><br><span class="line">$_[&apos;entry_ip&apos;]              = &apos;IP&apos;;</span><br><span class="line">$_[&apos;entry_date_added&apos;]      = &apos;Date Added&apos;;</span><br><span class="line"></span><br><span class="line">// Help</span><br><span class="line">$_[&apos;help_safe&apos;]             = &apos;Set to true to avoid this customer from being caught by the anti-fraud system&apos;;</span><br><span class="line">$_[&apos;help_points&apos;]           = &apos;Use minus to remove points&apos;;</span><br><span class="line"></span><br><span class="line">// Error</span><br><span class="line">$_[&apos;error_warning&apos;]         = &apos;Warning: Please check the form carefully for errors!&apos;;</span><br><span class="line">$_[&apos;error_permission&apos;]      = &apos;Warning: You do not have permission to modify customers!&apos;;</span><br><span class="line">$_[&apos;error_exists&apos;]          = &apos;Warning: E-Mail Address is already registered!&apos;;</span><br><span class="line">$_[&apos;error_firstname&apos;]       = &apos;First Name must be between 1 and 32 characters!&apos;;</span><br><span class="line">$_[&apos;error_lastname&apos;]        = &apos;Last Name must be between 1 and 32 characters!&apos;;</span><br><span class="line">$_[&apos;error_email&apos;]           = &apos;E-Mail Address does not appear to be valid!&apos;;</span><br><span class="line">$_[&apos;error_telephone&apos;]       = &apos;Telephone must be between 3 and 32 characters!&apos;;</span><br><span class="line">$_[&apos;error_password&apos;]        = &apos;Password must be between 4 and 20 characters!&apos;;</span><br><span class="line">$_[&apos;error_confirm&apos;]         = &apos;Password and password confirmation do not match!&apos;;</span><br><span class="line">$_[&apos;error_address_1&apos;]       = &apos;Address 1 must be between 3 and 128 characters!&apos;;</span><br><span class="line">$_[&apos;error_city&apos;]            = &apos;City must be between 2 and 128 characters!&apos;;</span><br><span class="line">$_[&apos;error_postcode&apos;]        = &apos;Postcode must be between 2 and 10 characters for this country!&apos;;</span><br><span class="line">$_[&apos;error_country&apos;]         = &apos;Please select a country!&apos;;</span><br><span class="line">$_[&apos;error_zone&apos;]            = &apos;Please select a region / state!&apos;;</span><br><span class="line">$_[&apos;error_custom_field&apos;]    = &apos;%s required!&apos;;</span><br></pre></td></tr></table></figure>
+<p>接下来我们会进入到ModelCustomerCustomer，查看editCustomer方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">editCustomer</span><span class="params">($customer_id, $data)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"UPDATE "</span> . DB_PREFIX . <span class="string">"customer SET customer_group_id = '"</span> . (int)$data[<span class="string">'customer_group_id'</span>] . <span class="string">"', firstname = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape((string)$data[<span class="string">'firstname'</span>]) . <span class="string">"', lastname = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape((string)$data[<span class="string">'lastname'</span>]) . <span class="string">"', email = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape((string)$data[<span class="string">'email'</span>]) . <span class="string">"', telephone = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape((string)$data[<span class="string">'telephone'</span>]) . <span class="string">"', custom_field = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape(<span class="keyword">isset</span>($data[<span class="string">'custom_field'</span>]) ? json_encode($data[<span class="string">'custom_field'</span>]) : json_encode(<span class="keyword">array</span>())) . <span class="string">"', newsletter = '"</span> . (int)$data[<span class="string">'newsletter'</span>] . <span class="string">"', status = '"</span> . (int)$data[<span class="string">'status'</span>] . <span class="string">"', safe = '"</span> . (int)$data[<span class="string">'safe'</span>] . <span class="string">"' WHERE customer_id = '"</span> . (int)$customer_id . <span class="string">"'"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> ($data[<span class="string">'password'</span>]) &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"UPDATE "</span> . DB_PREFIX . <span class="string">"customer SET salt = '', password = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape(password_hash($data[<span class="string">'password'</span>], PASSWORD_DEFAULT)) . <span class="string">"' WHERE customer_id = '"</span> . (int)$customer_id . <span class="string">"'"</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"DELETE FROM "</span> . DB_PREFIX . <span class="string">"address WHERE customer_id = '"</span> . (int)$customer_id . <span class="string">"'"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>($data[<span class="string">'address'</span>])) &#123;</span><br><span class="line">			<span class="keyword">foreach</span> ($data[<span class="string">'address'</span>] <span class="keyword">as</span> $key =&gt; $address) &#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"INSERT INTO "</span> . DB_PREFIX . <span class="string">"address SET address_id = '"</span> . (int)$address[<span class="string">'address_id'</span>] . <span class="string">"', customer_id = '"</span> . (int)$customer_id . <span class="string">"', firstname = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'firstname'</span>]) . <span class="string">"', lastname = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'lastname'</span>]) . <span class="string">"', company = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'company'</span>]) . <span class="string">"', address_1 = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'address_1'</span>]) . <span class="string">"', address_2 = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'address_2'</span>]) . <span class="string">"', city = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'city'</span>]) . <span class="string">"', postcode = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape($address[<span class="string">'postcode'</span>]) . <span class="string">"', country_id = '"</span> . (int)$address[<span class="string">'country_id'</span>] . <span class="string">"', zone_id = '"</span> . (int)$address[<span class="string">'zone_id'</span>] . <span class="string">"', custom_field = '"</span> . <span class="keyword">$this</span>-&gt;db-&gt;escape(<span class="keyword">isset</span>($address[<span class="string">'custom_field'</span>]) ? json_encode($address[<span class="string">'custom_field'</span>]) : json_encode(<span class="keyword">array</span>())) . <span class="string">"'"</span>);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">isset</span>($data[<span class="string">'default'</span>]) &amp;&amp; $data[<span class="string">'default'</span>] == $key) &#123;</span><br><span class="line">					$address_id = <span class="keyword">$this</span>-&gt;db-&gt;getLastId();</span><br><span class="line"></span><br><span class="line">					<span class="keyword">$this</span>-&gt;db-&gt;query(<span class="string">"UPDATE "</span> . DB_PREFIX . <span class="string">"customer SET address_id = '"</span> . (int)$address_id . <span class="string">"' WHERE customer_id = '"</span> . (int)$customer_id . <span class="string">"'"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>可以很清晰的看到，是一大堆的字符串与变量连接的sql语句，所以说Model部分是完全负责与数据库的交互，只要和Controller定义了接口，也就是每个函数的传参规定，就可以从业务逻辑和前端渲染完全脱离开来进行开发。当然这部分的安全是需要时刻小心的。可以看到上面的用户可用参数都运用了escape函数来进行过滤处理，降低sql注入的风险。由于我们分析的是修改操作，所以在Model这边没有回传数据，只是默默地对数据库进行update操作。现在我们看完了CM（controller和Model）,接着就是理解Controller是如何和View进行操作的。我们将看到ControllerCustomerCustomer类中的getForm方法的实现：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">getForm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		$data[<span class="string">'text_form'</span>] = !<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>]) ? <span class="keyword">$this</span>-&gt;language-&gt;get(<span class="string">'text_add'</span>) : <span class="keyword">$this</span>-&gt;language-&gt;get(<span class="string">'text_edit'</span>);</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'user_token'</span>] = <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>];</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'customer_id'</span>] = (int)<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'customer_id'</span>] = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'warning'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_warning'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'warning'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_warning'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'firstname'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_firstname'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'firstname'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_firstname'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'lastname'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_lastname'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'lastname'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_lastname'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'email'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_email'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'email'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_email'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'telephone'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_telephone'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'telephone'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_telephone'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'cheque'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_cheque'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'cheque'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_cheque'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'paypal'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_paypal'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'paypal'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_paypal'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'bank_account_name'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_bank_account_name'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'bank_account_name'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_bank_account_name'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'bank_account_number'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_bank_account_number'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'bank_account_number'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_bank_account_number'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'password'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_password'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'password'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_password'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'confirm'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_confirm'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'confirm'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_confirm'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'custom_field'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_custom_field'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'custom_field'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_custom_field'</span>] = <span class="keyword">array</span>();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;error[<span class="string">'address'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'error_address'</span>] = <span class="keyword">$this</span>-&gt;error[<span class="string">'address'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'error_address'</span>] = <span class="keyword">array</span>();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$url = <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_name'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;filter_name='</span> . urlencode(html_entity_decode(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_name'</span>], ENT_QUOTES, <span class="string">'UTF-8'</span>));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_email'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;filter_email='</span> . urlencode(html_entity_decode(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_email'</span>], ENT_QUOTES, <span class="string">'UTF-8'</span>));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_customer_group_id'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;filter_customer_group_id='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_customer_group_id'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_status'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;filter_status='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_status'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_ip'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;filter_ip='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_ip'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_date_added'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;filter_date_added='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'filter_date_added'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'sort'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;sort='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'sort'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'order'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;order='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'order'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'page'</span>])) &#123;</span><br><span class="line">			$url .= <span class="string">'&amp;page='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'page'</span>];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'breadcrumbs'</span>] = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'breadcrumbs'</span>][] = <span class="keyword">array</span>(</span><br><span class="line">			<span class="string">'text'</span> =&gt; <span class="keyword">$this</span>-&gt;language-&gt;get(<span class="string">'text_home'</span>),</span><br><span class="line">			<span class="string">'href'</span> =&gt; <span class="keyword">$this</span>-&gt;url-&gt;link(<span class="string">'common/dashboard'</span>, <span class="string">'user_token='</span> . <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>])</span><br><span class="line">		);</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'breadcrumbs'</span>][] = <span class="keyword">array</span>(</span><br><span class="line">			<span class="string">'text'</span> =&gt; <span class="keyword">$this</span>-&gt;language-&gt;get(<span class="string">'heading_title'</span>),</span><br><span class="line">			<span class="string">'href'</span> =&gt; <span class="keyword">$this</span>-&gt;url-&gt;link(<span class="string">'customer/customer'</span>, <span class="string">'user_token='</span> . <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>] . $url)</span><br><span class="line">		);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'action'</span>] = <span class="keyword">$this</span>-&gt;url-&gt;link(<span class="string">'customer/customer/add'</span>, <span class="string">'user_token='</span> . <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>] . $url);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'action'</span>] = <span class="keyword">$this</span>-&gt;url-&gt;link(<span class="string">'customer/customer/edit'</span>, <span class="string">'user_token='</span> . <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>] . <span class="string">'&amp;customer_id='</span> . <span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>] . $url);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'cancel'</span>] = <span class="keyword">$this</span>-&gt;url-&gt;link(<span class="string">'customer/customer'</span>, <span class="string">'user_token='</span> . <span class="keyword">$this</span>-&gt;session-&gt;data[<span class="string">'user_token'</span>] . $url);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>]) &amp;&amp; (<span class="keyword">$this</span>-&gt;request-&gt;server[<span class="string">'REQUEST_METHOD'</span>] != <span class="string">'POST'</span>)) &#123;</span><br><span class="line">			$customer_info = <span class="keyword">$this</span>-&gt;model_customer_customer-&gt;getCustomer(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;load-&gt;model(<span class="string">'customer/customer_group'</span>);</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'customer_groups'</span>] = <span class="keyword">$this</span>-&gt;model_customer_customer_group-&gt;getCustomerGroups();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'customer_group_id'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'customer_group_id'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'customer_group_id'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'customer_group_id'</span>] = $customer_info[<span class="string">'customer_group_id'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'customer_group_id'</span>] = <span class="keyword">$this</span>-&gt;config-&gt;get(<span class="string">'config_customer_group_id'</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'firstname'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'firstname'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'firstname'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'firstname'</span>] = $customer_info[<span class="string">'firstname'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'firstname'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'lastname'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'lastname'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'lastname'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'lastname'</span>] = $customer_info[<span class="string">'lastname'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'lastname'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'email'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'email'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'email'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'email'</span>] = $customer_info[<span class="string">'email'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'email'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'telephone'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'telephone'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'telephone'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'telephone'</span>] = $customer_info[<span class="string">'telephone'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'telephone'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Custom Fields</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;load-&gt;model(<span class="string">'customer/custom_field'</span>);</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'custom_fields'</span>] = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">		$filter_data = <span class="keyword">array</span>(</span><br><span class="line">			<span class="string">'sort'</span>  =&gt; <span class="string">'cf.sort_order'</span>,</span><br><span class="line">			<span class="string">'order'</span> =&gt; <span class="string">'ASC'</span></span><br><span class="line">		);</span><br><span class="line"></span><br><span class="line">		$custom_fields = <span class="keyword">$this</span>-&gt;model_customer_custom_field-&gt;getCustomFields($filter_data);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">foreach</span> ($custom_fields <span class="keyword">as</span> $custom_field) &#123;</span><br><span class="line">			$data[<span class="string">'custom_fields'</span>][] = <span class="keyword">array</span>(</span><br><span class="line">				<span class="string">'custom_field_id'</span>    =&gt; $custom_field[<span class="string">'custom_field_id'</span>],</span><br><span class="line">				<span class="string">'custom_field_value'</span> =&gt; <span class="keyword">$this</span>-&gt;model_customer_custom_field-&gt;getCustomFieldValues($custom_field[<span class="string">'custom_field_id'</span>]),</span><br><span class="line">				<span class="string">'name'</span>               =&gt; $custom_field[<span class="string">'name'</span>],</span><br><span class="line">				<span class="string">'value'</span>              =&gt; $custom_field[<span class="string">'value'</span>],</span><br><span class="line">				<span class="string">'type'</span>               =&gt; $custom_field[<span class="string">'type'</span>],</span><br><span class="line">				<span class="string">'location'</span>           =&gt; $custom_field[<span class="string">'location'</span>],</span><br><span class="line">				<span class="string">'sort_order'</span>         =&gt; $custom_field[<span class="string">'sort_order'</span>]</span><br><span class="line">			);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'custom_field'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'account_custom_field'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'custom_field'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'account_custom_field'</span>] = json_decode($customer_info[<span class="string">'custom_field'</span>], <span class="keyword">true</span>);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'account_custom_field'</span>] = <span class="keyword">array</span>();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'newsletter'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'newsletter'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'newsletter'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'newsletter'</span>] = $customer_info[<span class="string">'newsletter'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'newsletter'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'status'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'status'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'status'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'status'</span>] = $customer_info[<span class="string">'status'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'status'</span>] = <span class="keyword">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'safe'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'safe'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'safe'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'safe'</span>] = $customer_info[<span class="string">'safe'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'safe'</span>] = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'password'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'password'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'password'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'password'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'confirm'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'confirm'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'confirm'</span>];</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'confirm'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;load-&gt;model(<span class="string">'localisation/country'</span>);</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'countries'</span>] = <span class="keyword">$this</span>-&gt;model_localisation_country-&gt;getCountries();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'address'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'addresses'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'address'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'addresses'</span>] = <span class="keyword">$this</span>-&gt;model_customer_customer-&gt;getAddresses(<span class="keyword">$this</span>-&gt;request-&gt;get[<span class="string">'customer_id'</span>]);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'addresses'</span>] = <span class="keyword">array</span>();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'default'</span>])) &#123;</span><br><span class="line">			$data[<span class="string">'default'</span>] = <span class="keyword">$this</span>-&gt;request-&gt;post[<span class="string">'default'</span>];</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (!<span class="keyword">empty</span>($customer_info)) &#123;</span><br><span class="line">			$data[<span class="string">'default'</span>] = array_search($customer_info[<span class="string">'address_id'</span>], array_column($data[<span class="string">'addresses'</span>], <span class="string">'address_id'</span>));</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$data[<span class="string">'default'</span>] = <span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$data[<span class="string">'header'</span>] = <span class="keyword">$this</span>-&gt;load-&gt;controller(<span class="string">'common/header'</span>);</span><br><span class="line">		$data[<span class="string">'column_left'</span>] = <span class="keyword">$this</span>-&gt;load-&gt;controller(<span class="string">'common/column_left'</span>);</span><br><span class="line">		$data[<span class="string">'footer'</span>] = <span class="keyword">$this</span>-&gt;load-&gt;controller(<span class="string">'common/footer'</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;response-&gt;setOutput(<span class="keyword">$this</span>-&gt;load-&gt;view(<span class="string">'customer/customer_form'</span>, $data));</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>其实这个部分就是把前台View需要用到的事先约定的一些变量名，通过$data字典的形式传递，所有的这些$data字典的key值要么直接来自于post，get请求或者请求头，要么来自于数据库查询，要么来自业务自定义。最后通过$this-&gt;load-&gt;view(‘customer/customer_form’, $data)传递给前台View,从而继续进行渲染。紧接着我们来一窥customer/customer_form:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123; header &#125;&#125;&#123;&#123; column_left &#125;&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"page-header"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container-fluid"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"float-right"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">form</span>=<span class="string">"form-customer"</span> <span class="attr">data-toggle</span>=<span class="string">"tooltip"</span> <span class="attr">title</span>=<span class="string">"&#123;&#123; button_save &#125;&#125;"</span> <span class="attr">class</span>=<span class="string">"btn btn-primary"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fas fa-save"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; cancel &#125;&#125;"</span> <span class="attr">data-toggle</span>=<span class="string">"tooltip"</span> <span class="attr">title</span>=<span class="string">"&#123;&#123; button_cancel &#125;&#125;"</span> <span class="attr">class</span>=<span class="string">"btn btn-light"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fas fa-reply"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;&#123; heading_title &#125;&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"breadcrumb"</span>&gt;</span></span><br><span class="line">        &#123;% for breadcrumb in breadcrumbs %&#125;</span><br><span class="line">          <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"breadcrumb-item"</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; breadcrumb.href &#125;&#125;"</span>&gt;</span>&#123;&#123; breadcrumb.text &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        &#123;% endfor %&#125;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container-fluid"</span>&gt;</span></span><br><span class="line">    &#123;% if error_warning %&#125;</span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"alert alert-danger alert-dismissible"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fas fa-exclamation-circle"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> &#123;&#123; error_warning &#125;&#125;</span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">class</span>=<span class="string">"close"</span> <span class="attr">data-dismiss</span>=<span class="string">"alert"</span>&gt;</span>&amp;times;<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">......(此处省略N多行)</span><br></pre></td></tr></table></figure>
+<p>可以看到上面的twig前端语言基本双大括号里面的变量就是我们$data变量的key值，同样twig模板一些命令控制语句，可以用来减少html代码的编写量和处理简单的output逻辑，剩下的基本就是html的标签，就是普通的html文本。最后通过渲染引擎呈现给客户端。我们按下保存可以看到返回的界面如下；<br><img src="/myimages/MVC/success.jpg" alt="image"></p>
+<p>红圈是我们这次的处理逻辑按钮，蓝色圈的按钮是和本次处理逻辑类似的连个业务，而黑色圈的语句就是调用了language模块返回的语句，可以参考上面的admin/language/customer/customer/customer.php language文件。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>这是一篇总结自己学习MVC的不成熟笔记，主要以opencart为例，很多细节仍旧没有涉及，相关的理解或许仍旧有不到位的地方。今后会专门学习几个MVC的web框架来增强自己的理解和提升自己的架构能力。在这个分析的过程中逐渐有点理解到框架的力量和架构好的代码大致是个什么样子，ok,路还很长，且行且珍惜！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/06/基于opencert的MVC架构理解/">基于opencert的MVC架构理解</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月06日 - 16:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月06日 - 16:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/06/基于opencert的MVC架构理解/" title="基于opencert的MVC架构理解">http://lypto.me/2018/12/06/基于opencert的MVC架构理解/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag"># php</a>
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/05/python-matplotlib-画图/" rel="next" title="python matplotlib 画图">
+                <i class="fa fa-chevron-left"></i> python matplotlib 画图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/06/tor匿名协议理解一/" rel="prev" title="tor匿名协议理解一">
+                tor匿名协议理解一 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MVC三层架构含义"><span class="nav-number">1.</span> <span class="nav-text">MVC三层架构含义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Model："><span class="nav-number">1.0.1.</span> <span class="nav-text">Model：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View："><span class="nav-number">1.0.2.</span> <span class="nav-text">View：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller："><span class="nav-number">1.0.3.</span> <span class="nav-text">Controller：</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#模板引擎"><span class="nav-number">2.</span> <span class="nav-text">模板引擎</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web框架"><span class="nav-number">3.</span> <span class="nav-text">web框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#opencert为例深入理解MVC开发模式"><span class="nav-number">4.</span> <span class="nav-text">opencert为例深入理解MVC开发模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简化的目录结构（只专注于学习MVC需要了解到的目录结构）"><span class="nav-number">4.0.1.</span> <span class="nav-text">简化的目录结构（只专注于学习MVC需要了解到的目录结构）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一次完整的请求过程"><span class="nav-number">4.0.2.</span> <span class="nav-text">一次完整的请求过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/06/基于opencert的MVC架构理解/';
+          this.page.identifier = '2018/12/06/基于opencert的MVC架构理解/';
+          this.page.title = '基于opencert的MVC架构理解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

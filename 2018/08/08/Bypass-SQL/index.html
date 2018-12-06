@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -143,7 +143,7 @@
 
 
 
-  <title>Bypass_SQL | Blog of 1ypt0</title>
+  <title>Bypass_SQL | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -154,7 +154,7 @@
 
 
 
-  <script type="text/javascript">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -443,11 +443,12 @@
       
         <blockquote>
 <p>之前对sql注入的原理方面的梳理比较多，现在打算对sql的Bypass技巧进行一个小小的总结，这里的技术是笔者进行了大量资料的阅读以及亲自实践，总结的是很不全面，有兴趣的可以继续对参考链接进行更深的学习。<br><a id="more"></a></p>
-</blockquote>
 <h1 id="SQL-Bypass"><a href="#SQL-Bypass" class="headerlink" title="SQL Bypass"></a>SQL Bypass</h1><ol>
-<li><p>大小写绕过</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sElECt</span> * <span class="keyword">FrOM</span> <span class="keyword">TEST</span>;</span><br></pre></td></tr></table></figure>
+<li>大小写绕过<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sElECt</span> * <span class="keyword">FrOM</span> <span class="keyword">TEST</span>;</span><br></pre></td></tr></table></figure>
 </li>
+</ol>
+</blockquote>
+<ol>
 <li><p>特殊执行</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#特殊代码执行</span></span><br><span class="line">/*!select*/ * /*!from*/ /*!test*/</span><br></pre></td></tr></table></figure>
 </li>
@@ -458,7 +459,7 @@
 </li>
 </ol>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 利用char支持最大4个字符的特性，进行字符串拼接,字符串的数字值可由select hex("pass"),select hex("word")求出</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">concat</span>(<span class="built_in">char</span>(<span class="number">1885434739</span>),<span class="built_in">char</span>(<span class="number">2003792484</span>)) ;<span class="comment">--select password</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">concat</span>(<span class="built_in">char</span>(x<span class="string">'70617373'</span>),<span class="built_in">char</span>(b<span class="string">'1110111011011110111001001100100'</span>)) <span class="comment">#"password"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用‘\’进行关键字转义</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="string">'he\l\lo'</span>=<span class="string">'hello'</span> <span class="comment">--SELECT 1;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#调用extractvalue()</span></span><br><span class="line"><span class="keyword">SELECT</span>(extractvalue(<span class="number">0x3C613E61646D696E3C2F613E</span>,<span class="number">0x2f61</span>));  <span class="comment">--select admin;</span></span><br></pre></td></tr></table></figure>
-<ol start="5">
+<ol>
 <li><p>运算符绕过<br>针对不同的DBMS，其操作符不一样，在某些字符串被filter掉的时候，我们可以尝试使用operators<br><a href="https://www.postgresql.org/docs/6.5/static/operators1716.htm" target="_blank" rel="noopener">https://www.postgresql.org/docs/6.5/static/operators1716.htm</a><br><a href="https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html</a><br><a href="https://docs.oracle.com/html/A95915_01/sqopr.htm" target="_blank" rel="noopener">https://docs.oracle.com/html/A95915_01/sqopr.htm</a>   </p>
 </li>
 <li><p>HPP/HPF/HPC(详情参看之前写的文章——<a href="http://lypto.me/2017/11/23/SQL%E6%8D%A3%E9%BC%93/">sql注入捣鼓</a></p>
@@ -468,15 +469,15 @@
 </ol>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$link = mysql_connect(<span class="string">'server'</span>, <span class="string">'username'</span>, <span class="string">'password'</span>);</span><br><span class="line">mysql_select_db(<span class="string">'database'</span>, $link);</span><br><span class="line"><span class="keyword">for</span>($i = <span class="number">0</span>; $i&lt;= <span class="number">255</span>;$i++) &#123;</span><br><span class="line">$chr = chr($i);</span><br><span class="line"><span class="keyword">for</span>($j = <span class="number">0</span>; $j&lt;=<span class="number">255</span>;$j++) &#123;</span><br><span class="line">$chr2 = chr($j);</span><br><span class="line"><span class="keyword">if</span>(mysql_query(<span class="string">'SELECT'</span>.$chr.<span class="string">'1'</span>.$chr2.<span class="string">''</span>, $link)) &#123;</span><br><span class="line"><span class="keyword">echo</span> dechex($i).<span class="string">','</span>.dechex($j).<span class="string">'&lt;br&gt;'</span>;</span><br><span class="line">&#125; &#125; &#125;</span><br></pre></td></tr></table></figure>
 <p>结果：<br><img src="/myimages/bypass/sql_intermediary.png" alt="IMAGES"><br>更多的细节可以参考 <a href="https://websec.ca/kb/sql_injection#MySQL_Fuzzing_Obfuscation" target="_blank" rel="noopener">https://websec.ca/kb/sql_injection#MySQL_Fuzzing_Obfuscation</a>    </p>
-<ol start="8">
+<ol>
 <li>编码绕过</li>
 </ol>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#URL Encoding	</span></span><br><span class="line"><span class="keyword">SELECT</span> %<span class="number">74</span>able_%<span class="number">6</span>eame <span class="keyword">FROM</span> information_schema.tables;</span><br><span class="line"><span class="comment">#Double URL Encoding	</span></span><br><span class="line"><span class="keyword">SELECT</span> %<span class="number">2574</span>able_%<span class="number">256</span>eame <span class="keyword">FROM</span> information_schema.tables;</span><br><span class="line"><span class="comment">#Unicode Encoding	</span></span><br><span class="line"><span class="keyword">SELECT</span> %u0074able_%u6eame <span class="keyword">FROM</span> information_schema.tables;</span><br><span class="line"><span class="comment">#Invalid Hex Encoding (ASP)	</span></span><br><span class="line"><span class="keyword">SELECT</span> %tab%le_%na%me <span class="keyword">FROM</span> information_schema.tables;</span><br></pre></td></tr></table></figure>
-<ol start="9">
+<ol>
 <li>mysql的弱类型</li>
 </ol>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="number">0</span>=<span class="string">'hello'</span>;  <span class="comment"># true</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="number">1</span>=<span class="string">'hello'</span>;  <span class="comment"># false</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="number">1</span>=<span class="string">'1hello'</span>; <span class="comment">#true</span></span><br></pre></td></tr></table></figure>
-<ol start="10">
+<ol>
 <li><p>避开使用关键字的正则绕过技巧</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#Spaces</span><br><span class="line">SELECT schema_name FROM information_schema .    schemata; </span><br><span class="line">#Backticks</span><br><span class="line">SELECT schema_name FROM `information_schema`.`schemata`; </span><br><span class="line">#Alternative Names(别名)，注意到以下几个表格的内容并不是完全一致，而是存在有细微的差别，主要体现在键值的影响上。</span><br><span class="line">information_schema.table=</span><br><span class="line">information_schema.partitions=   </span><br><span class="line">information_schema.statistics=  </span><br><span class="line">information_schema.key_column_usage=   </span><br><span class="line">information_schema.table_constraints</span><br></pre></td></tr></table></figure>
 </li>
@@ -680,7 +681,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -691,7 +692,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -702,7 +703,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -785,7 +786,7 @@
                 </li>
               
                 <li class="links-of-blogroll-item">
-                  <a href="https://dimo233.github.io/" title="去师傅" target="_blank">去师傅</a>
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
                 </li>
               
                 <li class="links-of-blogroll-item">
@@ -806,6 +807,10 @@
               
                 <li class="links-of-blogroll-item">
                   <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
                 </li>
               
             </ul>
@@ -1342,9 +1347,28 @@
 
 
   
+  
+
 
   
 
   
 
-</div></body></html>
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

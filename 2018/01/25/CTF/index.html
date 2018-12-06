@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -140,7 +140,7 @@
 
 
 
-  <title>CTF | Blog of 1ypt0</title>
+  <title>CTF | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +151,7 @@
 
 
 
-  <script type="text/javascript">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -440,9 +440,9 @@
       
         <blockquote>
 <p>这是一篇不系统的，比较杂碎的ctf涉及的小技巧汇总，灵光一现的记录自己在做题或者看writeup中的一些小细节，正所谓“不积细流，无以成江海”。<br><a id="more"></a></p>
-</blockquote>
-<h3 id="1-zip-–symble"><a href="#1-zip-–symble" class="headerlink" title="1.zip –symble"></a>1.zip –symble</h3><p>命令进行压缩后的文件是可以跨宿主机传递link信息的，然后解压成的文件会在新的宿主机里面进行新的连接，从而在php中的命令执行函数，如shell_exec（）解压命令可以造成宿主机信息泄露.<br><a href="https://www.rootnetsec.com/34c3ctf-junior-upload/" target="_blank" rel="noopener">例子传送门</a>  </p>
+<h3 id="1-zip-—symble"><a href="#1-zip-—symble" class="headerlink" title="1.zip —symble"></a>1.zip —symble</h3><p>命令进行压缩后的文件是可以跨宿主机传递link信息的，然后解压成的文件会在新的宿主机里面进行新的连接，从而在php中的命令执行函数，如shell_exec（）解压命令可以造成宿主机信息泄露.<br><a href="https://www.rootnetsec.com/34c3ctf-junior-upload/" target="_blank" rel="noopener">例子传送门</a>  </p>
 <h3 id="2-PHP的序列化与反序列化"><a href="#2-PHP的序列化与反序列化" class="headerlink" title="2.PHP的序列化与反序列化"></a>2.PHP的序列化与反序列化</h3><p>php反序列化成立的条件：</p>
+</blockquote>
 <ol>
 <li>一个用户可空的反序列点</li>
 <li>这个反序列点的过滤是不完全的，也即hacker可以去绕过过滤传入一个对象。</li>
@@ -469,7 +469,7 @@
 <li>$_SERVER[‘HTTP_CLIENT_IP’],$_SERVER[‘HTTP_X_FORWARDED_FOR’]里面的用户ip是不可靠的（他们来自于用户的http请求头），只有$_SERVER[‘REMOTE_ADDR’]是基于tcp/ip协议底层的ip地址。</li>
 </ul>
 <h3 id="13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用"><a href="#13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用" class="headerlink" title="13.select `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用"></a>13.<code>select</code> `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用</h3><p><a href="https://github.com/rkmylo/ctf-write-ups/tree/master/2018-n1ctf/web/easy-php-540" target="_blank" rel="noopener">这是一道非常厉害的ctf题</a></p>
-<h3 id="14-常用的命令执行函数："><a href="#14-常用的命令执行函数：" class="headerlink" title="14.常用的命令执行函数："></a>14.常用的命令执行函数：</h3><h5 id="14-1-exec-system-popen-shell-exec-与反撇号执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行"><a href="#14-1-exec-system-popen-shell-exec-与反撇号执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行" class="headerlink" title="14.1  exec,system,popen,shell_exec(与反撇号执行的效果差不多)，passthru,proc_open，eval(这个不是系统命令执行，而实php代码执行)"></a>14.1  <code>exec</code>,<code>system</code>,<code>popen</code>,<code>shell_exec</code>(与反撇号<code></code>执行的效果差不多)，<code>passthru</code>,<code>proc_open</code>，<code>eval</code>(这个不是系统命令执行，而实php代码执行)</h5><h3 id="15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell"><a href="#15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell" class="headerlink" title="15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell."></a>15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell.</h3><h3 id="16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"><a href="#16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。" class="headerlink" title="16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"></a>16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。</h3><ul>
+<h3 id="14-常用的命令执行函数："><a href="#14-常用的命令执行函数：" class="headerlink" title="14.常用的命令执行函数："></a>14.常用的命令执行函数：</h3><h5 id="14-1-exec-system-popen-shell-exec-与反撇号-执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行"><a href="#14-1-exec-system-popen-shell-exec-与反撇号-执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行" class="headerlink" title="14.1  exec,system,popen,shell_exec(与反撇号`执行的效果差不多)，passthru,proc_open，eval`(这个不是系统命令执行，而实php代码执行)"></a>14.1  <code>exec</code>,<code>system</code>,<code>popen</code>,<code>shell_exec</code>(与反撇号<code>`执行的效果差不多)，</code>passthru<code>,</code>proc_open<code>，</code>eval`(这个不是系统命令执行，而实php代码执行)</h5><h3 id="15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell"><a href="#15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell" class="headerlink" title="15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell."></a>15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell.</h3><h3 id="16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"><a href="#16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。" class="headerlink" title="16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"></a>16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。</h3><ul>
 <li>这个点又常常在html-&gt;pdf的提交类web站点实现利用。<br><a href="https://github.com/Beers4Flags/writeups/tree/master/2018/NoNameCon/web/Bank" target="_blank" rel="noopener">例题：NoNameCon CTF Quals 2018 / Web / bank</a><br><a href="https://cure53.de/pentest-report_accessmyinfo.pdf" target="_blank" rel="noopener">相关知识点</a></li>
 </ul>
 <h3 id="17-关于referer请求头"><a href="#17-关于referer请求头" class="headerlink" title="17.关于referer请求头"></a>17.<a href="https://omega-coder.github.io/ctf/writeups/2018/04/21/Click_Me_Chall/" target="_blank" rel="noopener">关于referer请求头</a></h3><h3 id="18-XEE漏洞"><a href="#18-XEE漏洞" class="headerlink" title="18.XEE漏洞"></a>18.XEE漏洞</h3><h3 id="19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"><a href="#19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。" class="headerlink" title="19.path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"></a>19.<code>path、dir、file、pag、page、archive、p、eng</code>这些关键字眼可能暗示存在文件包含。</h3><h3 id="20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。"><a href="#20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。" class="headerlink" title="20. system(),eval(),两个函数是可以对open_basedir绕过的两个函数，这函数不受open_basedir的限制。"></a>20. <code>system()</code>,<code>eval()</code>,两个函数是可以对<code>open_basedir</code>绕过的两个函数，这函数不受<code>open_basedir</code>的限制。</h3><p><a href="https://ctftime.org/writeup/10041" target="_blank" rel="noopener">例子</a></p>
@@ -658,7 +658,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -669,7 +669,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -680,7 +680,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -763,7 +763,7 @@
                 </li>
               
                 <li class="links-of-blogroll-item">
-                  <a href="https://dimo233.github.io/" title="去师傅" target="_blank">去师傅</a>
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
                 </li>
               
                 <li class="links-of-blogroll-item">
@@ -786,6 +786,10 @@
                   <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
                 </li>
               
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
             </ul>
           </div>
         
@@ -805,7 +809,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-zip-–symble"><span class="nav-number">1.</span> <span class="nav-text">1.zip –symble</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-PHP的序列化与反序列化"><span class="nav-number">2.</span> <span class="nav-text">2.PHP的序列化与反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-PHP中的-REQUEST传参是具有默认顺序的，使用-REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user-note中的一段原话："><span class="nav-number">3.</span> <span class="nav-text">3.PHP中的$_REQUEST传参是具有默认顺序的，使用$_REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user note中的一段原话：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#例如：ctf一道sql注入题"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">例如：ctf一道sql注入题</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#4-一个tip"><span class="nav-number">4.</span> <span class="nav-text">4.一个tip</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ctf中一道使用例题"><span class="nav-number">4.0.1.</span> <span class="nav-text">ctf中一道使用例题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-本地文件包含中我们可以做的一些信息提取或者提权"><span class="nav-number">5.</span> <span class="nav-text">5.本地文件包含中我们可以做的一些信息提取或者提权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-尝试不同的http请求方法"><span class="nav-number">6.</span> <span class="nav-text">6.尝试不同的http请求方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-关于源码泄露"><span class="nav-number">7.</span> <span class="nav-text">7.关于源码泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-url编码绕过"><span class="nav-number">8.</span> <span class="nav-text">8.url编码绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-路径遍历中如果过滤函数为str-replace-quot-quot-quot-quot-变量-，可以使用-绕过，对于-被删除的filter-使用-思想绕过"><span class="nav-number">9.</span> <span class="nav-text">9.路径遍历中如果过滤函数为str_replace(&quot;../&quot;,&quot;./&quot;,$(变量))，可以使用.../绕过，对于../被删除的filter,使用....//思想绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-一次很典型的sql注入的解题思路"><span class="nav-number">10.</span> <span class="nav-text">10. 一次很典型的sql注入的解题思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-php随机数预测crack"><span class="nav-number">11.</span> <span class="nav-text">11. php随机数预测crack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-php获取信息的-SERVER数组"><span class="nav-number">12.</span> <span class="nav-text">12.php获取信息的$_SERVER数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用"><span class="nav-number">13.</span> <span class="nav-text">13.select `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-常用的命令执行函数："><span class="nav-number">14.</span> <span class="nav-text">14.常用的命令执行函数：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#14-1-exec-system-popen-shell-exec-与反撇号执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行"><span class="nav-number">14.0.1.</span> <span class="nav-text">14.1  exec,system,popen,shell_exec(与反撇号执行的效果差不多)，passthru,proc_open，eval(这个不是系统命令执行，而实php代码执行)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell"><span class="nav-number">15.</span> <span class="nav-text">15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"><span class="nav-number">16.</span> <span class="nav-text">16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-关于referer请求头"><span class="nav-number">17.</span> <span class="nav-text">17.关于referer请求头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-XEE漏洞"><span class="nav-number">18.</span> <span class="nav-text">18.XEE漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"><span class="nav-number">19.</span> <span class="nav-text">19.path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。"><span class="nav-number">20.</span> <span class="nav-text">20. system(),eval(),两个函数是可以对open_basedir绕过的两个函数，这函数不受open_basedir的限制。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-SHA1-Collision-attack"><span class="nav-number">21.</span> <span class="nav-text">21.SHA1 Collision attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-在一些设计浏览器的ctf中-有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse"><span class="nav-number">22.</span> <span class="nav-text">22.在一些设计浏览器的ctf中,有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-SSTI白皮书"><span class="nav-number">23.</span> <span class="nav-text">23.SSTI白皮书</span></a></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-zip-—symble"><span class="nav-number">1.</span> <span class="nav-text">1.zip —symble</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-PHP的序列化与反序列化"><span class="nav-number">2.</span> <span class="nav-text">2.PHP的序列化与反序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-PHP中的-REQUEST传参是具有默认顺序的，使用-REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user-note中的一段原话："><span class="nav-number">3.</span> <span class="nav-text">3.PHP中的$_REQUEST传参是具有默认顺序的，使用$_REQUEST作为检测点往往会造成重写绕过。以下为php官方文档的user note中的一段原话：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#例如：ctf一道sql注入题"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">例如：ctf一道sql注入题</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#4-一个tip"><span class="nav-number">4.</span> <span class="nav-text">4.一个tip</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ctf中一道使用例题"><span class="nav-number">4.0.1.</span> <span class="nav-text">ctf中一道使用例题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-本地文件包含中我们可以做的一些信息提取或者提权"><span class="nav-number">5.</span> <span class="nav-text">5.本地文件包含中我们可以做的一些信息提取或者提权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-尝试不同的http请求方法"><span class="nav-number">6.</span> <span class="nav-text">6.尝试不同的http请求方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-关于源码泄露"><span class="nav-number">7.</span> <span class="nav-text">7.关于源码泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-url编码绕过"><span class="nav-number">8.</span> <span class="nav-text">8.url编码绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-路径遍历中如果过滤函数为str-replace-quot-quot-quot-quot-变量-，可以使用-绕过，对于-被删除的filter-使用-思想绕过"><span class="nav-number">9.</span> <span class="nav-text">9.路径遍历中如果过滤函数为str_replace(&quot;../&quot;,&quot;./&quot;,$(变量))，可以使用.../绕过，对于../被删除的filter,使用....//思想绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-一次很典型的sql注入的解题思路"><span class="nav-number">10.</span> <span class="nav-text">10. 一次很典型的sql注入的解题思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-php随机数预测crack"><span class="nav-number">11.</span> <span class="nav-text">11. php随机数预测crack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-php获取信息的-SERVER数组"><span class="nav-number">12.</span> <span class="nav-text">12.php获取信息的$_SERVER数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-select-version-，可以用来过空格和正则，特殊情况下还可以将其做注释符用"><span class="nav-number">13.</span> <span class="nav-text">13.select `version()`   ，可以用来过空格和正则，特殊情况下还可以将其做注释符用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-常用的命令执行函数："><span class="nav-number">14.</span> <span class="nav-text">14.常用的命令执行函数：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#14-1-exec-system-popen-shell-exec-与反撇号-执行的效果差不多-，passthru-proc-open，eval-这个不是系统命令执行，而实php代码执行"><span class="nav-number">14.0.1.</span> <span class="nav-text">14.1  exec,system,popen,shell_exec(与反撇号`执行的效果差不多)，passthru,proc_open，eval`(这个不是系统命令执行，而实php代码执行)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传-htaccess-修改绕过规则，然后再上传shell"><span class="nav-number">15.</span> <span class="nav-text">15. 在绕过上传漏洞出现较多的文件后缀过滤的情况，可以尝试先上传.htaccess 修改绕过规则，然后再上传shell.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-在一些支持file-XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。"><span class="nav-number">16.</span> <span class="nav-text">16. 在一些支持file,XHR跨站请求的浏览器中，我们可以使用这个协议来获得文件内容。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-关于referer请求头"><span class="nav-number">17.</span> <span class="nav-text">17.关于referer请求头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-XEE漏洞"><span class="nav-number">18.</span> <span class="nav-text">18.XEE漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。"><span class="nav-number">19.</span> <span class="nav-text">19.path、dir、file、pag、page、archive、p、eng这些关键字眼可能暗示存在文件包含。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-system-eval-两个函数是可以对open-basedir绕过的两个函数，这函数不受open-basedir的限制。"><span class="nav-number">20.</span> <span class="nav-text">20. system(),eval(),两个函数是可以对open_basedir绕过的两个函数，这函数不受open_basedir的限制。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-SHA1-Collision-attack"><span class="nav-number">21.</span> <span class="nav-text">21.SHA1 Collision attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-在一些设计浏览器的ctf中-有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse"><span class="nav-number">22.</span> <span class="nav-text">22.在一些设计浏览器的ctf中,有个网址可以查看各个浏览器以及各个版本对一些html的支持情况，从而发现一些端倪。caniuse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#23-SSTI白皮书"><span class="nav-number">23.</span> <span class="nav-text">23.SSTI白皮书</span></a></li></div>
             
 
           </div>
@@ -1320,9 +1324,28 @@
 
 
   
+  
+
 
   
 
   
 
-</div></body></html>
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
