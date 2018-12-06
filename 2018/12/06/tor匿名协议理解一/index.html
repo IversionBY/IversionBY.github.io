@@ -105,16 +105,16 @@
 <meta property="og:description" content="近来对匿名网络的原理比较感兴趣，当然在现在的世界上也有者着一批匿名协议，其中tor的匿名协议可以说是比较成功的，所以打算以tor匿名协议为例，研究匿名通信的相关理论以及实现细节，这篇文章作为一个开篇，记录学习路上的心得。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/index.jpg">
-<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/htw1.png">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/htw1.jpg">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/htw2.png">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/htw3.png">
-<meta property="og:image" content="http://lypto.me/2018/12/06/tor匿名协议理解一/myimages/tor协议理解/ser1.png">
-<meta property="og:image" content="http://lypto.me/2018/12/06/tor匿名协议理解一/myimages/tor协议理解/ser2.png">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/ser1.png">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/ser2.png">
 <meta property="og:image" content="http://lypto.me/myimages/tor协议理解/ser3.png">
-<meta property="og:image" content="http://lypto.me/2018/12/06/tor匿名协议理解一/myimages/tor协议理解/ser4.png">
-<meta property="og:image" content="http://lypto.me/2018/12/06/tor匿名协议理解一/myimages/tor协议理解/ser5.png">
-<meta property="og:image" content="http://lypto.me/2018/12/06/tor匿名协议理解一/myimages/tor协议理解/ser6.png">
-<meta property="og:updated_time" content="2018-12-06T09:09:18.424Z">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/ser4.png">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/ser5.png">
+<meta property="og:image" content="http://lypto.me/myimages/tor协议理解/ser6.png">
+<meta property="og:updated_time" content="2018-12-06T10:13:42.118Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tor匿名协议理解一">
 <meta name="twitter:description" content="近来对匿名网络的原理比较感兴趣，当然在现在的世界上也有者着一批匿名协议，其中tor的匿名协议可以说是比较成功的，所以打算以tor匿名协议为例，研究匿名通信的相关理论以及实现细节，这篇文章作为一个开篇，记录学习路上的心得。">
@@ -452,8 +452,11 @@
       
         <p><img style="margin: auto;" src="/myimages/tor协议理解/index.jpg" height="450" width="450"></p>
 <blockquote>
-<p>近来对匿名网络的原理比较感兴趣，当然在现在的世界上也有者着一批匿名协议，其中tor的匿名协议可以说是比较成功的，所以打算以tor匿名协议为例，研究匿名通信的相关理论以及实现细节，这篇文章作为一个开篇，记录学习路上的心得。<br><a id="more"></a></p>
-<h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>以下对tor协议系统的总结翻译自说明文档</p>
+<p>近来对匿名网络的原理比较感兴趣，当然在现在的世界上也有者着一批匿名协议，其中tor的匿名协议可以说是比较成功的，所以打算以tor匿名协议为例，研究匿名通信的相关理论以及实现细节，这篇文章作为一个开篇，记录学习路上的心得。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><blockquote>
+<p>以下对tor协议系统的总结翻译自说明文档</p>
 </blockquote>
 <p>Tor是一个基于TCP的，低延迟的匿名分布式覆盖网络应用集合，比如web浏览器，secure shell,即时通讯等。客户端通过网络建立一个链路，在这个链路中，每一个结点（OR），只知道它的前一个结点和后一个节点，但是不会知晓其他任何结点的相关信息。信息以固定大小的包流通在链路上，每个流过结点都使用对称密钥来解包，就好像一层一层的洋葱一样，然后包依次传递给下一个结点。</p>
 <h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h3 id="TLS（Transport-Layer-Security）"><a href="#TLS（Transport-Layer-Security）" class="headerlink" title="TLS（Transport Layer Security）"></a>TLS（Transport Layer Security）</h3><p>安全传输层协议（TLS）用于在两个通信应用程序之间提供保密性和数据完整性。TSL是SSL的标准化，也就是访问https网址时候使用的加密协议，在tor协议里面，TSL用来进行每一层的通信加密。</p>
@@ -485,22 +488,28 @@
 </ul>
 <h1 id="客户端匿名访问协议和服务隐藏协议"><a href="#客户端匿名访问协议和服务隐藏协议" class="headerlink" title="客户端匿名访问协议和服务隐藏协议"></a>客户端匿名访问协议和服务隐藏协议</h1><h3 id="客户端匿名访问协议"><a href="#客户端匿名访问协议" class="headerlink" title="客户端匿名访问协议"></a>客户端匿名访问协议</h3><p>所谓的匿名访问协议指的是保护访问者的身份的一个Tor协议，它的实现是在已经建立的TLS链接的基础上，通过依次与OR进行DF密钥协商，然后使用交换后的加密密钥来进行上层应用的通信。因为协商密钥的过程是OP与OR依次按照顺序进行的，所以每个OR结点都只能知晓和自己相连的前一个和后一个节点，这样就可以起到很好的客户端匿名访问的功能。</p>
 <blockquote>
-<p>以下图例来自官网，文字借鉴参考官方文档和硕士论文：《基于Tor的反向匿名信道建立技术研究》<br><img src="\myimages\tor协议理解\htw1.png" alt="image">  </p>
+<p>以下图例来自官网，文字借鉴参考官方文档和硕士论文：《基于Tor的反向匿名信道建立技术研究》<br><img src="/myimages/tor协议理解/htw1.jpg" alt="image">  </p>
 </blockquote>
-<p>Alice为使用洋葱代理OP的用户； Dave为目录服务器； Jane<br>和 Bob为应用服务器（例如， Web服务器）；其他主机为互联网中的主机；而带<br>绿色十字标志的为Tor网络中的结点，也就是洋葱路由器OR。此处以 Alice通过<br>Tor网络进行应用服务器的访问为例，简单介绍Tor的主要工作过程。<br>Alice在使用 Tor之前， 首先需要在其主机上安装洋葱代理OP并运行， 并将浏<br>览器或其他需要使用匿名通信服务的应用程序的代理设置为本地 OP所监听的地<br>址与端口。之后， Alice可以按照常规方式使用应用程序而无需做任何其他 Tor相<br>关的操作。被启动之后， OP利用连通的Tor网络透明地执行以下过程：<br>（1） OP尝试连接目录服务器，以获取Tor网络的结点信息；<br>（2）当最新的 Tor网络结点列表被成功下载之后， OP可以根据自身默认的配<br>置以及用户的配置进行Tor结点的选择，从而建立如下图所示的数据链路：<br><img src="\myimages\tor协议理解\htw2.png" alt="image"><br>得注意的是，在链路建立的过程中，每次只拓展一个链路结点（关于建立连接和拓展的过程我们将在下一篇中进行细致的讲解）。并且， OP<br>与链路上的每一个结点都会协商一组独立的对称密钥。这样，确保了每一跳在传<br>送数据包时都无法被跟踪，也就是说，链路上的每一个结点只知道其前序结点和<br>后继结点，而不会知道整条完整的链路。图2.2中，从Alice开始，绿色连接线的<br>部分说明 Alice通过三次链路拓展形成一条完整的链路，并且链路是经过加密的。<br>链路的出口结点利用非加密的方式连接到了应用服务器Bob。<br>（3）一旦通信链路建立完成，各种类型的数据均可以进行交换，或者说各种<br>不同类型的应用程序都可以利用 OP作为代理而是用Tor提供的匿名通信服务。当<br>前， Tor仅支持 TCP数据流，并能够被支持SOCKS的任何应用程序所使用。<br>（4）为了提高效率和安全性， OP对数分钟内的连接请求均使用同一条链路，<br>而之后的针对不同应用服务的连接请求又将被关联到新的链路，从而来防止攻击<br>者将用户旧的行为和新的行为联系在一起。 如图2.3所示， 当用户需要请求新的应<br>用服务之时，OP建立新的链路为用户应用请求服务。<br><img src="\myimages\tor协议理解\htw3.png" alt="image"><br>以上就是客户端选择路由结点并且进行横向拓展的大致过程，但是其中很多的细节我们没有进行很深入的阐述，特别是连接的建立和多路复用的概念等，我们将在下一节中进行探究。</p>
+<p>Alice为使用洋葱代理OP的用户； Dave为目录服务器； Jane和 Bob为应用服务器（例如， Web服务器）；其他主机为互联网中的主机；而带绿色十字标志的为Tor网络中的结点，也就是洋葱路由器OR。此处以 Alice通过Tor网络进行应用服务器的访问为例，简单介绍Tor的主要工作过程。Alice在使用 Tor之前， 首先需要在其主机上安装洋葱代理OP并运行， 并将浏<br>览器或其他需要使用匿名通信服务的应用程序的代理设置为本地 OP所监听的地址与端口。之后， Alice可以按照常规方式使用应用程序而无需做任何其他 Tor相关的操作。被启动之后， OP利用连通的Tor网络透明地执行以下过程：<br>（1） OP尝试连接目录服务器，以获取Tor网络的结点信息；<br>（2）当最新的 Tor网络结点列表被成功下载之后， OP可以根据自身默认的配置以及用户的配置进行Tor结点的选择，从而建立如下图所示的数据链路： </p>
+<p><img src="/myimages/tor协议理解/htw2.png" alt="image"></p>
+<p>得注意的是，在链路建立的过程中，每次只拓展一个链路结点（关于建立连接和拓展的过程我们将在下一篇中进行细致的讲解）。并且， OP与链路上的每一个结点都会协商一组独立的对称密钥。这样，确保了每一跳在传送数据包时都无法被跟踪，也就是说，链路上的每一个结点只知道其前序结点和后继结点，而不会知道整条完整的链路。图2.2中，从Alice开始，绿色连接线的部分说明 Alice通过三次链路拓展形成一条完整的链路，并且链路是经过加密的。链路的出口结点利用非加密的方式连接到了应用服务器Bob。<br>（3）一旦通信链路建立完成，各种类型的数据均可以进行交换，或者说各种不同类型的应用程序都可以利用 OP作为代理而是用Tor提供的匿名通信服务。当前， Tor仅支持 TCP数据流，并能够被支持SOCKS的任何应用程序所使用。     </p>
+<p>（4）为了提高效率和安全性， OP对数分钟内的连接请求均使用同一条链路，而之后的针对不同应用服务的连接请求又将被关联到新的链路，从而来防止攻击者将用户旧的行为和新的行为联系在一起。 如图2.3所示， 当用户需要请求新的应用服务之时，OP建立新的链路为用户应用请求服务。</p>
+<p><img src="/myimages/tor协议理解/htw3.png" alt="image">  </p>
+<p>以上就是客户端选择路由结点并且进行横向拓展的大致过程，但是其中很多的细节我们没有进行很深入的阐述，特别是连接的建立和多路复用的概念等，我们将在下一节中进行探究。</p>
 <h3 id="服务端隐藏协议"><a href="#服务端隐藏协议" class="headerlink" title="服务端隐藏协议"></a>服务端隐藏协议</h3><p>在之前的讨论中，可以看到在Tor的协议中，客户端的匿名是可以得到保证的，那么在实际应用中，光光保护客户端的匿名性是不够的。服务端的匿名性也需要得到体现，所以服务端隐藏协议的目标是为想要对外提供服务的Tor服务器隐藏其具体位置。而这个功能的体现在tor协议中是通过介绍结点和约会结点来直接体现的。以下是具体的服务端身份匿名。</p>
-<p>（1）Tor用户为了能够匿名地对外提供服务， 需要对Tor网络声明其存在。<br>于是，在正式提供服务之前， Tor用户需要随机选取Tor 网络内的几个中继结点，<br>建立到这些结点的链路，并通过告知这些结点该用户的服务公钥的方式来请求结<br>点作为其介绍结点（ Introduction Point ）。</p>
-<p><img src="myimages/tor协议理解/ser1.png" alt="image"></p>
-<p>如图所示，提供匿名服务的 Tor用户Bob建立到IP1， IP2， IP3的三条链<br>路， 并请求他们成为匿名服务的介绍结点。 而IP1， IP2， IP3三者只知道服务相关<br>的公钥，并不知道提供服务的 Bob的IP地址或身份。<br>（2）如图 2.9所示， Bob为其特定的匿名服务生成一个匿名服务描述符。<br>该描述符之中包括服务对应的公钥，服务介绍结点列表，以及利用服务私钥对该<br>描述符前述部分的签名。匿名服务描述符在生成成功之后，被上传到分布式哈希<br>表以供其他 Tor用户查找。查找索引为“ XYZ.onion” ，其中 XYZ为由匿名服务<br>公钥生成而来的服务名， 包括 16个英文字母。 在该步完成之后， 匿名服务已被成<br>功设置，并等待提供服务。</p>
-<p><img src="myimages/tor协议理解/ser2.png" alt="image"></p>
-<p>（3）当一个Tor用户想要请求匿名服务时， 需要先利用其他途径获得该匿<br>名服务对应的洋葱地址， 即前述的“ XYZ.onion”。 得到洋葱地址之后， 该用户通<br>过询问分布式哈希表来获得匿名服务描述符。若该描述符存在，则通过描述符，<br>用户即可得知匿名服务的介绍结点列表以及所使用的公钥信息。在此期间，用户<br>建立一条链路到一个随机挑选的中继结点，并通过告知该结点一个一次性秘密信<br>息来请求其作为该用户的约会结点（ rendezvous point）。</p>
+<p>（1）Tor用户为了能够匿名地对外提供服务， 需要对Tor网络声明其存在。于是，在正式提供服务之前， Tor用户需要随机选取Tor 网络内的几个中继结点，建立到这些结点的链路，并通过告知这些结点该用户的服务公钥的方式来请求结点作为其介绍结点（ Introduction Point ）。</p>
+<p><img src="/myimages/tor协议理解/ser1.png" alt="image"></p>
+<p>如图所示，提供匿名服务的 Tor用户Bob建立到IP1， IP2， IP3的三条链路， 并请求他们成为匿名服务的介绍结点。 而IP1， IP2， IP3三者只知道服务相关的公钥，并不知道提供服务的 Bob的IP地址或身份。</p>
+<p>（2）如图 2.9所示， Bob为其特定的匿名服务生成一个匿名服务描述符。该描述符之中包括服务对应的公钥，服务介绍结点列表，以及利用服务私钥对该描述符前述部分的签名。匿名服务描述符在生成成功之后，被上传到分布式哈希表以供其他 Tor用户查找。查找索引为“ XYZ.onion” ，其中 XYZ为由匿名服务公钥生成而来的服务名， 包括 16个英文字母。 在该步完成之后， 匿名服务已被成功设置，并等待提供服务。</p>
+<p><img src="/myimages/tor协议理解/ser2.png" alt="image"></p>
+<p>（3）当一个Tor用户想要请求匿名服务时， 需要先利用其他途径获得该匿名服务对应的洋葱地址， 即前述的“ XYZ.onion”。 得到洋葱地址之后， 该用户通过询问分布式哈希表来获得匿名服务描述符。若该描述符存在，则通过描述符，用户即可得知匿名服务的介绍结点列表以及所使用的公钥信息。在此期间，用户建立一条链路到一个随机挑选的中继结点，并通过告知该结点一个一次性秘密信息来请求其作为该用户的约会结点（ rendezvous point）。</p>
 <p><img src="/myimages/tor协议理解/ser3.png" alt="image"></p>
-<p>（4）当匿名服务描述符下载完毕， 约会结点也成功设置之后， 请求匿名服<br>务的 Tor用户构造一个由匿名服务公钥加密的消息。该消息的内容为约会结点的<br>地址，以及先前预先协商完成的一次性秘密信息。该消息将通过 Tor链路被发送<br>至匿名服务的某一个介绍结点， 而介绍结点则会将该消息回传给匿名服务提供者。<br>如图2.11所示，匿名服务的提供方Bob与请求方Alice均通过Tor链路来进行<br>数据通信，双方的身份信息都不会被泄露，从而保证了双方的安全性。<br><img src="myimages/tor协议理解/ser4.png" alt="image"></p>
-<p>（5）匿名服务提供者 Bob获得匿名服务用户Alice发送来的加密的服务相<br>关消息之后，进行解密，并获得其中的约会结点地址及一次性秘密信息。而后，<br>Bob建立一条链路以连接到约会结点， 并向其发送接收到的一次性秘密信息。整个<br>过程如图</p>
-<p><img src="myimages/tor协议理解/ser5.png" alt="image"></p>
-<p>（7）约会结点将已连接到匿名服务提供者Bob的消息告知匿名服务请求者<br>Alice。在 Alice接收到该消息之后，其便可以利用通过约会结点建立起来的链<br>路进行类似于常规Tor网络通信的正常通信。对于 Bob而言，也是类似的。主要<br>的差别在于， Alice与Bob之间建立的链路是特殊链路，该链路在通常情况下由6<br>个结点组成。在链路之中的约会结点很明了地知道自身的身份：约会结点。</p>
-<p><img src="myimages/tor协议理解/ser6.png" alt="image"></p>
-<p>整个HiddenService协议的运行过程之中，协议力求保证通信双方的匿名性。<br>协议中所选用的IP1， IP2， IP3，以及RP均无法确切得知通信双方的身份及地理<br>位置， 匿名性由Tor链路的特性（ 单个路由无法得知整条链路） 提供保障。<br>最终通信双方生成的链路为一条长链路， 通常情况下为6跳。 链路的长<br>度是普通链路的2倍，一定程度上降低了传输效率，这就是使用Tor浏览器的时候会普遍比较卡顿的原因。</p>
+<p>（4）当匿名服务描述符下载完毕， 约会结点也成功设置之后， 请求匿名服务的 Tor用户构造一个由匿名服务公钥加密的消息。该消息的内容为约会结点的地址，以及先前预先协商完成的一次性秘密信息。该消息将通过 Tor链路被发送至匿名服务的某一个介绍结点， 而介绍结点则会将该消息回传给匿名服务提供者。如图2.11所示，匿名服务的提供方Bob与请求方Alice均通过Tor链路来进行数据通信，双方的身份信息都不会被泄露，从而保证了双方的安全性。<br><img src="/myimages/tor协议理解/ser4.png" alt="image"></p>
+<p>（5）匿名服务提供者 Bob获得匿名服务用户Alice发送来的加密的服务相关消息之后，进行解密，并获得其中的约会结点地址及一次性秘密信息。而后，Bob建立一条链路以连接到约会结点， 并向其发送接收到的一次性秘密信息。整个过程如图</p>
+<p><img src="/myimages/tor协议理解/ser5.png" alt="image"></p>
+<p>（7）约会结点将已连接到匿名服务提供者Bob的消息告知匿名服务请求者Alice。在 Alice接收到该消息之后，其便可以利用通过约会结点建立起来的链路进行类似于常规Tor网络通信的正常通信。对于 Bob而言，也是类似的。主要的差别在于， Alice与Bob之间建立的链路是特殊链路，该链路在通常情况下由6个结点组成。在链路之中的约会结点很明了地知道自身的身份：约会结点。</p>
+<p><img src="/myimages/tor协议理解/ser6.png" alt="image"></p>
+<p>整个HiddenService协议的运行过程之中，协议力求保证通信双方的匿名性。协议中所选用的IP1， IP2， IP3，以及RP均无法确切得知通信双方的身份及地理位置， 匿名性由Tor链路的特性（ 单个路由无法得知整条链路） 提供保障。 最终通信双方生成的链路为一条长链路， 通常情况下为6跳。 链路的长度是普通链路的2倍，一定程度上降低了传输效率，这就是使用Tor浏览器的时候会普遍比较卡顿的原因。</p>
 <h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html</a><br><a href="https://gitweb.torproject.org/torspec.git/tree/" target="_blank" rel="noopener">https://gitweb.torproject.org/torspec.git/tree/</a><br><a href="https://svn.torproject.org/svn/projects/design-paper/tor-design.pdf" target="_blank" rel="noopener">PDF: tor-design.pdf</a><br><a href="https://www.torproject.org/projects/torbrowser/design/" target="_blank" rel="noopener">https://www.torproject.org/projects/torbrowser/design/</a><br><a href="https://www.freehaven.net/anonbib/topic.html#Anonymous_20communication" target="_blank" rel="noopener">https://www.freehaven.net/anonbib/topic.html#Anonymous_20communication</a>    </p>
 
       
@@ -548,7 +557,7 @@
   </li>
   <li class="post-copyright-author">
     <strong>最后更新:</strong>
-    2018年12月06日 - 17:12
+    2018年12月06日 - 18:12
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
