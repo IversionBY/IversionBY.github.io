@@ -312,200 +312,6 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/06/决策树/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="1ypt0">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/109.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog of 1ypt0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/06/决策树/" itemprop="url">决策树</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-06T17:21:58+08:00">
-                Dec 6 2018
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/12/06/决策树/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/06/决策树/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  608
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img style="margin: auto;" src="/myimages/xxx/index.jpg" height="450" width="450"></p>
-<p>决策树在数据结构算法中是一种通过构建路径权值（通常是概率）来求解最优解的一种算法数据结构。但是其在机器学习和数据挖掘中，常用来解决分类问题。   </p>
-<h1 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h1><h3 id="1-根节点：就是第一个节点"><a href="#1-根节点：就是第一个节点" class="headerlink" title="1. 根节点：就是第一个节点"></a>1. 根节点：就是第一个节点</h3><h3 id="2-叶节点：最末梢的结点"><a href="#2-叶节点：最末梢的结点" class="headerlink" title="2. 叶节点：最末梢的结点"></a>2. 叶节点：最末梢的结点</h3><h3 id="3-内部结点：属于叶节点和根节点之间的结点"><a href="#3-内部结点：属于叶节点和根节点之间的结点" class="headerlink" title="3. 内部结点：属于叶节点和根节点之间的结点"></a>3. 内部结点：属于叶节点和根节点之间的结点</h3><h1 id="三种不纯度的度量"><a href="#三种不纯度的度量" class="headerlink" title="三种不纯度的度量"></a>三种不纯度的度量</h1><h3 id="1-熵值（entrop）"><a href="#1-熵值（entrop）" class="headerlink" title="1. 熵值（entrop）"></a>1. 熵值（entrop）</h3><p>Entrop = $-\sum<em>{i=0}^{c-1}{P</em>{i}log<em>{2}P</em>{i}}$</p>
-<h3 id="2-Gini"><a href="#2-Gini" class="headerlink" title="2. Gini"></a>2. Gini</h3><p>Gini =<script type="math/tex">1-\sum_{i=0}^{c-1}{P_{i}^2}</script>  </p>
-<h3 id="3-分类误差"><a href="#3-分类误差" class="headerlink" title="3. 分类误差"></a>3. 分类误差</h3><p>Classify error =<script type="math/tex">1-maxP_{i}</script>  </p>
-<ul>
-<li><p>c：当前所计算节点的分类总数；  </p>
-</li>
-<li><p>i：当前计算类别；  </p>
-</li>
-<li><p>P：当前计算类的权重（类中的实体数与总实体数的比值）  </p>
-</li>
-</ul>
-<h1 id="增益"><a href="#增益" class="headerlink" title="增益"></a>增益</h1><h3 id="1-增益-父节点与其麾下所有子节点的和的差"><a href="#1-增益-父节点与其麾下所有子节点的和的差" class="headerlink" title="1. 增益:父节点与其麾下所有子节点的和的差"></a>1. 增益:父节点与其麾下所有子节点的和的差</h3><ul>
-<li><p>$\Delta=I(parent)-\sum<em>{j=1}^{k}{\frac{N(v_j)}{N}I(v</em>{j})}$ </p>
-</li>
-<li><p>其中：  </p>
-</li>
-<li><p>I(.)为当前节点的不纯度  </p>
-</li>
-<li><p>N是父节点上的实例数    </p>
-</li>
-<li><p>k是属性值的个数  </p>
-</li>
-<li><p><script type="math/tex">N(v_{j})</script>是子结点下的实例数  </p>
-</li>
-</ul>
-<h3 id="2-最大化增益：也即增益中父节点与字节点的差值最大化，等价于最小化子节点的不纯度的加权平均值-差值越大，说明测试的效果就越好"><a href="#2-最大化增益：也即增益中父节点与字节点的差值最大化，等价于最小化子节点的不纯度的加权平均值-差值越大，说明测试的效果就越好" class="headerlink" title="2. 最大化增益：也即增益中父节点与字节点的差值最大化，等价于最小化子节点的不纯度的加权平均值,差值越大，说明测试的效果就越好"></a>2. 最大化增益：也即增益中父节点与字节点的差值最大化，等价于最小化子节点的不纯度的加权平均值,差值越大，说明测试的效果就越好</h3><h3 id="3-信息增益（information-gain）：选用熵值来进行的不纯度度量算出的增益"><a href="#3-信息增益（information-gain）：选用熵值来进行的不纯度度量算出的增益" class="headerlink" title="3. 信息增益（information gain）：选用熵值来进行的不纯度度量算出的增益"></a>3. 信息增益（information gain）：选用熵值来进行的不纯度度量算出的增益</h3><h3 id="4-增益率："><a href="#4-增益率：" class="headerlink" title="4. 增益率："></a>4. 增益率：</h3><ul>
-<li><script type="math/tex; mode=display">Gain \ ratio = \frac{\Delta_{info}}{Split \ Info}</script></li>
-</ul>
-<p>其中 split info = Entrop  </p>
-<h1 id="算法决策核心比较"><a href="#算法决策核心比较" class="headerlink" title="算法决策核心比较"></a>算法决策核心比较</h1><ul>
-<li>ID3算法的核心是在决策树的各个结点上应用信息增益准则进行特征选择  </li>
-<li>C4.5算法与ID3算法的区别主要在于它在生产决策树的过程中，使用信息增益比来进行特征选择   </li>
-<li>CART算法<br>分类与回归树（classification and regression tree,CART）与C4.5算法一样，由ID3算法演化而来。CART假设决策树是一个二叉树，它通过递归地二分每个特征，将特征空间划分为有限个单元，并在这些单元上确定预测的概率分布。<br>CART算法中，对于回归树，采用的是平方误差最小化准则；对于分类树，采用基尼指数最小化准则。</li>
-</ul>
-<h1 id="sklearn-上面的决策算法"><a href="#sklearn-上面的决策算法" class="headerlink" title="sklearn 上面的决策算法"></a>sklearn 上面的决策算法</h1><ul>
-<li>sklearn的python机器学习库上面使用的是CART算法，无法指定ID3决策树和C4.5决策树算法。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-	<div>
-      
-	</div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/06/tor匿名协议理解二/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2105,6 +1911,189 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/08/08/Bypass-SQL/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/08/Bypass-SQL/" itemprop="url">Bypass_SQL</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-08T16:37:09+08:00">
+                Aug 8 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/bypass/" itemprop="url" rel="index">
+                    <span itemprop="name">bypass</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/08/Bypass-SQL/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/08/Bypass-SQL/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  953
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p>之前对sql注入的原理方面的梳理比较多，现在打算对sql的Bypass技巧进行一个小小的总结，这里的技术是笔者进行了大量资料的阅读以及亲自实践，总结的是很不全面，有兴趣的可以继续对参考链接进行更深的学习。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/08/Bypass-SQL/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </p></blockquote></div>
+
+    <div>
+      
+    </div>
+	<div>
+      
+	</div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -2151,7 +2140,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
