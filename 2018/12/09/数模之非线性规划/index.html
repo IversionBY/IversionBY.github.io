@@ -1,0 +1,1416 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="python,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="前面有提到使用python做线性规划问题，有一些第三方库可以让我们快速上手，对线性规划的模型进行求解。无论是整数形线性规划还是连续形，都可以找到实用的库。但是在线性规划问题中还存在一种非线性的问题。其约束条件不是简单的呈现线性的关系，前面我们提到的两个库就不再实用，这时就要继续发现新大陆，于是就有了这篇文章。">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数模之非线性规划">
+<meta property="og:url" content="http://lypto.me/2018/12/09/数模之非线性规划/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="前面有提到使用python做线性规划问题，有一些第三方库可以让我们快速上手，对线性规划的模型进行求解。无论是整数形线性规划还是连续形，都可以找到实用的库。但是在线性规划问题中还存在一种非线性的问题。其约束条件不是简单的呈现线性的关系，前面我们提到的两个库就不再实用，这时就要继续发现新大陆，于是就有了这篇文章。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="attachment:image.png">
+<meta property="og:updated_time" content="2018-12-09T02:53:16.634Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数模之非线性规划">
+<meta name="twitter:description" content="前面有提到使用python做线性规划问题，有一些第三方库可以让我们快速上手，对线性规划的模型进行求解。无论是整数形线性规划还是连续形，都可以找到实用的库。但是在线性规划问题中还存在一种非线性的问题。其约束条件不是简单的呈现线性的关系，前面我们提到的两个库就不再实用，这时就要继续发现新大陆，于是就有了这篇文章。">
+<meta name="twitter:image" content="attachment:image.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/09/数模之非线性规划/">
+
+
+
+
+
+  <title>数模之非线性规划 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/09/数模之非线性规划/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数模之非线性规划</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-09T10:52:04+08:00">
+                Dec 9 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/09/数模之非线性规划/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/09/数模之非线性规划/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>前面有提到使用python做线性规划问题，有一些第三方库可以让我们快速上手，对线性规划的模型进行求解。无论是整数形线性规划还是连续形，都可以找到实用的库。但是在线性规划问题中还存在一种非线性的问题。其约束条件不是简单的呈现线性的关系，前面我们提到的两个库就不再实用，这时就要继续发现新大陆，于是就有了这篇文章。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="非线性规划问题"><a href="#非线性规划问题" class="headerlink" title="非线性规划问题"></a>非线性规划问题</h1><p>首先对什么是非线性规划是什么有个感性的认识：如果目标函数或约束条件中包含非线性函数，就称这种规划问题为非线性规划问题。一般说来，解非线性规划要比解线性规划问题困难得多。而且，也不象线性规划有 单纯形法这一通用方法，非线性规划目前还没有适于各种问题的一般算法，各个方法都 有自己特定的适用范围。当然我们伟大的前人已经研究了一些算法可以求出局部最优解，或者在特定的条件下可以推出局部最优就是全局最优。或者我们可以通过类似机器学习算法里面的多次赋初始值梯度下降求局部最优，然后从不同的下降路线中找到尝试的过的最优解，这时往往可以到达全局最优，这取决于我们迭代的次数。既然前人有了一些不错的算法，那么自然就有一些前辈做出一些自动化的工具，来极大的提高生产力。所以经过一番搜索，我发现了以下两个不错的求解非线性规划问题的库。当然这也许不是最好的，但是就笔者而言，一定是最简单易用的。 </p>
+<h2 id="scipy-optimize-minimize解决方案"><a href="#scipy-optimize-minimize解决方案" class="headerlink" title="scipy optimize minimize解决方案"></a>scipy optimize minimize解决方案</h2><p>以一个网上找的现成例子为例：<br>计算  (2+x1)/(1+x2) - 3<em>x1+4</em>x3 的最小值？（x1,x2,x3的范围都在0.1到0.9 之间）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"> </span><br><span class="line"><span class="comment"># demo 2</span></span><br><span class="line"><span class="comment">#计算  (2+x1)/(1+x2) - 3*x1+4*x3 的最小值  x1,x2,x3的范围都在0.1到0.9 之间</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fun</span><span class="params">(args)</span>:</span></span><br><span class="line">    a,b,c,d=args</span><br><span class="line">    v=<span class="keyword">lambda</span> x: (a+x[<span class="number">0</span>])/(b+x[<span class="number">1</span>]) -c*x[<span class="number">0</span>]+d*x[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">return</span> v</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">con</span><span class="params">(args)</span>:</span></span><br><span class="line">    <span class="comment"># 约束条件 分为eq 和ineq</span></span><br><span class="line">    <span class="comment">#eq表示 函数结果等于0 ； ineq 表示 表达式大于等于0  </span></span><br><span class="line">    x1min, x1max, x2min, x2max,x3min,x3max = args</span><br><span class="line">    cons = (&#123;<span class="string">'type'</span>: <span class="string">'ineq'</span>, <span class="string">'fun'</span>: <span class="keyword">lambda</span> x: x[<span class="number">0</span>] - x1min&#125;,\</span><br><span class="line">              &#123;<span class="string">'type'</span>: <span class="string">'ineq'</span>, <span class="string">'fun'</span>: <span class="keyword">lambda</span> x: -x[<span class="number">0</span>] + x1max&#125;,\</span><br><span class="line">             &#123;<span class="string">'type'</span>: <span class="string">'ineq'</span>, <span class="string">'fun'</span>: <span class="keyword">lambda</span> x: x[<span class="number">1</span>] - x2min&#125;,\</span><br><span class="line">                &#123;<span class="string">'type'</span>: <span class="string">'ineq'</span>, <span class="string">'fun'</span>: <span class="keyword">lambda</span> x: -x[<span class="number">1</span>] + x2max&#125;,\</span><br><span class="line">            &#123;<span class="string">'type'</span>: <span class="string">'ineq'</span>, <span class="string">'fun'</span>: <span class="keyword">lambda</span> x: x[<span class="number">2</span>] - x3min&#125;,\</span><br><span class="line">             &#123;<span class="string">'type'</span>: <span class="string">'ineq'</span>, <span class="string">'fun'</span>: <span class="keyword">lambda</span> x: -x[<span class="number">2</span>] + x3max&#125;)</span><br><span class="line">    <span class="keyword">return</span> cons</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="comment">#定义常量值</span></span><br><span class="line">    args = (<span class="number">2</span>,<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>)  <span class="comment">#a,b,c,d</span></span><br><span class="line">    <span class="comment">#设置参数范围/约束条件</span></span><br><span class="line">    args1 = (<span class="number">0.1</span>,<span class="number">0.9</span>,<span class="number">0.1</span>, <span class="number">0.9</span>,<span class="number">0.1</span>,<span class="number">0.9</span>)  <span class="comment">#x1min, x1max, x2min, x2max</span></span><br><span class="line">    cons = con(args1)</span><br><span class="line">    <span class="comment">#设置初始猜测值  </span></span><br><span class="line">    x0 = np.asarray((<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>))</span><br><span class="line">    </span><br><span class="line">    res = minimize(fun(args), x0, method=<span class="string">'SLSQP'</span>,constraints=cons)</span><br><span class="line">    print(res.fun)</span><br><span class="line">    print(res.success)</span><br><span class="line">    print(res.x)</span><br></pre></td></tr></table></figure>
+<pre><code>-0.773684210526435
+True
+[0.9 0.9 0.1]
+</code></pre><p>在这个示例中，我们可以看到<code>scipy.optimize.minimize（）</code>函数需要我们传入一个目标函数（示例中是函数<code>fun()</code>），其返回值是一个lambda匿名函数对象，其内容就是我们需要求解的目标式，需要注意的是，这个传入的函数里面的常量需要以元祖的形式传入，也就是说，在函数内部不应该出现常量。第二个参数是对内部变量的初始化值，注意到我们之前提到的，这个初始化值一定程度上可以影响到最终解。然后就是<code>methon</code>参数，这个参数指定我们使用的优化算法。这里推荐使用SLSQP。然后<code>constraints</code>参数，其与目标函数的传入一样，需要传入一个函数，其具体的构造方式可以参看示例代码，注释已经说明的相当清楚。</p>
+<h2 id="GEKKO解决策略"><a href="#GEKKO解决策略" class="headerlink" title="GEKKO解决策略"></a>GEKKO解决策略</h2><p>当然除了万能的scipy之外，还有一些专门做优化的python库可以提供帮助，这里着重推荐GEKKO。这是APMonitor的全新接口。这个库很神奇，是一个C/S结构的，类似于tensorflow,需要在python脚本外运行方程（在tensorflow中将图构造好，让外部运行图的计算），这个外部甚至可以是远程服务器，在没有下载本地server的情况下，默认就是使用的远程服务器提供的APM的API，只不过GEKKO帮我们把构造方程这些步骤做了封装。也隐藏了向服务端发送请求和接受请求的步骤。所以我们需要关心的就是如何通过GEKKO构造我们规划模型。很多细节可以直接通过参考文献[1]的官网进行了解。这里就大致说一下GEKKO的使用。</p>
+<p>下面以著名的非线性<code>HS 71 Benchmark</code>问题的官方求解为例子：</p>
+<p><img src="attachment:image.png" alt="image.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gekko <span class="keyword">import</span> GEKKO</span><br><span class="line"></span><br><span class="line"><span class="comment">#Initialize Model</span></span><br><span class="line">m = GEKKO()</span><br><span class="line"></span><br><span class="line"><span class="comment">#define parameter</span></span><br><span class="line">eq = m.Param(value=<span class="number">40</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#initialize variables</span></span><br><span class="line">x1,x2,x3,x4 = [m.Var(lb=<span class="number">1</span>, ub=<span class="number">5</span>) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment">#initial values</span></span><br><span class="line">x1.value = <span class="number">1</span></span><br><span class="line">x2.value = <span class="number">5</span></span><br><span class="line">x3.value = <span class="number">5</span></span><br><span class="line">x4.value = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Equations</span></span><br><span class="line">m.Equation(x1*x2*x3*x4&gt;=<span class="number">25</span>)</span><br><span class="line">m.Equation(x1**<span class="number">2</span>+x2**<span class="number">2</span>+x3**<span class="number">2</span>+x4**<span class="number">2</span>==eq)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Objective</span></span><br><span class="line">m.Obj(x1*x4*(x1+x2+x3)+x3)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Set global options</span></span><br><span class="line">m.options.IMODE = <span class="number">3</span> <span class="comment">#steady state optimization</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Solve simulation</span></span><br><span class="line">m.solve()</span><br><span class="line"></span><br><span class="line"><span class="comment">#Results</span></span><br><span class="line">print(<span class="string">''</span>)</span><br><span class="line">print(<span class="string">'Results'</span>)</span><br><span class="line">print(<span class="string">'x1: '</span> + str(x1.value))</span><br><span class="line">print(<span class="string">'x2: '</span> + str(x2.value))</span><br><span class="line">print(<span class="string">'x3: '</span> + str(x3.value))</span><br><span class="line">print(<span class="string">'x4: '</span> + str(x4.value))</span><br></pre></td></tr></table></figure>
+<pre><code>apm 113.140.11.125_gk_model2 &lt;br&gt;&lt;pre&gt; ----------------------------------------------------------------
+ APMonitor, Version 0.8.5
+ APMonitor Optimization Suite
+ ----------------------------------------------------------------
+
+
+ --------- APM Model Size ------------
+ Each time step contains
+   Objects      :            0
+   Constants    :            0
+   Variables    :            6
+   Intermediates:            0
+   Connections  :            0
+   Equations    :            3
+   Residuals    :            3
+
+ Number of state variables:              5
+ Number of total equations: -            2
+ Number of slack variables: -            1
+ ---------------------------------------
+ Degrees of freedom       :              2
+
+ **********************************************
+ Steady State Optimization with Interior Point Solver
+ **********************************************
+
+
+ Info: Exact Hessian
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.12.10, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:        9
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:       10
+
+Total number of variables............................:        5
+                     variables with only lower bounds:        1
+                variables with lower and upper bounds:        4
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:        2
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  1.6109693e+01 1.12e+01 2.50e+00   0.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  1.6905655e+01 7.44e-01 5.14e-01  -0.9 1.36e-01    -  1.00e+00 1.00e+00f  1
+   2  1.7136202e+01 1.71e-01 4.57e-01  -1.0 9.40e-02    -  8.95e-01 1.00e+00h  1
+   3  1.6956645e+01 1.57e-01 7.85e-02  -2.0 1.78e-01    -  9.95e-01 1.00e+00h  1
+   4  1.7009269e+01 1.63e-02 1.20e-02  -2.8 3.94e-02    -  9.94e-01 1.00e+00h  1
+   5  1.7013888e+01 4.04e-04 1.76e-04  -4.6 6.22e-03    -  1.00e+00 1.00e+00h  1
+   6  1.7014017e+01 3.92e-07 6.03e-07 -10.4 1.46e-04    -  9.99e-01 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.7014017127073458e+01    1.7014017127073458e+01
+Dual infeasibility......:   6.0264909533529361e-07    6.0264909533529361e-07
+Constraint violation....:   3.9234873865091858e-07    3.9234873865091858e-07
+Complementarity.........:   7.2865190881096349e-08    7.2865190881096349e-08
+Overall NLP error.......:   6.0264909533529361e-07    6.0264909533529361e-07
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.004
+Total CPU secs in NLP function evaluations           =      0.001
+
+EXIT: Optimal Solution Found.
+
+ The solution was found.
+
+ The final value of the objective function is    17.0140171270735     
+
+ ---------------------------------------------------
+ Solver         :  IPOPT (v3.9)
+ Solution time  :   9.099999999307329E-003 sec
+ Objective      :    17.0140171270735     
+ Successful solution
+ ---------------------------------------------------
+
+
+Results
+x1: [1.0]
+x2: [4.743]
+x3: [3.82115]
+x4: [1.379408]
+</code></pre><p>通过这个例子我们可以知道GEKKO给我们提供的接口还是很人性化的。现在归纳下使用流：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.  GEKKO()初始化类</span><br><span class="line">2.  调用类方法Param(value=x)，给模型常量赋值</span><br><span class="line">3.  调用类方法m.Var(lb=1, ub=5)，给模型变量定界</span><br><span class="line">4.  给类的变量属性赋值初始值</span><br><span class="line">5.  调用类方法Equation()构造约束式</span><br><span class="line">6.  调用类方法object定义目标函数</span><br><span class="line">7.  solve()函数进行求解</span><br><span class="line">8.  获取结果</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://apmonitor.com/wiki/index.php/Main/PythonApp" target="_blank" rel="noopener">[1]APM官网</a></p>
+<p><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html" target="_blank" rel="noopener">[2]Scipy minimize</a></p>
+<p><a href="https://gekko.readthedocs.io/en/latest/" target="_blank" rel="noopener">[3]GEKKO</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/09/数模之非线性规划/">数模之非线性规划</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月09日 - 10:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月09日 - 10:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/09/数模之非线性规划/" title="数模之非线性规划">http://lypto.me/2018/12/09/数模之非线性规划/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/08/数模之线性规划/" rel="next" title="数模之线性规划">
+                <i class="fa fa-chevron-left"></i> 数模之线性规划
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#非线性规划问题"><span class="nav-number">1.</span> <span class="nav-text">非线性规划问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#scipy-optimize-minimize解决方案"><span class="nav-number">1.1.</span> <span class="nav-text">scipy optimize minimize解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GEKKO解决策略"><span class="nav-number">1.2.</span> <span class="nav-text">GEKKO解决策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/09/数模之非线性规划/';
+          this.page.identifier = '2018/12/09/数模之非线性规划/';
+          this.page.title = '数模之非线性规划';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

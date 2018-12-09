@@ -1,0 +1,1347 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="python,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="线性规划作为数学建模领域的优化类，包括一般的线性规划和整数线性规划，当然也有一批比较成熟的商业软件可以提供建模帮助，如Cplex，LINGO，Gurobi或Mosek等。除此以外，我们也可以使用matlab或者python的第三方库来方便进行线性规划类模型求解。这篇文章主要是介绍python在线性规划模型求解，将从线性规划和整数线性规划来阐述，其中也会介绍一些比较常用的python库。">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数模之线性规划">
+<meta property="og:url" content="http://lypto.me/2018/12/08/数模之线性规划/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="线性规划作为数学建模领域的优化类，包括一般的线性规划和整数线性规划，当然也有一批比较成熟的商业软件可以提供建模帮助，如Cplex，LINGO，Gurobi或Mosek等。除此以外，我们也可以使用matlab或者python的第三方库来方便进行线性规划类模型求解。这篇文章主要是介绍python在线性规划模型求解，将从线性规划和整数线性规划来阐述，其中也会介绍一些比较常用的python库。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/线性规划/接口.png">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/线性规划/例题.png">
+<meta property="og:updated_time" content="2018-12-08T12:36:02.910Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数模之线性规划">
+<meta name="twitter:description" content="线性规划作为数学建模领域的优化类，包括一般的线性规划和整数线性规划，当然也有一批比较成熟的商业软件可以提供建模帮助，如Cplex，LINGO，Gurobi或Mosek等。除此以外，我们也可以使用matlab或者python的第三方库来方便进行线性规划类模型求解。这篇文章主要是介绍python在线性规划模型求解，将从线性规划和整数线性规划来阐述，其中也会介绍一些比较常用的python库。">
+<meta name="twitter:image" content="http://lypto.me/myimages/数模编程/线性规划/接口.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/08/数模之线性规划/">
+
+
+
+
+
+  <title>数模之线性规划 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/08/数模之线性规划/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数模之线性规划</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-08T20:25:13+08:00">
+                Dec 8 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/08/数模之线性规划/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/08/数模之线性规划/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>线性规划作为数学建模领域的优化类，包括一般的线性规划和整数线性规划，当然也有一批比较成熟的商业软件可以提供建模帮助，如Cplex，LINGO，Gurobi或Mosek等。除此以外，我们也可以使用matlab或者python的第三方库来方便进行线性规划类模型求解。这篇文章主要是介绍python在线性规划模型求解，将从线性规划和整数线性规划来阐述，其中也会介绍一些比较常用的python库。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="scipy实现线性规划"><a href="#scipy实现线性规划" class="headerlink" title="scipy实现线性规划"></a>scipy实现线性规划</h1><ul>
+<li><a href="https://ww2.mathworks.cn/help/optim/ug/linprog.html?searchHighlight=linprog&amp;s_tid=doc_srchtitle" target="_blank" rel="noopener">matlab linprog 官网</a>  </li>
+<li><a href="https://docs.scipy.org/doc/scipy/reference/optimize.linprog-simplex.html" target="_blank" rel="noopener">python scipy optimize linprog 官网</a></li>
+</ul>
+<p>python中的线性规划的实现，是借助于scipy库的optimize模块实现的，它的接口定义和matlab的linprog相似。我们可以看到在matlab官方文档里面有一幅图，展示了函数接口的规划线性规划式应有的样子，我们只要按照其接口定义，构造我们的参数，那么他就会自动的帮助我们求解。其实参考了官方的文档，我们可以知道scipy提供了两种线性规划求解函数，<code>linprog(method=’interior-point’)</code>和<code>linprog(method=’simplex’)</code>,下面主要介绍simplex methon。</p>
+<p><img src="/myimages/数模编程/线性规划/接口.png" alt="image.png"></p>
+<p>可以看到上面的式子是接口提供的规范，我们需要将我们需要求解的线性规划式子按照规划接口构造。这里主要说明如何使用python定义这个接口规范。下面主要看下在python上，具体如何进行运用。以下常用的一些操作，注意到反回结果是一个对象，当然也可以直接print()（因为其类的实现定义了作为输出字符串时的魔术方法<code>__str__</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> optimize</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment">#求解函数</span></span><br><span class="line">res = optimize.linprog(c,A,b,Aeq,beq,LB,UB,X0,OPTIONS) <span class="comment"># or res = optimize.linprog(c,A,b,Aeq,beq,bounds=(x1,x2,x3,......),OPTIONS) </span></span><br><span class="line"><span class="comment">#目标函数最小值</span></span><br><span class="line">print(res.fun)</span><br><span class="line"><span class="comment">#最优解</span></span><br><span class="line">print(res.x)</span><br></pre></td></tr></table></figure>
+<p>下面以《matlab在数学建模中应用》这本书上的例题来进行一个使用案例分析：</p>
+<p><img src="/myimages/数模编程/线性规划/例题.png" alt="image.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> optimize <span class="keyword">as</span> op</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">c=np.array([<span class="number">2</span>,<span class="number">3</span>,<span class="number">-5</span>])                   <span class="comment">#定义最值式，注意要改变式子使其符合求解最小值</span></span><br><span class="line">A_ub=np.array([[<span class="number">-2</span>,<span class="number">5</span>,<span class="number">-1</span>],[<span class="number">1</span>,<span class="number">3</span>,<span class="number">1</span>]])     <span class="comment">#这里对左右两边取反，使得条件与接口式形式上一致</span></span><br><span class="line">A_ub_=np.array([<span class="number">-10</span>,<span class="number">12</span>])</span><br><span class="line">A_eq=np.array([[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]])</span><br><span class="line">B_eq=np.array([<span class="number">7</span>])</span><br><span class="line">x1=(<span class="number">0</span>,<span class="number">7</span>)</span><br><span class="line">x2=(<span class="number">0</span>,<span class="number">7</span>)</span><br><span class="line">x3=(<span class="number">0</span>,<span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">res=op.linprog(-c,A_ub,B_ub,A_eq,B_eq,bounds=(x1,x2,x3))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 整体输出</span></span><br><span class="line">print(res)</span><br><span class="line"><span class="comment"># 获取结果属性</span></span><br><span class="line">print(-res.fun)</span><br><span class="line"><span class="comment"># 获取最优解</span></span><br><span class="line">print(res.x)</span><br></pre></td></tr></table></figure>
+<pre><code>     fun: -14.571428571428571
+ message: &#39;Optimization terminated successfully.&#39;
+     nit: 2
+   slack: array([3.85714286, 0.57142857, 6.42857143, 7.        , 0.        ])
+  status: 0
+ success: True
+       x: array([6.42857143, 0.57142857, 0.        ])
+14.571428571428571
+[6.42857143 0.57142857 0.        ]
+</code></pre><p>我们可以注意到，由于这个线性规划是求解最大值，为了让适应规划接口，我们需要把之转化为求最小值的形式，然后对结果的对应操作就是取相反数。另外一点比较容易出错的地方是，注意到接口规范只有小于形式的条件（如图一中的第一个条件），如果事迹建模中出现了大于形式的条件，就要左右取反操作。</p>
+<h1 id="PuLP实现线性规划"><a href="#PuLP实现线性规划" class="headerlink" title="PuLP实现线性规划"></a>PuLP实现线性规划</h1><p>受限于scipy的整数线性规划的鸡肋，不得不开辟新的战场。经过一番搜索，得知了PuLP这个库，然后去官网浏览了一波。没错了！这就是我想要的。看了PuLP这个库的相关整体架构后，以及用户接口友好程度，你一定会像我这么感慨的：Amazing!作为解决LP问题，这个库比较小巧，专门解决LP问题，包括整数和连续变量两种变量类型，而且用户接口实现都很pythonic。PuLP大致可以简化为四个个组件：LPproblem（实例化线性回归构造器，对比scipy的沿用matlab的接口定义，PuLP的接口就很人性化，真的，你会这样认为的！），solvers（定制化算法求解引擎），LpVariable(定义变量的类型，连续或者整形)，Constraints（其他的约束条件）。官方给了四个使用PuLP解决实际问题的例子，参考链接[5]也给出了一些使用PuLP的解决案例。这里选取一个比较简单的第一个官方案例进行常规编程接口和步骤归纳。官方式例如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Import PuLP modeler functions</span></span><br><span class="line"><span class="keyword">from</span> pulp <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># Creates a list of the Ingredients</span></span><br><span class="line">Ingredients = [<span class="string">'CHICKEN'</span>, <span class="string">'BEEF'</span>, <span class="string">'MUTTON'</span>, <span class="string">'RICE'</span>, <span class="string">'WHEAT'</span>, <span class="string">'GEL'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># A dictionary of the costs of each of the Ingredients is created</span></span><br><span class="line">costs = &#123;<span class="string">'CHICKEN'</span>: <span class="number">0.013</span>, </span><br><span class="line">         <span class="string">'BEEF'</span>: <span class="number">0.008</span>, </span><br><span class="line">         <span class="string">'MUTTON'</span>: <span class="number">0.010</span>, </span><br><span class="line">         <span class="string">'RICE'</span>: <span class="number">0.002</span>, </span><br><span class="line">         <span class="string">'WHEAT'</span>: <span class="number">0.005</span>, </span><br><span class="line">         <span class="string">'GEL'</span>: <span class="number">0.001</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># A dictionary of the protein percent in each of the Ingredients is created</span></span><br><span class="line">proteinPercent = &#123;<span class="string">'CHICKEN'</span>: <span class="number">0.100</span>, </span><br><span class="line">                  <span class="string">'BEEF'</span>: <span class="number">0.200</span>, </span><br><span class="line">                  <span class="string">'MUTTON'</span>: <span class="number">0.150</span>, </span><br><span class="line">                  <span class="string">'RICE'</span>: <span class="number">0.000</span>, </span><br><span class="line">                  <span class="string">'WHEAT'</span>: <span class="number">0.040</span>, </span><br><span class="line">                  <span class="string">'GEL'</span>: <span class="number">0.000</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># A dictionary of the fat percent in each of the Ingredients is created</span></span><br><span class="line">fatPercent = &#123;<span class="string">'CHICKEN'</span>: <span class="number">0.080</span>, </span><br><span class="line">              <span class="string">'BEEF'</span>: <span class="number">0.100</span>, </span><br><span class="line">              <span class="string">'MUTTON'</span>: <span class="number">0.110</span>, </span><br><span class="line">              <span class="string">'RICE'</span>: <span class="number">0.010</span>, </span><br><span class="line">              <span class="string">'WHEAT'</span>: <span class="number">0.010</span>, </span><br><span class="line">              <span class="string">'GEL'</span>: <span class="number">0.000</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># A dictionary of the fibre percent in each of the Ingredients is created</span></span><br><span class="line">fibrePercent = &#123;<span class="string">'CHICKEN'</span>: <span class="number">0.001</span>, </span><br><span class="line">                <span class="string">'BEEF'</span>: <span class="number">0.005</span>, </span><br><span class="line">                <span class="string">'MUTTON'</span>: <span class="number">0.003</span>, </span><br><span class="line">                <span class="string">'RICE'</span>: <span class="number">0.100</span>, </span><br><span class="line">                <span class="string">'WHEAT'</span>: <span class="number">0.150</span>, </span><br><span class="line">                <span class="string">'GEL'</span>: <span class="number">0.000</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># A dictionary of the salt percent in each of the Ingredients is created</span></span><br><span class="line">saltPercent = &#123;<span class="string">'CHICKEN'</span>: <span class="number">0.002</span>, </span><br><span class="line">               <span class="string">'BEEF'</span>: <span class="number">0.005</span>, </span><br><span class="line">               <span class="string">'MUTTON'</span>: <span class="number">0.007</span>, </span><br><span class="line">               <span class="string">'RICE'</span>: <span class="number">0.002</span>, </span><br><span class="line">               <span class="string">'WHEAT'</span>: <span class="number">0.008</span>, </span><br><span class="line">               <span class="string">'GEL'</span>: <span class="number">0.000</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create the 'prob' variable to contain the problem data</span></span><br><span class="line">prob = LpProblem(<span class="string">"The Whiskas Problem"</span>, LpMinimize)</span><br><span class="line"></span><br><span class="line"><span class="comment"># A dictionary called 'ingredient_vars' is created to contain the referenced Variables</span></span><br><span class="line">ingredient_vars = LpVariable.dicts(<span class="string">"Ingr"</span>,Ingredients,<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># The objective function is added to 'prob' first</span></span><br><span class="line">prob += lpSum([costs[i]*ingredient_vars[i] <span class="keyword">for</span> i <span class="keyword">in</span> Ingredients]), <span class="string">"Total Cost of Ingredients per can"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The five constraints are added to 'prob'</span></span><br><span class="line">prob += lpSum([ingredient_vars[i] <span class="keyword">for</span> i <span class="keyword">in</span> Ingredients]) == <span class="number">100</span>, <span class="string">"PercentagesSum"</span></span><br><span class="line">prob += lpSum([proteinPercent[i] * ingredient_vars[i] <span class="keyword">for</span> i <span class="keyword">in</span> Ingredients]) &gt;= <span class="number">8.0</span>, <span class="string">"ProteinRequirement"</span></span><br><span class="line">prob += lpSum([fatPercent[i] * ingredient_vars[i] <span class="keyword">for</span> i <span class="keyword">in</span> Ingredients]) &gt;= <span class="number">6.0</span>, <span class="string">"FatRequirement"</span></span><br><span class="line">prob += lpSum([fibrePercent[i] * ingredient_vars[i] <span class="keyword">for</span> i <span class="keyword">in</span> Ingredients]) &lt;= <span class="number">2.0</span>, <span class="string">"FibreRequirement"</span></span><br><span class="line">prob += lpSum([saltPercent[i] * ingredient_vars[i] <span class="keyword">for</span> i <span class="keyword">in</span> Ingredients]) &lt;= <span class="number">0.4</span>, <span class="string">"SaltRequirement"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The problem data is written to an .lp file</span></span><br><span class="line">prob.writeLP(<span class="string">"WhiskasModel2.lp"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># The problem is solved using PuLP's choice of Solver</span></span><br><span class="line">prob.solve()</span><br><span class="line"></span><br><span class="line"><span class="comment"># The status of the solution is printed to the screen</span></span><br><span class="line"><span class="keyword">print</span> (<span class="string">"Status:"</span>, LpStatus[prob.status])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Each of the variables is printed with it's resolved optimum value</span></span><br><span class="line"><span class="keyword">for</span> v <span class="keyword">in</span> prob.variables():</span><br><span class="line">    <span class="keyword">print</span> (v.name, <span class="string">"="</span>, v.varValue)</span><br><span class="line"></span><br><span class="line"><span class="comment"># The optimised objective function value is printed to the screen    </span></span><br><span class="line"><span class="keyword">print</span> (<span class="string">"Total Cost of Ingredients per can = "</span>, value(prob.objective))</span><br></pre></td></tr></table></figure>
+<pre><code>Status: Optimal
+Ingr_BEEF = 60.0
+Ingr_CHICKEN = 0.0
+Ingr_GEL = 40.0
+Ingr_MUTTON = 0.0
+Ingr_RICE = 0.0
+Ingr_WHEAT = 0.0
+Total Cost of Ingredients per can =  0.52
+</code></pre><p>上面是一个有关猫食选择的最有解决案例，具体的题目可以去参看官方文档，这里仅仅对使用PuLP进行线性规划的流程进行一个大致的归纳：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> prob = LpProblem(<span class="string">"The Whiskas Problem"</span>, LpMinimize)<span class="comment">#实例化LpProblem构造类,第一个参数是自定义的线性规划取名，第二参数可以指定求解的类型是 max or min</span></span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> A = pulp.LpVariable(<span class="string">'A'</span>, lowBound=<span class="number">0</span>, cat=<span class="string">'Integer'</span>)<span class="comment">#pulp变量定义，参数包括取名，上下限，类别，整形或连续</span></span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> prob+=......</span><br><span class="line">   prob+=......</span><br><span class="line">    ......                                            <span class="comment">#依次构造目标函数和约束条件，注意到，我们可以对目标函数或者约束项取名</span></span><br><span class="line"></span><br><span class="line"><span class="number">4.</span> prob.writeLP()                                     <span class="comment">#调用内部函数，将prob对象进行输出到指定文件</span></span><br><span class="line"></span><br><span class="line"><span class="number">5.</span> prob.solve()                                       <span class="comment">#进行模型求解，这里将采用默认的算法引擎求解，这个函数可以接受参数，我们可以定制化slover类传入，具体参考官方文档</span></span><br><span class="line"></span><br><span class="line"><span class="number">6.</span> <span class="keyword">print</span> (<span class="string">"Status:"</span>, LpStatus[prob.status])</span><br><span class="line">   <span class="keyword">print</span> (v.name, <span class="string">"="</span>, v.varValue)</span><br><span class="line">   <span class="keyword">print</span> (<span class="string">"Total Cost of Ingredients per can = "</span>, value(prob.objective))  <span class="comment">#获取计算结果</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>除了这两个库之外，pyomo也是个不错的库，还有就是导言提到的Gurobi使用python作为编程语言这个商业化软件，也是很不错的求解线性规划的方案。</p>
+</blockquote>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://www.coin-or.org/PuLP/main/the_optimisation_process.html" target="_blank" rel="noopener">[1]Pulp官网</a></p>
+<p><a href="http://www.pyomo.org/" target="_blank" rel="noopener">[2]Pyomo官网</a>  </p>
+<p><a href="http://pymprog.sourceforge.net/intro.html" target="_blank" rel="noopener">[3]pymprog官网</a></p>
+<p><a href="http://www.logphp.com/?a=url&amp;k=5f964654&amp;u=aHR0cDovL3d3dy5iYWlkdS5jb20vbGluaz91cmw9QTF0Ykp6Y0RVbk15bFdxZHlsRDduLV9MeUF4d0FZOHM1VTdPTVNwUXV5Q183aElnZktaQTJQekp2aGE2LUNuZ0F2cWxvM194N1NUVkpscUszTjctb3poeVpfa3l2RUpkMFlzWFNqUkE2bHk=&amp;t=cHl0aG9uIHB1bHDljIXmsYLop6PmlbTmlbDnur@mgKfop4TliJLlkoznur@mgKfop4TliJIgLSDkuI7mlbDmja7lkoxBLi4uX0NTRE7ljZrlrqI=&amp;s=cHl0aG9uIOe6v!aAp!inhOWIkuaxguinow==" target="_blank" rel="noopener">[4]python 整数线性规划和线性规划</a>  </p>
+<p><a href="http://benalexkeen.com/linear-programming-with-python-and-pulp/" target="_blank" rel="noopener">[5]Introduction to Linear Programming with Python and PuLP</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/08/数模之线性规划/">数模之线性规划</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月08日 - 20:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月08日 - 20:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/08/数模之线性规划/" title="数模之线性规划">http://lypto.me/2018/12/08/数模之线性规划/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/06/tor匿名协议理解二/" rel="next" title="tor匿名协议理解二">
+                <i class="fa fa-chevron-left"></i> tor匿名协议理解二
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/09/数模之非线性规划/" rel="prev" title="数模之非线性规划">
+                数模之非线性规划 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#scipy实现线性规划"><span class="nav-number">1.</span> <span class="nav-text">scipy实现线性规划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PuLP实现线性规划"><span class="nav-number">2.</span> <span class="nav-text">PuLP实现线性规划</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/08/数模之线性规划/';
+          this.page.identifier = '2018/12/08/数模之线性规划/';
+          this.page.title = '数模之线性规划';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
