@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="Blog of 1ypt0">
 <meta property="og:description" content="socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-10T17:20:31.143Z">
+<meta property="og:updated_time" content="2018-12-10T17:24:20.051Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux socket 编程模型总结">
 <meta name="twitter:description" content="socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要">
@@ -418,9 +418,9 @@
 
       
         <blockquote>
-<p>socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要想学好socket编程，除了掌握基本的函数API，还应该对这些分类以及实现模型有个认知。这也是作者写下这篇梳理文章的动机。</p>
-</blockquote>
+<p>socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要想学好socket编程，除了掌握基本的函数API，还应该对这些分类以及实现模型有个认知。这也是作者写下这篇梳理文章的动机。<br><a id="more"></a></p>
 <h1 id="阻塞IO模型"><a href="#阻塞IO模型" class="headerlink" title="阻塞IO模型"></a>阻塞IO模型</h1><p>由于网络传输是有延迟的，每个socket的收发都相当于一次次IO操作。在阻塞式IO模式中，程序会在涉及socket操作的一系列函数上进行阻塞。直到相关socket事务处理完后才继续程序逻辑。这是默认的socket策略，也即如果我们不自定义设置socket参数，默认会执行IO阻塞式操作。那么也许有人会问，一个进程在进行IO阻塞的时候一直暂用cpu，岂不是会影响其他进程的运行？答案式否定的。这个问题涉及到了linux系统进程调度的问题，虽然对理解这个IO阻塞没有很大联系。但是可以加深下对操作系统的理解。在linux系统中，存在有时间片的机制。避免IO密集型的进程在进行大量IO操作的时候独占cpu资源，所以会根据时间片来对进程进行运行时切换。这样可以很大的提高系统cpu的使用率。好了大致解释了以下IO密集性的基本概念，我们来看下哪些函数操作在默认socket参数下是会造成IO阻塞的。<br>涉及IO阻塞的函数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">产生阻塞的函数—读操作：read、readv、recv、recvfrom和recvmsg</span><br><span class="line">产生阻塞的函数—写操作：write、writev、send、sendto和sendmsg</span><br><span class="line">产生阻塞的函数—建立连接：connect</span><br><span class="line">产生阻塞的函数—TCP接受连接：accept</span><br></pre></td></tr></table></figure></p>
+</blockquote>
 <p>可以看到，只要涉及网络传输的函数就会存在阻塞。阻塞在socket编程中是个中性词，与非阻塞相比，没有好换优略之分，主要看业务需求。以下是阻塞式IO的特点：</p>
 <ul>
 <li>结构简单，易同步；</li>
