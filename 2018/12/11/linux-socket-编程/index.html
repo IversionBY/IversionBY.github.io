@@ -1,0 +1,1346 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="linux,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="套接字编程大致可以分为以下三种：流式套接字(stream)，数据报式套接字(datagram)以及原生套接字（row）。其中用得比较多的式流式套接字和数据报套接字。下面主要对所学的Linux下的socket编程进行学习记录。">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux socket 编程">
+<meta property="og:url" content="http://lypto.me/2018/12/11/linux-socket-编程/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="套接字编程大致可以分为以下三种：流式套接字(stream)，数据报式套接字(datagram)以及原生套接字（row）。其中用得比较多的式流式套接字和数据报套接字。下面主要对所学的Linux下的socket编程进行学习记录。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-10T17:18:00.142Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux socket 编程">
+<meta name="twitter:description" content="套接字编程大致可以分为以下三种：流式套接字(stream)，数据报式套接字(datagram)以及原生套接字（row）。其中用得比较多的式流式套接字和数据报套接字。下面主要对所学的Linux下的socket编程进行学习记录。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/11/linux-socket-编程/">
+
+
+
+
+
+  <title>linux socket 编程 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/11/linux-socket-编程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux socket 编程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-11T01:16:58+08:00">
+                Dec 11 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/11/linux-socket-编程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/11/linux-socket-编程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>套接字编程大致可以分为以下三种：流式套接字(stream)，数据报式套接字(datagram)以及原生套接字（row）。其中用得比较多的式流式套接字和数据报套接字。下面主要对所学的Linux下的socket编程进行学习记录。<br><a id="more"></a></p>
+<h1 id="基于TCP的socket编程"><a href="#基于TCP的socket编程" class="headerlink" title="基于TCP的socket编程"></a>基于TCP的socket编程</h1><ul>
+<li>TCP服务器通常采用并发服务器模型</li>
+</ul>
+</blockquote>
+<h2 id="以下函数依赖的头文件汇总"><a href="#以下函数依赖的头文件汇总" class="headerlink" title="以下函数依赖的头文件汇总"></a>以下函数依赖的头文件汇总</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="套接字的创建"><a href="#套接字的创建" class="headerlink" title="套接字的创建"></a>套接字的创建</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">socket</span> <span class="params">(<span class="keyword">int</span> family, <span class="keyword">int</span> type, <span class="keyword">int</span> protocol)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line">功能：创建socket</span><br><span class="line">参数：（P34表<span class="number">2</span><span class="number">-1</span>描述了可能的参数值）</span><br><span class="line">family（协议簇）：AF_INET、AF_UNIX等</span><br><span class="line">type（类型）：SOCK_STREAM、SOCK_DGRAM、SOCK_RAW</span><br><span class="line">protocol（协议）：默认为<span class="number">0</span></span><br><span class="line"></span><br><span class="line">返回值：&gt;<span class="number">0</span>－socket描述符， <span class="number">-1</span>－失败， 系统全局变量errno为错误代码（strerror函数显示描述字符串）</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sockfd=socket(AF_INET,</span><br><span class="line">		SOCK_STREAM,</span><br><span class="line">		<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span>(sockfd==<span class="number">-1</span>)&#123;		</span><br><span class="line">	<span class="built_in">printf</span>(“can <span class="keyword">not</span> create socket\n<span class="string">");</span></span><br><span class="line"><span class="string">	exit(1);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">…</span></span><br></pre></td></tr></table></figure>
+<p>可以注意到，这个函数其实是在本地创建一个socket 文件描述符，因为在linux下一切兼文件。所以对套接字的操作抽象为对文件描述符的操作，这样我们可以方便使用read(),write()操作对socket进行读写。当然使用socket 系列函数也是可以的。</p>
+<h2 id="sockaddr-结构体的赋值"><a href="#sockaddr-结构体的赋值" class="headerlink" title="sockaddr 结构体的赋值"></a>sockaddr 结构体的赋值</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">sockaddr 结构体：</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span>  <span class="title">sockaddr_in</span> &#123;</span></span><br><span class="line">    <span class="keyword">short</span> 	sin_family;  <span class="comment">/*AF_INET*/</span></span><br><span class="line">    u_short sin_port;     <span class="comment">/*端口号，网络字节序*/</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span>  <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span>   <span class="comment">/*IP地址，网络字节序*/</span></span><br><span class="line">    <span class="keyword">char</span>    sin_zero[<span class="number">8</span>]; <span class="comment">/*填充字节，必须为全零*/</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></span><br><span class="line">    u_long  s_addr;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">使用举例：</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">srvaddr</span>;</span></span><br><span class="line">bzero(&amp;srvaddr, <span class="keyword">sizeof</span>(srvaddr));</span><br><span class="line">srvaddr.sin_family = AF_INET;</span><br><span class="line">srvaddr.sin_port = htons(srvport);</span><br><span class="line">srvaddr.sin_addr.s_addr=htonl(INADDR_ANY);</span><br><span class="line">…</span><br></pre></td></tr></table></figure>
+<p>注意到sockaddr 结构体中的sin_port 字段和 sin_addr 字段需要转换为网络字节序，因为不同的系统上面对数字的存储有大端存储和小端存储两个方式，在进行socket编程的时候需要规范化。规范的方式就是调用<code>htons()</code>,<code>htonl()</code>函数。或者使用以下两个函数。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_aton</span> <span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *cp, struct in_addr *inp)</span></span>;</span><br><span class="line">将点分IP地址格式转换为无符号整型</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span>* <span class="title">inet_ntoa</span> <span class="params">(struct in_addr in)</span></span>;</span><br><span class="line">将无符号整型转换为点分格式</span><br><span class="line"></span><br><span class="line">举例：</span><br><span class="line"><span class="comment">//点分字符串格式地址转换为无符号整型</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">addr</span>;</span></span><br><span class="line">inet_aton(“<span class="number">219.245</span><span class="number">.78</span><span class="number">.159</span>”,&amp;addr.sin_addr);</span><br><span class="line"><span class="comment">//无符号整型转换为点分字符串格式</span></span><br><span class="line"><span class="built_in">printf</span>(“%s”,inet_ntoa(addr.sin_addr));</span><br></pre></td></tr></table></figure></p>
+<h2 id="绑定套接字描述符与sockaddr-结构体"><a href="#绑定套接字描述符与sockaddr-结构体" class="headerlink" title="绑定套接字描述符与sockaddr 结构体"></a>绑定套接字描述符与sockaddr 结构体</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span> <span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *myaddr, <span class="keyword">int</span> addrlen)</span></span>; </span><br><span class="line">功能：将地址与所创建的套接字进行关联</span><br><span class="line">参数：</span><br><span class="line">sockfd－socket描述符</span><br><span class="line">myaddr－自己的地址</span><br><span class="line">addrlen－地址结构长度（如何表示？）</span><br><span class="line">返回值：</span><br><span class="line"><span class="number">0</span>－成功，<span class="number">-1</span>－失败，errno为错误代码 </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( bind(sockfd,</span><br><span class="line">	(struct sockaddr *)&amp;srvaddr,</span><br><span class="line">	<span class="keyword">sizeof</span>(struct sockaddr) )==<span class="number">-1</span>)</span><br><span class="line">&#123;		</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"bind error\n"</span>);</span><br><span class="line">	close(sockfd);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">1</span>);	</span><br><span class="line">&#125;</span><br><span class="line">…</span><br></pre></td></tr></table></figure>
+<h2 id="监听端口"><a href="#监听端口" class="headerlink" title="监听端口"></a>监听端口</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span> <span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> backlog)</span></span></span><br><span class="line">功能：建立一个连接请求等待队列，监听本地地址和端口</span><br><span class="line">参数：</span><br><span class="line">sockfd－已绑定的socket描述符</span><br><span class="line">backlog－连接请求队列长度（门限值），当连接请求到达时，被插入请求队列，以避免由于服务器忙而将请求拒绝</span><br><span class="line">返回值</span><br><span class="line"><span class="number">0</span>－成功，<span class="number">-1</span>－失败，errno为错误代码 </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听端口示例：</span></span><br><span class="line"><span class="keyword">if</span>( listen(sockfd, BACKLOG) ==<span class="number">-1</span>)</span><br><span class="line">&#123;	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"listen error\n"</span>);</span><br><span class="line">	close(sockfd);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">1</span>);	</span><br><span class="line">&#125;</span><br><span class="line">…</span><br></pre></td></tr></table></figure>
+<p>执行listen后socket转换成被动socket，可以接受连接；<code>listen()</code>函数只能用在在TCP面向连接方式下的socket，比如<code>SOCK_STREAM</code>，面向无连接的方式，一般没有listen这个操作，后面会看到；<br>当一个连接请求到达时，被插入请求队列，服务器用accept()函数从队列中移走并响应请求。</p>
+<h2 id="客户端链接服务器"><a href="#客户端链接服务器" class="headerlink" title="客户端链接服务器"></a>客户端链接服务器</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span> <span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *servaddr, <span class="keyword">int</span> addrlen)</span></span></span><br><span class="line">功能：连接服务器</span><br><span class="line">参数：</span><br><span class="line">sockfd－socket描述符</span><br><span class="line">servaddr－服务器地址</span><br><span class="line">addrlen－地址结构长度</span><br><span class="line">返回值：</span><br><span class="line"><span class="number">0</span>－成功，<span class="number">-1</span>－失败，errno为错误代码</span><br><span class="line"></span><br><span class="line"><span class="comment">//连接服务器，调用前需要对srvaddr进行初始化</span></span><br><span class="line">If (connect(sockfd,</span><br><span class="line">	(struct sockaddr *)&amp;srvaddr,</span><br><span class="line">	<span class="keyword">sizeof</span>(struct sockaddr))==<span class="number">-1</span>)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"connect error\n"</span>);</span><br><span class="line">	close(sockfd);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">1</span>);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意到一般客户端不指定自己的端口号，而是由操作系统分配给我们一个空闲的临时端口。</p>
+<h2 id="服务端接受客户端链接"><a href="#服务端接受客户端链接" class="headerlink" title="服务端接受客户端链接"></a>服务端接受客户端链接</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span> <span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *clientaddr, <span class="keyword">int</span> *addrlen)</span></span>;</span><br><span class="line">功能：接受连接</span><br><span class="line">参数：</span><br><span class="line">sockfd－socket描述符</span><br><span class="line">clientaddr－客户端地址</span><br><span class="line">addrlen－地址结构长度</span><br><span class="line">返回值</span><br><span class="line">&gt;<span class="number">0</span>－成功，返回新的socket描述符标识已接受的连接</span><br><span class="line"><span class="number">-1</span>－失败，errno为错误代码</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sin_size=<span class="keyword">sizeof</span>(struct sockaddr_in);	</span><br><span class="line"><span class="keyword">int</span> new_fd=accept(sockfd,</span><br><span class="line">	(struct sockaddr *)&amp;clientaddr,</span><br><span class="line">	&amp;sin_size) ;	</span><br><span class="line">If (new_fd==<span class="number">-1</span>)</span><br><span class="line">&#123;		</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"accept error\n"</span>);	</span><br><span class="line">	<span class="keyword">continue</span>;	</span><br><span class="line">&#125;</span><br><span class="line">…</span><br></pre></td></tr></table></figure>
+<p>注意到accept函数在无连接请求时将阻塞进程，当然我们也可以使用非阻塞式IO模型进行编程，后面会看到。</p>
+<h2 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">read</span> <span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *buf, <span class="keyword">int</span> len)</span></span>;</span><br><span class="line">功能：从socket读取数据</span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">buf－接收数据缓冲区</span><br><span class="line">len－要读取数据大小</span><br><span class="line">返回值n</span><br><span class="line">无数据		  阻塞</span><br><span class="line">套接字缓冲区&gt;=len	  读出len个字节</span><br><span class="line">n&gt;<span class="number">0</span> <span class="keyword">and</span> n&lt;len	  读出n个字节</span><br><span class="line">n=<span class="number">0</span>            	  读通道已关闭</span><br><span class="line">n&lt;<span class="number">0</span>            	  出错或异常，errno为错误代码</span><br><span class="line">n=<span class="number">-1</span>,EINTR	  由中断引起错误</span><br><span class="line">n=<span class="number">-1</span>,ECONNREST  网络连接有问题</span><br></pre></td></tr></table></figure>
+<p>read并不是从网络读取数据，而只是完成从套接字接收缓冲区到接收进程应用缓冲区复制数据的任务。同时注意到，这是个系统调用，跨越了用户态和内核态。</p>
+<h2 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">write</span> <span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *buf, <span class="keyword">int</span> len)</span></span>;</span><br><span class="line">功能：向socket发送数据</span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">buf－发送数据缓冲区</span><br><span class="line">len－要发送数据大小</span><br><span class="line">返回值n</span><br><span class="line">无缓冲区		阻塞</span><br><span class="line">套接字缓冲区&gt;=len	写入len个字节</span><br><span class="line">n&gt;<span class="number">0</span> <span class="keyword">and</span> n&lt;len	写入n个字节</span><br><span class="line">n=<span class="number">0</span>            	写通道已关闭</span><br><span class="line">n&lt;<span class="number">0</span>            	出错或异常，errno为错误代码</span><br><span class="line">n=<span class="number">-1</span>,EINTR	由中断引起错误</span><br><span class="line">n=<span class="number">-1</span>,EPIPE		网络连接有问题</span><br></pre></td></tr></table></figure>
+<p>同read()函数一样，write函数成功返回并不意味着数据已经通过网络发送到对方主机，而只是说明已存放在套接字发送缓冲区中，等待TCP协议来发送。</p>
+<h2 id="关闭socket"><a href="#关闭socket" class="headerlink" title="关闭socket"></a>关闭socket</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span> <span class="params">(<span class="keyword">int</span> sockfd)</span></span></span><br><span class="line">功能：关闭socket</span><br><span class="line">参数：</span><br><span class="line">sockfd－socket描述符</span><br><span class="line">返回值</span><br><span class="line"><span class="number">0</span>－成功，<span class="number">-1</span>－失败，errno为错误代码</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">int</span> sockfd,<span class="keyword">int</span> howto)</span></span>; </span><br><span class="line">功能：关闭连接</span><br><span class="line">参数：</span><br><span class="line">sockfd－socket描述符</span><br><span class="line">howto－指定关闭操作的类型</span><br><span class="line"><span class="number">0</span>：停止读</span><br><span class="line"><span class="number">1</span>：停止写</span><br><span class="line"><span class="number">2</span>：停止读、写</span><br><span class="line">返回值：<span class="number">0</span>－成功，－<span class="number">1</span>失败</span><br></pre></td></tr></table></figure>
+<p>这两个函数名义上都是关闭套接字，但是其功能很不一样。调用close后本进程将不能再使用这个套接字描述符，但TCP可能并没有删除套接字结构，因为可能其他进程还在使用它；调用close只是将对sockfd的引用减1，直到对sockfd的引用为0时才清除sockfd。而使用shutdown 的方式可以按照howto指定的关闭手段对socket进行按需关闭，这是真正意义上的关闭，一旦调用了shutdown,所有进程都不能再使用套接字的相关功能。</p>
+<h1 id="基于UDP的socket编程"><a href="#基于UDP的socket编程" class="headerlink" title="基于UDP的socket编程"></a>基于UDP的socket编程</h1><p>根据UDP协议，我们可以概括UDPsocket套接字编程的特点：</p>
+<ul>
+<li>非面向连接，不需事先建立连接；</li>
+<li>主要通过sendto和recvfrom函数来完成数据交互；</li>
+<li>sendto函数不会产生IO阻塞，但是recvfrom函数会。客户机可能因为数据丢失永远阻塞在recvfrom函数处。</li>
+<li>UDP服务器通常采用循环服务器（重复型）的工作方式，不会被某一个客户独占</li>
+<li>通常需要一些错误处理逻辑，诸如乱序，丢失，流量控制等等</li>
+</ul>
+<h2 id="sendto-send"><a href="#sendto-send" class="headerlink" title="sendto/send"></a>sendto/send</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">send</span><span class="params">(<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf,<span class="keyword">int</span> len,<span class="keyword">int</span> flags)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sendto</span><span class="params">(<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf,<span class="keyword">int</span> len,<span class="keyword">int</span> flags,struct sockaddr *toaddr, <span class="keyword">int</span> addrlen)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line">功能：向套接字发送数据</span><br><span class="line">返回值：≥<span class="number">0</span>—成功，<span class="number">-1</span>—失败</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">buf－数据缓冲区</span><br><span class="line">len－缓冲区字节数</span><br><span class="line">toaddr—目的套接字地址</span><br><span class="line">addrlen—地址长度</span><br><span class="line">flags－控制参数</span><br><span class="line"></span><br><span class="line">flags=<span class="number">0</span>, send与write功能相同</span><br><span class="line">flags=MSG_DONTROUTE，告诉内核，目标主机在本地网络，无需查找路由表。适用于局域网，或同一网段</span><br><span class="line">flags=MSG_OOB，发送带外数据</span><br><span class="line">flags=MSG_DONTWAIT，如果套接字缓冲区没有足够空间，则进程不阻塞等待</span><br></pre></td></tr></table></figure>
+<h2 id="recvfrom-recv"><a href="#recvfrom-recv" class="headerlink" title="recvfrom/recv"></a>recvfrom/recv</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">recv</span><span class="params">(<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf,<span class="keyword">int</span> len,<span class="keyword">int</span> flags)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">recvfrom</span><span class="params">(<span class="keyword">int</span> fd,<span class="keyword">char</span> *buf,<span class="keyword">int</span> len,<span class="keyword">int</span> flags,struct sockaddr *fromaddr, <span class="keyword">int</span> *addrlen)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line">功能：从套接字读取数据</span><br><span class="line">返回值：≥<span class="number">0</span>—成功，<span class="number">-1</span>—失败</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">buf－数据缓冲区</span><br><span class="line">len－缓冲区字节数</span><br><span class="line">fromaddr—源套接字地址</span><br><span class="line">addrlen—地址长度</span><br><span class="line">flags－控制参数</span><br><span class="line"></span><br><span class="line">控制参数说明</span><br><span class="line">flags=<span class="number">0</span>, recv与read功能相同</span><br><span class="line">flags=MSG_OOB，接收带外数据</span><br><span class="line">flags=MSG_DONTWAIT，套接字缓冲区没有数据时，进程不阻塞等待</span><br><span class="line">flags=MSG_WAITALL，通知内核直到读到请求的数据字节数时，才返回</span><br><span class="line">flags=MSG_PEEK，接收数据时不从缓冲区移走数据，下一个读操作将会读到同样的数据</span><br><span class="line">……</span><br></pre></td></tr></table></figure>
+<p>注意到UDP式面向无连接的socket,在使用recvfrom的时候，还有另外一种写法。若需要知道发送方的地址，则可以在recvfrom函数中初始化参数fromaddr和addrlen由内核来填充；<br>如果不关心发送方的地址，则可以将recvfrom函数的参数fromaddr和addrlen都设置为NULL；<code>recvfrom(sockfd,buf,len,0,NULL,NULL)</code></p>
+<h2 id="UDP假connect"><a href="#UDP假connect" class="headerlink" title="UDP假connect"></a>UDP假connect</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int connect (int sockfd, struct sockaddr *servaddr, int addrlen)</span><br><span class="line">调用方法与流式套接字相同，但调用结果不同；</span><br><span class="line">无三次握手过程，且并未建立连接；</span><br><span class="line">UDP使用连接函数后，发送数据可以不用指定地址；且只接收所建立连接的对方数据报，底层socket的接受缓冲区只接受目的地址为connect之前指定的；</span><br><span class="line">意外情况处理</span><br><span class="line">服务器缓冲区满：丢弃数据包，且不返回错误</span><br><span class="line">服务器未运行对应进程：服务器向客户机返回错误信息—ECONNRESET</span><br><span class="line">数据未成功到达：目的地不可达—路由器返回错误消息；字节错误或缓冲区满—不返回任何信息</span><br><span class="line">连接套接字取消</span><br><span class="line"></span><br><span class="line">再次调用connect函数</span><br></pre></td></tr></table></figure>
+<h2 id="socket-其他函数"><a href="#socket-其他函数" class="headerlink" title="socket 其他函数"></a>socket 其他函数</h2><h3 id="sendmsg-amp-recvmsg"><a href="#sendmsg-amp-recvmsg" class="headerlink" title="sendmsg&amp;recvmsg"></a>sendmsg&amp;recvmsg</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sendmsg</span><span class="params">(<span class="keyword">int</span> fd,struct msghdr *msgp,<span class="keyword">int</span> flags)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">recvmsg</span><span class="params">(<span class="keyword">int</span> fd,struct msghdr *msgp,<span class="keyword">int</span> flags)</span></span>;</span><br><span class="line">功能：发送和接收规格化的数据，配对使用</span><br><span class="line">返回值：≥<span class="number">0</span>—成功，<span class="number">-1</span>—失败</span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">msghdr－规格化数据缓冲区</span><br><span class="line">flags－控制参数</span><br><span class="line">c</span><br></pre></td></tr></table></figure>
+<h3 id="readv-amp-writev"><a href="#readv-amp-writev" class="headerlink" title="readv&amp;writev"></a>readv&amp;writev</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">readv和writev</span><br><span class="line"><span class="keyword">ssize_t</span> readv(<span class="keyword">int</span> fd,<span class="keyword">const</span> struct iovec iov[],<span class="keyword">int</span> iovcnt);</span><br><span class="line"><span class="keyword">ssize_t</span> writev(<span class="keyword">int</span> fd,<span class="keyword">const</span> struct iovec iov[],<span class="keyword">int</span> iovcnt);</span><br><span class="line">功能：一次读、写多个非连续缓冲区</span><br><span class="line">返回值：≥<span class="number">0</span>—成功，已读写字节数；<span class="number">-1</span>—失败</span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">iov－缓冲区数组</span><br><span class="line">iovcnt－缓冲区数组个数</span><br></pre></td></tr></table></figure>
+<h3 id="getpeername"><a href="#getpeername" class="headerlink" title="getpeername"></a>getpeername</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">int getpeername(int fd,struct sockaddr *proaddr,int *addrlen);</span><br><span class="line">功能：获得对端socket的地址信息</span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">proaddr－存放地址信息的缓冲区的指针</span><br><span class="line">addrlen－存放缓冲区字节数的整型变量的指针</span><br><span class="line">返回值：0－成功，－1失败</span><br></pre></td></tr></table></figure>
+<p>当一个调用accept的进程通过fork和exec启动一个新的进程时，经常要调用这个函数；新的服务器通过getpeername函数来得到远端的地址。</p>
+<h3 id="getsockname"><a href="#getsockname" class="headerlink" title="getsockname"></a>getsockname</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">getsockname</span><br><span class="line">int getsockname(int fd,struct sockaddr *proaddr,int *addrlen);</span><br><span class="line">功能：获得本地socket的地址信息</span><br><span class="line">参数：</span><br><span class="line">fd－socket描述符</span><br><span class="line">proaddr－存放地址信息的缓冲区的指针</span><br><span class="line">addrlen－存放缓冲区字节数的整型变量的指针</span><br><span class="line">返回值：0－成功，－1失败</span><br></pre></td></tr></table></figure>
+<h3 id="获取-设置-socket参数"><a href="#获取-设置-socket参数" class="headerlink" title="获取/设置 socket参数"></a>获取/设置 socket参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">int getsockopt(int sockfd, int level, int optname, void *optval, sock_len_t *optlen);</span><br><span class="line"></span><br><span class="line">int setsockopt(int sockfd, int level, int optname, void *optval, sock_len_t optlen);</span><br><span class="line"></span><br><span class="line">功能：获取或设置socket选项</span><br><span class="line">返回值：0－成功，-1失败</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">sockfd－socket描述符</span><br><span class="line">level－选项级别</span><br><span class="line">optname—选项名称</span><br><span class="line">optval—选项值指针 </span><br><span class="line">optlen—选项值的长度/存放选项值长度的指针  </span><br><span class="line"></span><br><span class="line">参数level 代表欲设置的网络层, 一般设成SOL_SOCKET 以存取socket 层. 参数optname 代表欲设置的选项, 有下列几种数值:</span><br><span class="line">   </span><br><span class="line">   SO_DEBUG 打开或关闭排错模式</span><br><span class="line">   SO_REUSEADDR 允许在bind ()过程中本地地址可重复使用</span><br><span class="line">   SO_TYPE 返回socket 形态.</span><br><span class="line">   SO_ERROR 返回socket 已发生的错误原因</span><br><span class="line">   SO_DONTROUTE 送出的数据包不要利用路由设备来传输.</span><br><span class="line">   SO_BROADCAST 使用广播方式传送</span><br><span class="line">   SO_SNDBUF 设置送出的暂存区大小</span><br><span class="line">   SO_RCVBUF 设置接收的暂存区大小</span><br><span class="line">   SO_KEEPALIVE 定期确定连线是否已终止.</span><br><span class="line">   SO_OOBINLINE 当接收到OOB 数据时会马上送至标准输入设备</span><br><span class="line">   SO_LINGER 确保数据安全且可靠的传送出去.</span><br><span class="line"></span><br><span class="line">下面给出一个预创建子进程的时候的参数设置样例：</span><br><span class="line"></span><br><span class="line">int n=1;</span><br><span class="line">setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&amp;n,sizeof(n));</span><br></pre></td></tr></table></figure>
+<h2 id="fcntl"><a href="#fcntl" class="headerlink" title="fcntl"></a>fcntl</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int fcntl(int fd,int cmd,…)</span><br><span class="line"></span><br><span class="line">功能：改变套接字属性</span><br><span class="line">设置socket为阻塞/非阻塞模式</span><br><span class="line">设置允许/不允许接收异步I/O信号</span><br><span class="line">设置/获取socket的所有者</span><br><span class="line">参数：</span><br><span class="line">fd－文件（socket）描述符</span><br><span class="line">cmd－执行的操作</span><br><span class="line">其他参数－根据cmd选择适当参数</span><br><span class="line">返回值：≥0－成功，-1－失败</span><br></pre></td></tr></table></figure>
+<h2 id="ioctl"><a href="#ioctl" class="headerlink" title="ioctl"></a>ioctl</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">int ioctl(int fd,int req,…);</span><br><span class="line">功能：控制输入输出</span><br><span class="line">参数：</span><br><span class="line">fd－文件（socket）描述符</span><br><span class="line">req－执行的操作类型</span><br><span class="line">第三个参数－总是指针类型，存储操作返回的数据或操作所需的数据</span><br><span class="line">返回值：0－成功，-1－失败</span><br><span class="line"></span><br><span class="line">req 参数常用如下：</span><br><span class="line">SIOCATMARK   检测是否到达带外标记</span><br><span class="line">FIONBIO      非阻塞模式</span><br><span class="line">FIOASYNC     异步输入/输出标志</span><br><span class="line">SIOCSPGRP/   设置/获取目标进程或进程组</span><br><span class="line">SIOCGPGRP</span><br><span class="line">FIONREAD     缓冲区中有多少字节可读</span><br></pre></td></tr></table></figure>
+<h2 id="多路复用函数select"><a href="#多路复用函数select" class="headerlink" title="多路复用函数select"></a>多路复用函数select</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">int select(int maxfd,fd_set *rdset,fd_set *wrest,fd_set *exset,struct timeval *timeout);</span><br><span class="line">功能：检查多个文件描述符（socket描述符）是否就绪，当某一个描述符就绪（可读、可写或发生异常）时函数返回，可以实现输入输出多路复用</span><br><span class="line">返回值：有描述符就绪则返回就绪的描述符个数；超时时间内没有描述符就绪返回0；执行失败返回 -1。</span><br><span class="line"></span><br><span class="line">参数：</span><br><span class="line">maxfd－集合中所有描述符的最大值+1  </span><br><span class="line">rdset－需要测试是否可读的描述符集合（包括处于listen状态的socket接收到连接请求） </span><br><span class="line">wrset－需要测试是否可写的描述符集合（包括以非阻塞方式调用connect是否成功）  </span><br><span class="line">exset－需要测试是否异常的描述符集合（包括接收带外数据的socket有带外数据到达）   </span><br><span class="line">timeout－指定测试超时的时间 </span><br><span class="line"></span><br><span class="line">select函数监控的socket接口状态</span><br><span class="line">读：</span><br><span class="line">有数据可读</span><br><span class="line">连接的读通道被关闭</span><br><span class="line">listen的套接字已经将连接排队</span><br><span class="line">socket差错未处理</span><br><span class="line">写：</span><br><span class="line">缓存可供写操作使用</span><br><span class="line">连接的写通道被关闭</span><br><span class="line">socket差错未处理</span><br><span class="line">例外：</span><br><span class="line">OOB同步标记未处理</span><br><span class="line"></span><br><span class="line">描述符集合操作函数</span><br><span class="line">FD_ZERO(fd_set *fdset)－清空描述符集合</span><br><span class="line">FD_SET(int fd,fd_set *fdset)－将一个描述符添加到描述符集合 </span><br><span class="line">FD_CLR(int fd,fd_set *fdset)－将一个描述符从描述符集合中清除 </span><br><span class="line">FD_ISSET(int fd,fd_set *fdset)－检测一个描述符是否就绪</span><br><span class="line"></span><br><span class="line">注：在设置描述符集合前应该先调用FD_ZERO将集合清空，每次调用select函数前应该重新设置读、写和错误3个集合；三个集合中的描述符可以交叉</span><br></pre></td></tr></table></figure>
+<h2 id="域名相关函数"><a href="#域名相关函数" class="headerlink" title="域名相关函数"></a>域名相关函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#gethostbyname</span><br><span class="line"></span><br><span class="line">include &lt;netdb.h&gt;</span><br><span class="line">struct hostent* gethostbyname(const char *name)</span><br><span class="line">功能：查询域名对应的IP</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#gethostbyaddr</span><br><span class="line">include &lt;netdb.h&gt;</span><br><span class="line">struct hostent *gethostbyaddr(const char *addr,size_t len,int family); </span><br><span class="line">功能：查询IP对应的域名</span><br><span class="line"></span><br><span class="line">查询失败时错误类型保存在全局变量h_errno中，hstrerror可以得到h_errno的描述信息</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">struct hostent&#123;</span><br><span class="line">	char	 *h_name;	    /*主机正式名称*/</span><br><span class="line">	char	**h_aliases;	/*别名列表，以NULL结束*/</span><br><span class="line">	int 	h_addrtype;	    /*主机地址类型：AF_INET*/</span><br><span class="line">	int 	h_length;	    /*主机地址长度：4字节32位*/</span><br><span class="line">	char 	**h_addr_list;	/*主机ip地址列表，以NULL结束*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/11/linux-socket-编程/">linux socket 编程</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月11日 - 01:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月11日 - 01:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/11/linux-socket-编程/" title="linux socket 编程">http://lypto.me/2018/12/11/linux-socket-编程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/09/数模之非线性规划/" rel="next" title="数模之非线性规划">
+                <i class="fa fa-chevron-left"></i> 数模之非线性规划
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/11/linux-进程间通信/" rel="prev" title="linux 进程间通信">
+                linux 进程间通信 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于TCP的socket编程"><span class="nav-number">1.</span> <span class="nav-text">基于TCP的socket编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#以下函数依赖的头文件汇总"><span class="nav-number">1.1.</span> <span class="nav-text">以下函数依赖的头文件汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#套接字的创建"><span class="nav-number">1.2.</span> <span class="nav-text">套接字的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sockaddr-结构体的赋值"><span class="nav-number">1.3.</span> <span class="nav-text">sockaddr 结构体的赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绑定套接字描述符与sockaddr-结构体"><span class="nav-number">1.4.</span> <span class="nav-text">绑定套接字描述符与sockaddr 结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监听端口"><span class="nav-number">1.5.</span> <span class="nav-text">监听端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端链接服务器"><span class="nav-number">1.6.</span> <span class="nav-text">客户端链接服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端接受客户端链接"><span class="nav-number">1.7.</span> <span class="nav-text">服务端接受客户端链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接收数据"><span class="nav-number">1.8.</span> <span class="nav-text">接收数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送数据"><span class="nav-number">1.9.</span> <span class="nav-text">发送数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭socket"><span class="nav-number">1.10.</span> <span class="nav-text">关闭socket</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于UDP的socket编程"><span class="nav-number">2.</span> <span class="nav-text">基于UDP的socket编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sendto-send"><span class="nav-number">2.1.</span> <span class="nav-text">sendto/send</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#recvfrom-recv"><span class="nav-number">2.2.</span> <span class="nav-text">recvfrom/recv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP假connect"><span class="nav-number">2.3.</span> <span class="nav-text">UDP假connect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#socket-其他函数"><span class="nav-number">2.4.</span> <span class="nav-text">socket 其他函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sendmsg-amp-recvmsg"><span class="nav-number">2.4.1.</span> <span class="nav-text">sendmsg&amp;recvmsg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#readv-amp-writev"><span class="nav-number">2.4.2.</span> <span class="nav-text">readv&amp;writev</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getpeername"><span class="nav-number">2.4.3.</span> <span class="nav-text">getpeername</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getsockname"><span class="nav-number">2.4.4.</span> <span class="nav-text">getsockname</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取-设置-socket参数"><span class="nav-number">2.4.5.</span> <span class="nav-text">获取/设置 socket参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fcntl"><span class="nav-number">2.5.</span> <span class="nav-text">fcntl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ioctl"><span class="nav-number">2.6.</span> <span class="nav-text">ioctl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多路复用函数select"><span class="nav-number">2.7.</span> <span class="nav-text">多路复用函数select</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#域名相关函数"><span class="nav-number">2.8.</span> <span class="nav-text">域名相关函数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/11/linux-socket-编程/';
+          this.page.identifier = '2018/12/11/linux-socket-编程/';
+          this.page.title = 'linux socket 编程';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

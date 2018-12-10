@@ -1,0 +1,1336 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="linux,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux socket 编程模型总结">
+<meta property="og:url" content="http://lypto.me/2018/12/11/Linux-socket-编程模型总结/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-10T17:20:31.143Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux socket 编程模型总结">
+<meta name="twitter:description" content="socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/11/Linux-socket-编程模型总结/">
+
+
+
+
+
+  <title>Linux socket 编程模型总结 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/11/Linux-socket-编程模型总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux socket 编程模型总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-11T01:19:24+08:00">
+                Dec 11 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/11/Linux-socket-编程模型总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/11/Linux-socket-编程模型总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>socket编程作为互联网间进程通信手段之一，是必须掌握的一项基本技能。也值备考之余，打算好好梳理以下socket编程在实际使用中的模型。从协议上分，socket编程可以分为TCP或者UDP socket；从IO方式上分有阻断式和非阻断式；从处理逻辑结构上分可以有循环式和并发式两种。不同的分类下又对应着具体的实现模型，这些实现相当灵活，不同分类之间没有实现上的间隙，很多应用场景中是交织的。所以要想学好socket编程，除了掌握基本的函数API，还应该对这些分类以及实现模型有个认知。这也是作者写下这篇梳理文章的动机。</p>
+</blockquote>
+<h1 id="阻塞IO模型"><a href="#阻塞IO模型" class="headerlink" title="阻塞IO模型"></a>阻塞IO模型</h1><p>由于网络传输是有延迟的，每个socket的收发都相当于一次次IO操作。在阻塞式IO模式中，程序会在涉及socket操作的一系列函数上进行阻塞。直到相关socket事务处理完后才继续程序逻辑。这是默认的socket策略，也即如果我们不自定义设置socket参数，默认会执行IO阻塞式操作。那么也许有人会问，一个进程在进行IO阻塞的时候一直暂用cpu，岂不是会影响其他进程的运行？答案式否定的。这个问题涉及到了linux系统进程调度的问题，虽然对理解这个IO阻塞没有很大联系。但是可以加深下对操作系统的理解。在linux系统中，存在有时间片的机制。避免IO密集型的进程在进行大量IO操作的时候独占cpu资源，所以会根据时间片来对进程进行运行时切换。这样可以很大的提高系统cpu的使用率。好了大致解释了以下IO密集性的基本概念，我们来看下哪些函数操作在默认socket参数下是会造成IO阻塞的。<br>涉及IO阻塞的函数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">产生阻塞的函数—读操作：read、readv、recv、recvfrom和recvmsg</span><br><span class="line">产生阻塞的函数—写操作：write、writev、send、sendto和sendmsg</span><br><span class="line">产生阻塞的函数—建立连接：connect</span><br><span class="line">产生阻塞的函数—TCP接受连接：accept</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，只要涉及网络传输的函数就会存在阻塞。阻塞在socket编程中是个中性词，与非阻塞相比，没有好换优略之分，主要看业务需求。以下是阻塞式IO的特点：</p>
+<ul>
+<li>结构简单，易同步；</li>
+<li>进程可能永远阻塞或阻塞时间过长；</li>
+<li>阻塞时进程效率低</li>
+<li>由于系统对IO密集型进程的调度作用，不会长时间占用CPU（时间片机制）</li>
+</ul>
+<p>使用阻塞模式的套接字，开发网络程序比较简单，容易实现。当希望能够立即发送和接收数据，且处理的套接字数量比较少的情况下，使用阻塞模式来开发网络程序比较合适。套接字相关函数默认时采用阻塞方式操作，而大多数情况下，程序不仅仅只拥有一个套接字。当进程以阻塞方式操作其中之一时，必将导致不能使用其他的套接字。如果希望这些套接字同时工作，就必须设计并发的套接字程序，即在一个套接字读写的同时保证另一个套接字也能正常地操作。设计并发的方法有循环里，创建子进程或者使用子线程处理每个recive的socket_fd,这样就会使得阻塞只在单个线程或者单个进程内发生。下面将会介绍这种模型。</p>
+<h2 id="并发创建子进程模型-创建子线程模型"><a href="#并发创建子进程模型-创建子线程模型" class="headerlink" title="并发创建子进程模型/创建子线程模型"></a>并发创建子进程模型/创建子线程模型</h2><p>这种模型的出现，其实是为了解决阻塞式IO下，程序并行效率底下的问题。通过对每一个处理请求使用多进程或多线程的处理机制，可以将阻塞效应限制在单个进程或线程内，带来很好的并发体验。并发创建子进程模型/创建子线程模型伪代码流程如下（注意到为了突出功能，省略了一些错误处理）：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化socketfd</span></span><br><span class="line">init_socket();</span><br><span class="line"><span class="comment">//bind </span></span><br><span class="line">bind(...);</span><br><span class="line"><span class="comment">//listen</span></span><br><span class="line">listen(...);</span><br><span class="line"><span class="comment">//循环 accept</span></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">    newsocket=accept(......);</span><br><span class="line">    <span class="keyword">if</span>(newsocket)&#123;</span><br><span class="line">        <span class="keyword">if</span>(fork()==<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="comment">//子进程处理逻辑</span></span><br><span class="line">            close(socketfd)</span><br><span class="line">            dosomething();</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//父进程关闭当轮循环newsocket</span></span><br><span class="line">    close(newsocket) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="延迟创建子进程模型"><a href="#延迟创建子进程模型" class="headerlink" title="延迟创建子进程模型"></a>延迟创建子进程模型</h2><p>之前我们看到的并发创建子进程模型，其在实现上仍旧有可以改进的地方。首先创建子进程的开销非常的大，如果一个很小的处理业务我们都为其创建一个单独进程，无疑是个不明智的选择，所以我们希望简单业务直接主进程循环内部解决，这就是延迟创建子进程模型；同样的，如果当有链接建立请求到来后再创建子进程无疑会影响用户体验，所以我们希望可以预先创建好子进程，这就是下一节要说的预创建子进程。在延迟创建子进程模型中，我们需要一个评判机制，对来自客户端的业务复杂程度进行判断，考虑是是否需要创建子进程。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化socketfd</span></span><br><span class="line">init_socket();</span><br><span class="line"><span class="comment">//bind </span></span><br><span class="line">bind(...);</span><br><span class="line"><span class="comment">//listen</span></span><br><span class="line">listen(...);</span><br><span class="line"><span class="comment">//循环 accept</span></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">    newsocket=accept(......);</span><br><span class="line">    <span class="keyword">if</span>(newsocket)&#123;</span><br><span class="line">        <span class="keyword">if</span>(predictor())&#123;<span class="comment">//预测器判断是否需要进行创建子进程，如果需要就进行创建子进程操作</span></span><br><span class="line">            <span class="keyword">if</span>(fork()==<span class="number">0</span>)&#123;</span><br><span class="line">                <span class="comment">//子进程处理逻辑</span></span><br><span class="line">                close(socketfd)</span><br><span class="line">                dosomething();</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            process_in_while()<span class="comment">//如果判定不需要创建子进程，则将处理逻辑放在while循环内</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//父进程关闭当轮循环newsocket</span></span><br><span class="line">    close(newsocket) </span><br><span class="line">&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<h2 id="预创建子进程模型"><a href="#预创建子进程模型" class="headerlink" title="预创建子进程模型"></a>预创建子进程模型</h2><p>所谓的预创建子进程，其模型存在的意义就是为了解决用户请求时创建子进程时的进程创建开销。其具有如下特点：</p>
+<ul>
+<li>所有子进程调用accept，无连接时将睡眠；有连接到来时子进程被唤醒；某一个子进程接受连接后，其他进程继续睡眠。</li>
+<li>响应速度快，节省创建子进程时间。</li>
+</ul>
+<p>当然根据预创建的子进程数量是否固定，又可以分为固定预创建子进程模型和动态创建子进程模型。在固定创建子进程模型中，我们需要预先估计好可能会到来的客户端链接数量，预创建子进程数量少时将导致客户端等待，预创建子进程数量多时将浪费系统资源。但是在动态创建模型中就没有这一限制。</p>
+<p>固定模型其具体的流程如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化socketfd</span></span><br><span class="line">init_socket();</span><br><span class="line"></span><br><span class="line"><span class="comment">//关键步骤，设置socket地址复用</span></span><br><span class="line"><span class="keyword">int</span> n=<span class="number">1</span>;</span><br><span class="line">setsockopt(socketfd,SOL_SOCKET,SO_REUSEADDR,&amp;n,<span class="keyword">sizeof</span>(n));</span><br><span class="line"><span class="comment">//bind </span></span><br><span class="line">bind(...);</span><br><span class="line"><span class="comment">//listen</span></span><br><span class="line">listen(...);</span><br><span class="line"></span><br><span class="line"><span class="comment">//循环创建指定数量的子进程</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;MAXPROCESS;i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(pid[i]=fork()==<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">//在每个子进程中采用循环socket模式进行accept操作</span></span><br><span class="line">        <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">            connfd=accept();</span><br><span class="line">            do_something();</span><br><span class="line">            close(connfd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">......</span><br><span class="line"><span class="comment">//退出时清除回收所有子进程</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;MAXPROCESS;i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(pid[i]&gt;<span class="number">0</span>)kill(pid[i],SIGTERM);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">while</span>(wait(<span class="literal">NULL</span>)&gt;<span class="number">0</span>)&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>动态模型的大体流程如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">服务器建立socket，并创建一定数量子进程</span><br><span class="line">服务器父进程维护所有子进程的状态表，父进程和子进程通过管道通信</span><br><span class="line">子进程接受连接时给父进程发1，关闭连接时发0</span><br><span class="line">父进程收到1时检查空闲子进程数目是否小于下限，小于下限则创建新的子进程</span><br><span class="line">父进程收到0时检查空闲子进程数目是否大于上限，大于上限则终止一些子进程</span><br></pre></td></tr></table></figure></p>
+<h2 id="select-高并发web服务器模型"><a href="#select-高并发web服务器模型" class="headerlink" title="select 高并发web服务器模型"></a>select 高并发web服务器模型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set* readfds, fd_set* writefds, fd_set* execptfds, struct timeval* timmeout)</span></span>;</span><br><span class="line"></span><br><span class="line">            nfds:     监控的文件描述符集里最大文件描述符加<span class="number">1</span>, 因为此参数会告诉内核横测前多少个文件描述符的状态</span><br><span class="line"></span><br><span class="line">            readfds:  监控有读数据到达文件描述符集合, 传入传出参数</span><br><span class="line"></span><br><span class="line">            writefds: 监控写数据到达文件描述符集合, 传入传出参数</span><br><span class="line"></span><br><span class="line">            execptfds:监控异常发生达文件描述符集合, 如带外数据到达异常,</span><br><span class="line"></span><br><span class="line">            timeout:  设置阻塞监控时间,<span class="number">3</span>种情况</span><br><span class="line"></span><br><span class="line">                    <span class="number">1.</span> <span class="literal">NULL</span> 永远等下去</span><br><span class="line"></span><br><span class="line">                    <span class="number">2.</span> 设置timeval, 等待固定的时间</span><br><span class="line"></span><br><span class="line">                    <span class="number">3.</span> 设置timeval里时间均为<span class="number">0</span>, 检查描述字后立即返回, 轮询</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set* <span class="built_in">set</span>)</span></span>;            <span class="comment">//把文件描述符集合里初始化为0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;     <span class="comment">//把文件描述符集合里fd位置1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;     <span class="comment">//把文件描述符集合里fd位置0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set* <span class="built_in">set</span>)</span></span>;    <span class="comment">//测试文件描述符集合里fd是否为1 有返回1, 没有返回0</span></span><br></pre></td></tr></table></figure>
+<h1 id="非阻塞IO模型"><a href="#非阻塞IO模型" class="headerlink" title="非阻塞IO模型"></a>非阻塞IO模型</h1><p>对比阻塞式IO模型，在很多方面是要比非阻塞IO在性能上带来很大的提高。当然其同步问题也是需要注意，而且可能让编程逻辑变得相当复杂的一个点。对比阻塞式IO模型，- 非阻塞式IO有以下特点：</p>
+<ul>
+<li>不会产生阻塞；</li>
+<li>输入方式效率比较高；</li>
+<li>长时间占用CPU，属于CPU密集型进程；</li>
+</ul>
+<p>通设置套接字的参数，我们可以将默认的阻塞IO变成非阻塞IO：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">函数fcntl，设置O_NONBLOCK选项</span><br><span class="line"><span class="keyword">int</span> flags;</span><br><span class="line">flags=fcntl(sockfd,F_GETFL,<span class="number">0</span>);</span><br><span class="line">fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);</span><br><span class="line"></span><br><span class="line">函数ioctl，设置FIONBIO选项</span><br><span class="line"><span class="keyword">int</span> on=<span class="number">1</span>;</span><br><span class="line">ioctl(sockfd, FIONBIO, &amp;on);</span><br></pre></td></tr></table></figure></p>
+<h1 id="信号驱动IO模型"><a href="#信号驱动IO模型" class="headerlink" title="信号驱动IO模型"></a>信号驱动IO模型</h1><p>信号驱动IO，当有数据到达的时候，系统内核发出SIGIO，通过自定义的信号处理函数对这个信号进行相关处理。其程序流程大致如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义SIGIO信号处理函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sigio_handle</span><span class="params">(<span class="keyword">int</span> sig)</span></span>&#123;</span><br><span class="line">    send_or_recv_something()</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//注册信号处理函数</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></span><br><span class="line">act.sa_handler=sigio_handler;</span><br><span class="line">act.sa_flags=<span class="number">0</span>;</span><br><span class="line">sigaction(SIGIO,&amp;act,<span class="literal">NULL</span>);</span><br><span class="line"><span class="comment">//设置套接字所有者为当前进程</span></span><br><span class="line">fcntl(sockfd,F_SETOWN,getpid());</span><br><span class="line"><span class="comment">//设置信号驱动模式</span></span><br><span class="line"><span class="keyword">int</span> i=<span class="number">1</span>;</span><br><span class="line">ioctl(sockfd,FIOASYNC,&amp;i);</span><br><span class="line">.......</span><br></pre></td></tr></table></figure></p>
+<h1 id="超时控制模型"><a href="#超时控制模型" class="headerlink" title="超时控制模型"></a>超时控制模型</h1><p>在超时控制模型中，我们通过等待一个预设定的时间后产生SIGALRM信号，信号将会被之前设定的信号接受函数进行处理，选择重发或者跳过相关逻辑。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义信号处理函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sigalarm_handler</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//注册信号处理函数</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigaction</span> <span class="title">act</span>;</span></span><br><span class="line">act.sa_handler=sigalarm_handler;</span><br><span class="line">act.sa_flags=<span class="number">0</span>;</span><br><span class="line">sigaction(SIGALRM,&amp;act,<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在需要计时的地方调用alarm(time),如</span></span><br><span class="line">sendto(......)</span><br><span class="line">alarm(<span class="number">5</span>)<span class="comment">//等待5秒</span></span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<h1 id="带外数据模型"><a href="#带外数据模型" class="headerlink" title="带外数据模型"></a>带外数据模型</h1><p>带外数据模型是一种处理紧急套接字数据的方式，带外数据拥有比一般数据高的优先级。其具有以下几个特性。</p>
+<ul>
+<li>TCP没有独立的带外数据通道，而是通过“紧急方式（urgent mode）”将紧急数据插入正常数据流中进行传送。通过URG标志表明数据流中存在带外数据，通过紧急指针指向紧急数据的位置（一个正的偏移量）。</li>
+<li>需要注意的是套接字支持的带外数据只有一个字节，超过一个字节会将最后一个字节偏移作为紧急指针位置，前面的字节作为正常数据传输。</li>
+<li>当由紧急指针指向的实际带外数据到达接收端TCP时，系统根据SO_OOBINLINE套接字选项设置与否将该带外数据放入不同缓冲区：未设置SO_OOBINLINE选项（缺省）：默认情况下带外数据被放入独立的（单字节）带外数据缓冲区中。设置了SO_OOBINLINE选项：带外数据被放入正常套接字缓冲区中（inline）进程使用普通接收函数进行读取，比如read或recv，不能指定MSG_OOB标志，否则出错；读取带外数据之前应先判断下一字节是否为带外数据（如 sock_at_mark函数）。但是一般情况下我们不会把带外数据与正常的数据流混在一起。而是通过设置自定义的信号来捕获URG标志随带的信号</li>
+</ul>
+<p>涉及到的接受发送带外数据函数如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">send(sockfd,msg,<span class="number">1</span>,MSG_OOB);</span><br><span class="line">recv(sockfd,rec_buff,BUFSIZE,MSG_OOB);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//当带外数据与正常数据一同存放的时候，需要设置判断函数，其实现过程如下：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sock_at_mark</span><span class="params">(<span class="keyword">int</span> fd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> flag;</span><br><span class="line">	<span class="keyword">if</span>( ioctl(fd,SIOCATMARK,&amp;flag) &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> (flag!=<span class="number">0</span>?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>带外数据模型的流程如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">客户端在需要发送带外数据的时候调用：</span><br><span class="line">send(sockfd,msg,<span class="number">1</span>,MSG_OOB);</span><br><span class="line"></span><br><span class="line">服务端基于信号(SIGURG)触发的带外数据处理流程：</span><br><span class="line"><span class="comment">//设置信号触发处理函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">signal_urg</span><span class="params">(<span class="keyword">int</span> signo)</span></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    recv(connfd,buf,<span class="keyword">sizeof</span>(buf)<span class="number">-1</span>,MSG_OOB);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> *old_signal_urg_handle;<span class="comment">//保存以前的信号处理</span></span><br><span class="line">old_signal_urg_handle=signal(SIGURG,signal_urg);</span><br><span class="line"><span class="comment">//更改套接字属主，因为SIGURG信号只会发送给套接字属主</span></span><br><span class="line">fcntl(socket,F_SETOWN,getpid())</span><br><span class="line"><span class="comment">//下面是正常的socket流程</span></span><br><span class="line">......</span><br><span class="line"><span class="comment">//处理完后记得将SIGURG信号还原</span></span><br><span class="line">signal(old_signali_urg_handle,SIGURG);</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/11/Linux-socket-编程模型总结/">Linux socket 编程模型总结</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月11日 - 01:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月11日 - 01:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/11/Linux-socket-编程模型总结/" title="Linux socket 编程模型总结">http://lypto.me/2018/12/11/Linux-socket-编程模型总结/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/11/linux-进程间通信/" rel="next" title="linux 进程间通信">
+                <i class="fa fa-chevron-left"></i> linux 进程间通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#阻塞IO模型"><span class="nav-number">1.</span> <span class="nav-text">阻塞IO模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#并发创建子进程模型-创建子线程模型"><span class="nav-number">1.1.</span> <span class="nav-text">并发创建子进程模型/创建子线程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延迟创建子进程模型"><span class="nav-number">1.2.</span> <span class="nav-text">延迟创建子进程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预创建子进程模型"><span class="nav-number">1.3.</span> <span class="nav-text">预创建子进程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select-高并发web服务器模型"><span class="nav-number">1.4.</span> <span class="nav-text">select 高并发web服务器模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非阻塞IO模型"><span class="nav-number">2.</span> <span class="nav-text">非阻塞IO模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#信号驱动IO模型"><span class="nav-number">3.</span> <span class="nav-text">信号驱动IO模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#超时控制模型"><span class="nav-number">4.</span> <span class="nav-text">超时控制模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#带外数据模型"><span class="nav-number">5.</span> <span class="nav-text">带外数据模型</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/11/Linux-socket-编程模型总结/';
+          this.page.identifier = '2018/12/11/Linux-socket-编程模型总结/';
+          this.page.title = 'Linux socket 编程模型总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

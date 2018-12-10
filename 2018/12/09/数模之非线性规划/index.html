@@ -104,12 +104,12 @@
 <meta property="og:site_name" content="Blog of 1ypt0">
 <meta property="og:description" content="前面有提到使用python做线性规划问题，有一些第三方库可以让我们快速上手，对线性规划的模型进行求解。无论是整数形线性规划还是连续形，都可以找到实用的库。但是在线性规划问题中还存在一种非线性的问题。其约束条件不是简单的呈现线性的关系，前面我们提到的两个库就不再实用，这时就要继续发现新大陆，于是就有了这篇文章。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="attachment:image.png">
-<meta property="og:updated_time" content="2018-12-09T02:53:16.634Z">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/非线性规划/HS71problem.png">
+<meta property="og:updated_time" content="2018-12-09T03:06:07.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数模之非线性规划">
 <meta name="twitter:description" content="前面有提到使用python做线性规划问题，有一些第三方库可以让我们快速上手，对线性规划的模型进行求解。无论是整数形线性规划还是连续形，都可以找到实用的库。但是在线性规划问题中还存在一种非线性的问题。其约束条件不是简单的呈现线性的关系，前面我们提到的两个库就不再实用，这时就要继续发现新大陆，于是就有了这篇文章。">
-<meta name="twitter:image" content="attachment:image.png">
+<meta name="twitter:image" content="http://lypto.me/myimages/数模编程/非线性规划/HS71problem.png">
 
 
 
@@ -432,7 +432,7 @@ True
 </code></pre><p>在这个示例中，我们可以看到<code>scipy.optimize.minimize（）</code>函数需要我们传入一个目标函数（示例中是函数<code>fun()</code>），其返回值是一个lambda匿名函数对象，其内容就是我们需要求解的目标式，需要注意的是，这个传入的函数里面的常量需要以元祖的形式传入，也就是说，在函数内部不应该出现常量。第二个参数是对内部变量的初始化值，注意到我们之前提到的，这个初始化值一定程度上可以影响到最终解。然后就是<code>methon</code>参数，这个参数指定我们使用的优化算法。这里推荐使用SLSQP。然后<code>constraints</code>参数，其与目标函数的传入一样，需要传入一个函数，其具体的构造方式可以参看示例代码，注释已经说明的相当清楚。</p>
 <h2 id="GEKKO解决策略"><a href="#GEKKO解决策略" class="headerlink" title="GEKKO解决策略"></a>GEKKO解决策略</h2><p>当然除了万能的scipy之外，还有一些专门做优化的python库可以提供帮助，这里着重推荐GEKKO。这是APMonitor的全新接口。这个库很神奇，是一个C/S结构的，类似于tensorflow,需要在python脚本外运行方程（在tensorflow中将图构造好，让外部运行图的计算），这个外部甚至可以是远程服务器，在没有下载本地server的情况下，默认就是使用的远程服务器提供的APM的API，只不过GEKKO帮我们把构造方程这些步骤做了封装。也隐藏了向服务端发送请求和接受请求的步骤。所以我们需要关心的就是如何通过GEKKO构造我们规划模型。很多细节可以直接通过参考文献[1]的官网进行了解。这里就大致说一下GEKKO的使用。</p>
 <p>下面以著名的非线性<code>HS 71 Benchmark</code>问题的官方求解为例子：</p>
-<p><img src="attachment:image.png" alt="image.png"></p>
+<p><img src="/myimages/数模编程/非线性规划/HS71problem.png" alt="image.png"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gekko <span class="keyword">import</span> GEKKO</span><br><span class="line"></span><br><span class="line"><span class="comment">#Initialize Model</span></span><br><span class="line">m = GEKKO()</span><br><span class="line"></span><br><span class="line"><span class="comment">#define parameter</span></span><br><span class="line">eq = m.Param(value=<span class="number">40</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#initialize variables</span></span><br><span class="line">x1,x2,x3,x4 = [m.Var(lb=<span class="number">1</span>, ub=<span class="number">5</span>) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment">#initial values</span></span><br><span class="line">x1.value = <span class="number">1</span></span><br><span class="line">x2.value = <span class="number">5</span></span><br><span class="line">x3.value = <span class="number">5</span></span><br><span class="line">x4.value = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Equations</span></span><br><span class="line">m.Equation(x1*x2*x3*x4&gt;=<span class="number">25</span>)</span><br><span class="line">m.Equation(x1**<span class="number">2</span>+x2**<span class="number">2</span>+x3**<span class="number">2</span>+x4**<span class="number">2</span>==eq)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Objective</span></span><br><span class="line">m.Obj(x1*x4*(x1+x2+x3)+x3)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Set global options</span></span><br><span class="line">m.options.IMODE = <span class="number">3</span> <span class="comment">#steady state optimization</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Solve simulation</span></span><br><span class="line">m.solve()</span><br><span class="line"></span><br><span class="line"><span class="comment">#Results</span></span><br><span class="line">print(<span class="string">''</span>)</span><br><span class="line">print(<span class="string">'Results'</span>)</span><br><span class="line">print(<span class="string">'x1: '</span> + str(x1.value))</span><br><span class="line">print(<span class="string">'x2: '</span> + str(x2.value))</span><br><span class="line">print(<span class="string">'x3: '</span> + str(x3.value))</span><br><span class="line">print(<span class="string">'x4: '</span> + str(x4.value))</span><br></pre></td></tr></table></figure>
 <pre><code>apm 113.140.11.125_gk_model2 &lt;br&gt;&lt;pre&gt; ----------------------------------------------------------------
  APMonitor, Version 0.8.5
@@ -534,9 +534,7 @@ x2: [4.743]
 x3: [3.82115]
 x4: [1.379408]
 </code></pre><p>通过这个例子我们可以知道GEKKO给我们提供的接口还是很人性化的。现在归纳下使用流：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.  GEKKO()初始化类</span><br><span class="line">2.  调用类方法Param(value=x)，给模型常量赋值</span><br><span class="line">3.  调用类方法m.Var(lb=1, ub=5)，给模型变量定界</span><br><span class="line">4.  给类的变量属性赋值初始值</span><br><span class="line">5.  调用类方法Equation()构造约束式</span><br><span class="line">6.  调用类方法object定义目标函数</span><br><span class="line">7.  solve()函数进行求解</span><br><span class="line">8.  获取结果</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://apmonitor.com/wiki/index.php/Main/PythonApp" target="_blank" rel="noopener">[1]APM官网</a></p>
-<p><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html" target="_blank" rel="noopener">[2]Scipy minimize</a></p>
-<p><a href="https://gekko.readthedocs.io/en/latest/" target="_blank" rel="noopener">[3]GEKKO</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://apmonitor.com/wiki/index.php/Main/PythonApp" target="_blank" rel="noopener">[1]APM官网</a><br><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html" target="_blank" rel="noopener">[2]Scipy minimize</a><br><a href="https://gekko.readthedocs.io/en/latest/" target="_blank" rel="noopener">[3]GEKKO</a></p>
 
       
     </div>
@@ -583,7 +581,7 @@ x4: [1.379408]
   </li>
   <li class="post-copyright-author">
     <strong>最后更新:</strong>
-    2018年12月09日 - 10:12
+    2018年12月09日 - 11:12
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
@@ -625,6 +623,10 @@ x4: [1.379408]
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/11/linux-socket-编程/" rel="prev" title="linux socket 编程">
+                linux socket 编程 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -723,7 +725,7 @@ x4: [1.379408]
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

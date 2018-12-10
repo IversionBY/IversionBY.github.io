@@ -312,6 +312,539 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/05/09/ajax全局变量赋值的坑/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/09/ajax全局变量赋值的坑/" itemprop="url">ajax全局变量赋值的坑</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-09T10:06:28+08:00">
+                May 9 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/浏览器安全/" itemprop="url" rel="index">
+                    <span itemprop="name">浏览器安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/05/09/ajax全局变量赋值的坑/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/05/09/ajax全局变量赋值的坑/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Abstact"><a href="#Abstact" class="headerlink" title="Abstact"></a>Abstact</h2><p>这些天开始慢慢深入接触到一些web前端的知识，当然不只是前端网站的布局设计上面，主要还是在处理一些逻辑上的问题。也就是实验室现在有了个前端脚本混淆的工程，那么写前端代码自然是必不可少的。特别是在前后端数据交互方面的代码编写。这篇文章主要是记录一下对Ajax的全局变量赋值问题的解决。</p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><h3 id="What"><a href="#What" class="headerlink" title="What"></a>What</h3><p><code>ajax</code>是2004年才应用于现在的web前后端数据交互技术，简单的说就是可以在javascript层面实现前后端的交互（虽然这样理解是不确切的，前端js的执行是在浏览器这架构上，所以<code>ajax</code>是一种浏览器和后端服务器交互的技术，只是浏览器的脚本语言为js,所以ajax这中技术就被直观为程序员所理解的浏览器提供的API形式，也就是<code>xmlhttprequest</code>。）它说白了就是一次发包请求（<code>post</code> <code>get</code>）,但是它和以往的请求有点不一样，他可以不请求整个html文件来对页面进行刷新，而是发送一个请求，把请求到的数据按需要内嵌到当前html中。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/09/ajax全局变量赋值的坑/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    <div>
+      
+    </div>
+	<div>
+      
+	</div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/03/09/cpp/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/09/cpp/" itemprop="url">cpp</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-09T15:50:09+08:00">
+                Mar 9 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/cpp/" itemprop="url" rel="index">
+                    <span itemprop="name">cpp</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/09/cpp/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/09/cpp/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  732
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>主要学习在基本语法上面c++ 与c的差别，当然最主要的面向对象部分就不列出，打算将python,php，c++   的面向对象做一个对比。</p>
+</blockquote>
+<h1 id="函数的重载"><a href="#函数的重载" class="headerlink" title="函数的重载"></a>函数的重载</h1><p>将函数返回类型相同，函数功能相同的，但是参数的数据类型以及容忍参数个数不同的函数命名为相同的函数名的现象，就叫做函数重载。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">(<span class="keyword">int</span> num1,<span class="keyword">int</span> num2)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (num1&gt;=num2)?num1:num2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">(<span class="keyword">float</span> num1,<span class="keyword">float</span> num2)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (num1&gt;=num2)?num1:num2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">(<span class="keyword">int</span> num1,<span class="keyword">int</span> num2,<span class="keyword">int</span> num3)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (max(num1,num2)&gt;num3)?max(num1,max2):num3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为了实现更为高级的代码重用，c++里面还提供了函数模板的功能。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#格式：</span><br><span class="line"><span class="keyword">template</span>&lt;&lt;<span class="class"><span class="keyword">class</span>&gt;/&lt;typename&gt; <span class="title">T1</span>(<span class="title">T2</span>，<span class="title">T3</span>,......)&gt;</span></span><br><span class="line"><span class="class"><span class="title">T1</span> <span class="title">max</span>(<span class="title">T1</span> <span class="title">nunm1</span>,<span class="title">T1</span> <span class="title">num2</span>)&#123;</span></span><br><span class="line">    T1 themax;</span><br><span class="line">    themax=(num1&gt;=num2)?num1:num2;</span><br><span class="line">    <span class="keyword">return</span> themax;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h1><p>命名空间是为了避免在不同的文件应用过程中出现函数，对象，变量命名重复的情况，所以指定了命名空间。相同命名空间不能出现重名，不同的命名空间可以。命名空间的两种形式以及命名空间类的指定方式。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">命名空间::成员名称</span><br><span class="line">在这中命名形式下的的对象以及常量的引用需要有&quot;::&quot;</span><br><span class="line"></span><br><span class="line">using namespace &lt;命名空间&gt;</span><br><span class="line">这种引用形式下可以直接对类和常量实现引用</span><br></pre></td></tr></table></figure></p>
+<h1 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h1><p>内联函数是为了让功能相对简单的函数避免调用栈以及相关的操作来加速程序，提高运行效率的做法。特别注意的是：这里的内联函数需要函数相对简单，也就是直观的来看就是代码行数小。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">inline 返回的值类型 函数名(形参列表)&#123;</span><br><span class="line">    函数体;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="new-delete实现动态创建数组"><a href="#new-delete实现动态创建数组" class="headerlink" title="new,delete实现动态创建数组"></a>new,delete实现动态创建数组</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">void main()&#123;</span><br><span class="line">    int length,i,*ptr1;</span><br><span class="line">    cout &lt;&lt;&quot;请输入数组的长度&quot;;</span><br><span class="line">    cin &gt;&gt; lenth;</span><br><span class="line">    ptr1=new int[length];//这是c++特有的，C语言里面是会报错的</span><br><span class="line">    delete[] ptr1;//注意变量结束记得销毁，不然会导致内存无法再次使用</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="http://blog.csdn.net/u013630349/article/details/44947255" target="_blank" rel="noopener">malloc free 与new  delete的比较</a></p>
+<h1 id="枚举数据类型"><a href="#枚举数据类型" class="headerlink" title="枚举数据类型"></a>枚举数据类型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">enum 枚举数据类型名 &#123;变量值列表标识符&#125;#其值一次对应的是0，1，2，3......</span><br><span class="line"></span><br><span class="line">枚举变量类型名 标识符</span><br></pre></td></tr></table></figure>
+<h1 id="C-引入的4种强制类型转换符"><a href="#C-引入的4种强制类型转换符" class="headerlink" title="C++引入的4种强制类型转换符"></a>C++引入的4种强制类型转换符</h1><p>1.static_cast<br>2.const_cast<br>3.dynamic_cast<br>4.reinterpret_cast</p>
+<h1 id="输入输出函数"><a href="#输入输出函数" class="headerlink" title="输入输出函数"></a>输入输出函数</h1><p>在C++中的函数输入输出和之前的C有了很大的不同，它采用的是一种很明显的数据流操作方式，就好比linux中流的重定向&lt;&lt;,&gt;&gt;。相对应的函数为cout,cin,同时也没有了c中的强制类型声明，相对比较灵活。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+	<div>
+      
+	</div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/03/07/linux修炼/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/07/linux修炼/" itemprop="url">linux修炼</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-07T11:00:52+08:00">
+                Mar 7 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/07/linux修炼/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/07/linux修炼/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="网络配置文件"><a href="#网络配置文件" class="headerlink" title="网络配置文件"></a>网络配置文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#ip ,netmast,dhcp,gateway</span><br><span class="line"></span><br><span class="line">/etc/sysconfig/network-scripts/ifcfg-&lt;interface-name&gt;</span><br><span class="line"></span><br><span class="line">#ifup,ifdown系列自动启动/关闭网络接口脚本</span><br><span class="line">/etc/syysconfig/network-scripts/ifdown-xxx or ifup-xxx</span><br><span class="line"></span><br><span class="line">#主机网络基本配置</span><br><span class="line">/etc/sysconfig/network</span><br><span class="line"></span><br><span class="line">#DNS IP</span><br><span class="line">/etc/resolv.conf</span><br><span class="line"></span><br><span class="line">#私有ip对应的主机名,实现本机静态查询</span><br><span class="line">/etc/hosts</span><br><span class="line"></span><br><span class="line">#针对ubuntu的独有的网络配置文件</span><br><span class="line">/etc/network/interfaces</span><br><span class="line"></span><br><span class="line">#用于重新启动服务的目录</span><br><span class="line">/etc/init.d/network </span><br><span class="line">#或者使用内置脚本</span><br><span class="line">ifup &lt;interface&gt; </span><br><span class="line">ifdown &lt;interface&gt;</span><br><span class="line"></span><br><span class="line">#几个固定协议文件，一般不需要修改</span><br><span class="line">#网络协议定义文件，包括默认端口的信息</span><br><span class="line">/etc/services</span><br><span class="line">#网络数据包默认协议</span><br><span class="line">/etc/protocols</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/03/07/linux修炼/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+	<div>
+      
+	</div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/03/01/python代码纠错琐碎/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1605,576 +2138,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lypto.me/2017/11/23/SQL捣鼓/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="1ypt0">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/109.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog of 1ypt0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/23/SQL捣鼓/" itemprop="url">SQL捣鼓</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-23T19:20:52+08:00">
-                Nov 23 2017
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/web安全/" itemprop="url" rel="index">
-                    <span itemprop="name">web安全</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/11/23/SQL捣鼓/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/11/23/SQL捣鼓/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  4.7k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长</span>
-                
-                <span title="阅读时长">
-                  19
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="以此篇文章，记录我sql注入学习的路程"><a href="#以此篇文章，记录我sql注入学习的路程" class="headerlink" title="以此篇文章，记录我sql注入学习的路程"></a>以此篇文章，记录我sql注入学习的路程</h3><blockquote>
-<p>由于这是基于mysql的数据库来学习，所以把一些参考用到的资料摆在下面，另外这里没有包含混淆和绕过的技巧，只是说明了sql注入的原理</p>
-</blockquote>
-<h4 id="1-核心指导方针："><a href="#1-核心指导方针：" class="headerlink" title="1.核心指导方针："></a>1.核心指导方针：</h4><p>这是大致上的注入思路，后面只不过是对这些过程的具体实现</p>
-<p>猜数据库</p>
-<p><code>select schema_name from information_schema.schemata</code> </p>
-<p>猜某库的数据表</p>
-<p><code>select table_name from information_schema.tables where table_schema=&#39;xxxxx&#39;</code> </p>
-<p>猜某表的所有列</p>
-<p><code>Select column_name from information_schema.columns where table_name=&#39;xxxxx&#39;</code> </p>
-<p>获取某列的内容  </p>
-<p><code>Select * from xxx</code></p>
-<p>查询用户的权限</p>
-<p><code>SELECT file_priv FROM mysql.user WHERE user = &#39;xxx&#39;;</code></p>
-<p>其中：information_schema本身是一个数据库保存了数据库里面的数据库，表单，表单列的相关信息，schemata表是记录各个数据库的名字，tables记录的是表名字的信息，而columns就可以依次类推其内容为列名。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/11/23/SQL捣鼓/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-	<div>
-      
-	</div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lypto.me/2017/10/16/Learning-with-poc/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="1ypt0">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/109.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog of 1ypt0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/16/Learning-with-poc/" itemprop="url">poc study</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-16T09:53:00+08:00">
-                Oct 16 2017
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/poc-learning/" itemprop="url" rel="index">
-                    <span itemprop="name">poc_learning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/10/16/Learning-with-poc/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/10/16/Learning-with-poc/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  909
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="漏洞发布网站点（乌云备份）"><a href="#漏洞发布网站点（乌云备份）" class="headerlink" title="漏洞发布网站点（乌云备份）"></a><a href="http://www.loner.fm/bugs/bug_detail.php?wybug_id=wooyun-2016-0229611" target="_blank" rel="noopener">漏洞发布网站点（乌云备份）</a></h4><h4 id="关键词：ssrf漏洞"><a href="#关键词：ssrf漏洞" class="headerlink" title="关键词：ssrf漏洞"></a>关键词：ssrf漏洞</h4><h6 id="对源代码的拆分理解"><a href="#对源代码的拆分理解" class="headerlink" title="对源代码的拆分理解"></a>对源代码的拆分理解
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/16/Learning-with-poc/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </h6></div>
-
-    <div>
-      
-    </div>
-	<div>
-      
-	</div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lypto.me/2017/03/26/hello-blog(1)/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="1ypt0">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/109.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog of 1ypt0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/26/hello-blog(1)/" itemprop="url">hello blog</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-26T12:27:36+08:00">
-                Mar 26 2017
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/杂谈/" itemprop="url" rel="index">
-                    <span itemprop="name">杂谈</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/03/26/hello-blog(1)/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/26/hello-blog(1)/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  934
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长</span>
-                
-                <span title="阅读时长">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式："><a href="#兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式：" class="headerlink" title="兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式："></a>兜兜转转，花了近一个礼拜左右的时间，终于完成了自己博客雏形的搭建。搭建博客大致可以分为三种模式：</h4><ul>
-<li><p>去新浪，blogz等博客网站去申请账号开始大众化的博客之路。这方式最简单，当然自由度不高，无法获取源代码，也无法做很多关于基层的代码操作，界面也无法实现个性化，总之就是比较受限制。</p>
-</li>
-<li><p>自己买服务器，数据库，虚拟主机（现在有较多国内国外的提供服务商：阿里云，百度云，腾讯云，亚马逊云，凡科建站and so on）&lt;!—这类方式就是花钱买服务，比如服务器流量与内存。如果是购买云之类的话，用wordpress搭建还算简单的，就是有点小贵，不算买域名，就是说运用人家的二级域名的话，一年也要好几百，感觉是有点贵的。当然如果你想去自己买个实体服务器来折腾也是可以的，前提是有足够的money，而且还要自己去搭建环境，总的来说似乎是不适合我们学生群体的。</p>
-</li>
-<li><p>该类方法就是通过开源社区作为网站挂载平台，例如cording，github，……，不需要像上面第二点提到的那样自己去管理网站，它寄人篱下却又能给你极大的自主性，代码开源，就意味着你完全可以自己去搭建想要的blog，最最重要的是你不买域名的话基本花不了一分钱，买域名一年也不贵嘛，星巴克一两杯coffee的钱就搞定了。而且由于是开源，这类blog的建立就会受到社区的大力支持，他们各种的开源工具也会为你提供方便，很多代码都是集成的的，只需要改点个性化的参数就可以了，很是便利的呢！</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/03/26/hello-blog(1)/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </li></ul></div>
-
-    <div>
-      
-    </div>
-	<div>
-      
-	</div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2216,7 +2184,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
