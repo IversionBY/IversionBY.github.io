@@ -312,6 +312,271 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/06/23/linux防火墙/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/23/linux防火墙/" itemprop="url">linux防火墙</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-23T23:39:25+08:00">
+                Jun 23 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/23/linux防火墙/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/23/linux防火墙/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><img style="margin: auto;" src="/myimages/iptable/index.jpg" height="500" width="500"></p>
+<h1 id="常见的网络服务以及端口表格"><a href="#常见的网络服务以及端口表格" class="headerlink" title="常见的网络服务以及端口表格"></a>常见的网络服务以及端口表格</h1><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>服务</th>
+<th>默认开放的端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ftp</td>
+<td>21/tcp</td>
+<td>FTP控制 文件传输协议</td>
+</tr>
+<tr>
+<td>ftp</td>
+<td>20/tcp</td>
+<td>FTP数据</td>
+</tr>
+<tr>
+<td>Telnet</td>
+<td>23</td>
+<td>Telnet 不安全的文本传送</td>
+</tr>
+<tr>
+<td>ssh</td>
+<td>22/tcp</td>
+<td>SSH 安全登录、文件传送(SCP)和端口重定向</td>
+</tr>
+<tr>
+<td>smtp</td>
+<td>25/tcp</td>
+<td>SMTP 简单邮件传输协议(Simple Mail Transfer Protocol)(E-mail)</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>53/tcp</td>
+<td>域名服务器</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>53/udp</td>
+<td>WWW (HTTP超文本传送协议)</td>
+</tr>
+<tr>
+<td>http</td>
+<td>80/tcp</td>
+<td>WWW (HTTP超文本传送协议)</td>
+</tr>
+<tr>
+<td>https</td>
+<td>443/tcp</td>
+<td>HTTPS 经过加密的HTTP(used for securely transferring web pages)</td>
+</tr>
+<tr>
+<td>ntp</td>
+<td>123/udp</td>
+<td>网络时间协议 </td>
+</tr>
+<tr>
+<td>mysql</td>
+<td>3306</td>
+<td>mysql数据库服务</td>
+</tr>
+<tr>
+<td>socks</td>
+<td>1080/tcp</td>
+<td>SOCKS  </td>
+</tr>
+<tr>
+<td>rpc</td>
+<td>111</td>
+<td>远程调用协议（提供类似于nfs,nis服务器的端口申请和对客户端端口询问执行回复）</td>
+</tr>
+<tr>
+<td>SMB</td>
+<td>139</td>
+<td>SMB服务器</td>
+</tr>
+</tbody>
+</table>
+</div>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/23/linux防火墙/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+	<div>
+      
+	</div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/05/09/ajax全局变量赋值的坑/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1952,192 +2217,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lypto.me/2017/12/01/machine-learning/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="1ypt0">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/109.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog of 1ypt0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/01/machine-learning/" itemprop="url">machine-learning</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-01T10:04:04+08:00">
-                Dec 1 2017
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/machine-learning/" itemprop="url" rel="index">
-                    <span itemprop="name">machine-learning</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/12/01/machine-learning/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/01/machine-learning/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  209
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>近来学习了NG的machine—learning的课，上面使用matlab来实现的，但是基于对python的热爱以及本身python在数据处理上面的优势，所以打算近来把之前学到的机器学习的相关专题python来实现，这只是个序言，列举了一些常用的数据下载地址，和整个项目流程的框架。</p>
-</blockquote>
-<h5 id="项目地址传送门"><a href="#项目地址传送门" class="headerlink" title="项目地址传送门"></a><a href="https://github.com/IversionBY/sklearn_machine_learning" target="_blank" rel="noopener">项目地址传送门</a></h5><hr>
-<h3 id="监督学习："><a href="#监督学习：" class="headerlink" title="监督学习："></a>监督学习：</h3><h4 id="1-线性回归"><a href="#1-线性回归" class="headerlink" title="1. 线性回归"></a>1. 线性回归</h4><h4 id="2-逻辑回归"><a href="#2-逻辑回归" class="headerlink" title="2. 逻辑回归"></a>2. 逻辑回归</h4><h4 id="3-支持向量机（svm）"><a href="#3-支持向量机（svm）" class="headerlink" title="3. 支持向量机（svm）"></a>3. 支持向量机（svm）</h4><h4 id="3-神经网络（正向传播）"><a href="#3-神经网络（正向传播）" class="headerlink" title="3. 神经网络（正向传播）"></a>3. 神经网络（正向传播）</h4><h4 id="4-神经网络（反向传播）"><a href="#4-神经网络（反向传播）" class="headerlink" title="4. 神经网络（反向传播）"></a>4. 神经网络（反向传播）</h4><hr>
-<h3 id="非监督学习"><a href="#非监督学习" class="headerlink" title="非监督学习"></a>非监督学习</h3><h4 id="6-PCA"><a href="#6-PCA" class="headerlink" title="6. PCA"></a>6. PCA</h4><h4 id="7-K-MEANS"><a href="#7-K-MEANS" class="headerlink" title="7.K-MEANS"></a>7.K-MEANS</h4><h4 id="8-异常检测算法（Anomaly-Detection-System）"><a href="#8-异常检测算法（Anomaly-Detection-System）" class="headerlink" title="8.异常检测算法（Anomaly Detection System）"></a>8.异常检测算法（Anomaly Detection System）</h4><h4 id="9-推荐系统算法-Recommender-Systems"><a href="#9-推荐系统算法-Recommender-Systems" class="headerlink" title="9.推荐系统算法(Recommender Systems)"></a>9.推荐系统算法(Recommender Systems)</h4><hr>
-<p>章节将追随上课进度持续更新，欢迎一起捣鼓</p>
-<hr>
-<h5 id="可以下载数据的网址"><a href="#可以下载数据的网址" class="headerlink" title="可以下载数据的网址"></a>可以下载数据的网址</h5><p><a href="http://archive.ics.uci.edu/ml/datasets.html" target="_blank" rel="noopener">UCI数据</a><br><a href="https://data.gov.uk/" target="_blank" rel="noopener">DATA</a><br><a href="https://www.zhihu.com/question/63383992" target="_blank" rel="noopener">知乎总结1</a><br><a href="https://zhuanlan.zhihu.com/p/25138563" target="_blank" rel="noopener">知乎总结2</a> </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-	<div>
-      
-	</div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2184,7 +2263,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2195,7 +2274,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
