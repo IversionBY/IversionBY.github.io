@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="web,绕过,php,">
+  <meta name="keywords" content="web,ssrf,绕过,php,">
 
 
 
@@ -97,9 +97,9 @@
 
 
 <meta name="description" content="ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。">
-<meta name="keywords" content="web,绕过,php">
+<meta name="keywords" content="web,ssrf,绕过,php">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ssrf突破边界">
+<meta property="og:title" content="SSRF突破边界">
 <meta property="og:url" content="http://lypto.me/2018/12/19/ssrf小记/index.html">
 <meta property="og:site_name" content="Blog of 1ypt0">
 <meta property="og:description" content="ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。">
@@ -111,9 +111,9 @@
 <meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/fsockopen_bypass.png">
 <meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/Abusing_URL_Parsers2.png">
 <meta property="og:image" content="http://lypto.me/myimages/ssrf之内网漫游/Abusing_URL_Parsers.png">
-<meta property="og:updated_time" content="2018-12-19T07:15:53.147Z">
+<meta property="og:updated_time" content="2018-12-26T02:44:18.457Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ssrf突破边界">
+<meta name="twitter:title" content="SSRF突破边界">
 <meta name="twitter:description" content="ssrf是17年的owasp top 10新宠，因攻击方可以利用服务端去访问策略相对宽松的内网环境，使得很多边界得以被突破，攻击者侵入内网,翻江倒海。一直以来都没有对ssrf进行全方位的了解，最近看了一些会议的议题pdf以及相关菊苣的文章后决定总结一下。">
 <meta name="twitter:image" content="http://lypto.me/myimages/ssrf之内网漫游/index.png">
 
@@ -149,7 +149,7 @@
 
 
 
-  <title>ssrf突破边界 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>SSRF突破边界 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -337,7 +337,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">ssrf突破边界</h1>
+          <h1 class="post-title" itemprop="name headline">SSRF突破边界</h1>
         
 
         <div class="post-meta">
@@ -554,7 +554,7 @@
 <ul class="post-copyright">
   <li class="post-copyright-author">
     <strong>本文标题:</strong>
-    <a href="/2018/12/19/ssrf小记/">ssrf突破边界</a>
+    <a href="/2018/12/19/ssrf小记/">SSRF突破边界</a>
   </li>
   <li class="post-copyright-author">
     <strong>本文作者：</strong>
@@ -566,11 +566,11 @@
   </li>
   <li class="post-copyright-author">
     <strong>最后更新:</strong>
-    2018年12月19日 - 15:12
+    2018年12月26日 - 10:12
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://lypto.me/2018/12/19/ssrf小记/" title="ssrf突破边界">http://lypto.me/2018/12/19/ssrf小记/</a>
+    <a href="http://lypto.me/2018/12/19/ssrf小记/" title="SSRF突破边界">http://lypto.me/2018/12/19/ssrf小记/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -587,6 +587,8 @@
         <div class="post-tags">
           
             <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/ssrf/" rel="tag"># ssrf</a>
           
             <a href="/tags/绕过/" rel="tag"># 绕过</a>
           
@@ -714,7 +716,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -995,7 +997,7 @@
         var disqus_config = function () {
           this.page.url = 'http://lypto.me/2018/12/19/ssrf小记/';
           this.page.identifier = '2018/12/19/ssrf小记/';
-          this.page.title = 'ssrf突破边界';
+          this.page.title = 'SSRF突破边界';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://iversion lee.disqus.com/embed.js';

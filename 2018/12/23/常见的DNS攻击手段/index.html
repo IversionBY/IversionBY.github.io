@@ -105,7 +105,7 @@
 <meta property="og:description" content="DNS记录往往展示了一个公司或者企业的整个网络拓扑结构，所以一些针对DNS的攻击往往会给渗透测试带来意料之外的惊喜。加速对渗透对象的网络拓扑理解，有利于利用对象网络的薄弱环节，甚至对后渗透阶段带来意想不到的收益。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lypto.me/myimages/常见的DNS攻击手段/index.png">
-<meta property="og:updated_time" content="2018-12-23T06:10:58.815Z">
+<meta property="og:updated_time" content="2018-12-23T06:15:57.213Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常见的DNS攻击手段">
 <meta name="twitter:description" content="DNS记录往往展示了一个公司或者企业的整个网络拓扑结构，所以一些针对DNS的攻击往往会给渗透测试带来意料之外的惊喜。加速对渗透对象的网络拓扑理解，有利于利用对象网络的薄弱环节，甚至对后渗透阶段带来意想不到的收益。">
@@ -454,7 +454,7 @@
 <p>DNS重绑定主要用在ssrf绕过ip检测这样或者类似的场景，它可以给我们提供一个绕过正则，让服务器访问内部网络的目的。</p>
 <h1 id="DNS-域传送"><a href="#DNS-域传送" class="headerlink" title="DNS 域传送"></a>DNS 域传送</h1><p>所谓的DNS域传送，其实是在主从DNS服务器架构下的一种漏洞。它的原理其实相当简单，在在部署主从服务器的时候，从属服务器一般都需要向主服务器查询同步数据信息，在DNS中就是更新同步记录表。既然要同步记录表，那么自然主服务器需要把从服务器的查询结果如实给出。那么在<code>qurry_allow</code>的设置上如果弄成<code>any</code>,毫无疑问将会泄露整个网站的ip拓扑，给渗透利用带来方便。</p>
 <h1 id="DNS子域名劫持"><a href="#DNS子域名劫持" class="headerlink" title="DNS子域名劫持"></a>DNS子域名劫持</h1><p>所谓的DNS子域名劫持，指的就是域名服务其下有一个子域名使用了第三方的云服务，业务到期了，准确的说是废用了，但是在企业内部的DNS记录上还有相关记录，这里的记录主要是CNAME方式，这样一来，我们可以去相关云服务商申请相关的服务，来填补企业DNS空缺的CNAME记录，这样一来，我们就成功的接管了公司旗下一个废除的子域名。有了这个子域名的控制权，我们用来绕过浏览器CSP策略，或者进行钓鱼等相关活动。危害还是相当大的。但是注意到这种利用方式不是百发百中，因为有些云服务商是不允许你修改其服务的URI的，这样一来，我们就无法申请一个相同的URI，使其指向之前的DNS CNAME记录。</p>
-<h1 id="DNS-欺骗（DNS-投毒）"><a href="#DNS-欺骗（DNS-投毒）" class="headerlink" title="DNS 欺骗（DNS 投毒）"></a>DNS 欺骗（DNS 投毒）</h1><p>DNS存在缓存机制，DNS缓存大致有两种：本地缓存，DNS服务器多级缓存。注意到一般情况下我们欺骗的是本地缓存，因为本地缓存的欺骗成本比较低，而且比较可控，一打一个准。DNS服务器缓存一般是指我们控制了一个域下的DNS服务器，那么我们可以所有以这台服务器作为首次查询的用户都被缓存投毒。下面主要说一下本地DNS缓存投毒。我们可以通过本地DNS缓存投毒，去进行钓鱼(Ettercap)，远程访问的持久化（BeEF）,投放广告，等等。本地DNS投毒有两种方向：1.直接操作系统层面的缓存，如中间人劫持（参考这篇文章：<a href="http://r00tshell.lofter.com/post/3d2f21_18839d8）；2.利用好浏览器缓存。（其实二者殊途同归，最后都是到系统级缓存，浏览器缓存算是系统缓存的一个子集）。浏览器缓存控制机制有两种：HTML" target="_blank" rel="noopener">http://r00tshell.lofter.com/post/3d2f21_18839d8）；2.利用好浏览器缓存。（其实二者殊途同归，最后都是到系统级缓存，浏览器缓存算是系统缓存的一个子集）。浏览器缓存控制机制有两种：HTML</a> Meta标签 以及HTTP头信息，通常，web开发者可以在HTML页面的<head><meta name="generator" content="Hexo 3.8.0">节点中加入<meta>标签。在BeEF里面有一套自动化的利用方式。当然也有其他的工具可以使用。只不过浏览器攻击工具首推BeEF。</head></p>
+<h1 id="DNS-欺骗（DNS-投毒）"><a href="#DNS-欺骗（DNS-投毒）" class="headerlink" title="DNS 欺骗（DNS 投毒）"></a>DNS 欺骗（DNS 投毒）</h1><p>DNS存在缓存机制，DNS缓存大致有两种：本地缓存，DNS服务器多级缓存。注意到一般情况下我们欺骗的是本地缓存，因为本地缓存的欺骗成本比较低，而且比较可控，一打一个准。DNS服务器缓存一般是指我们控制了一个域下的DNS服务器，那么我们可以所有以这台服务器作为首次查询的用户都被缓存投毒。下面主要说一下本地DNS缓存投毒。我们可以通过本地DNS缓存投毒，去进行钓鱼(Ettercap)，远程访问的持久化（BeEF）,投放广告，等等。本地DNS投毒有两种方向：1.直接操作系统层面的缓存，如中间人劫持（参考这篇文章：<a href="http://r00tshell.lofter.com/post/3d2f21_18839d8）" target="_blank" rel="noopener">http://r00tshell.lofter.com/post/3d2f21_18839d8）</a><br>；2.利用好浏览器缓存。（其实二者殊途同归，最后都是到系统级缓存，浏览器缓存算是系统缓存的一个子集）。浏览器缓存控制机制有两种：HTML Meta标签 以及HTTP头信息，通常，web开发者可以在HTML页面的<head><meta name="generator" content="Hexo 3.8.0">节点中加入<meta>标签。在BeEF里面有一套自动化的利用方式。当然也有其他的工具可以使用。只不过浏览器攻击工具首推BeEF。</head></p>
 <h1 id="DNS-ddos"><a href="#DNS-ddos" class="headerlink" title="DNS ddos"></a>DNS ddos</h1><p>这个攻击方式估计是最最直白的攻击手段了，直接泛洪ddos，让DNS服务器拒绝服务，可以说是相当的简单粗暴。有篇安全牛的文章对这类攻击的防御手段给出了建议：<a href="https://www.aqniu.com/learn/14769.html" target="_blank" rel="noopener">https://www.aqniu.com/learn/14769.html</a></p>
 <h1 id="DNS-tunnel"><a href="#DNS-tunnel" class="headerlink" title="DNS tunnel"></a>DNS tunnel</h1><p>这里不算是个漏洞，只能说是一个企业边界规则指定不合理造成的。因为一般内网向外的UDP 53端口流量是进行DNS查询的，出于正常的业务逻辑，这里应该不会存在安全隐患。但是DNS协议支持较大的载荷，那么攻击者完全可以利用DNS协议来搭建DNS隧道，实现内网穿透。而且也有相当一部分成熟的工具可以实现自动化。常见的有dns2tcp，iodine等。</p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p>[1] <a href="https://www.sans.org/reading-room/whitepapers/dns/securing-dns-zone-transfer-868" target="_blank" rel="noopener">https://www.sans.org/reading-room/whitepapers/dns/securing-dns-zone-transfer-868</a><br>[2] <a href="https://security.stackexchange.com/questions/10452/dns-zone-transfer-attack" target="_blank" rel="noopener">https://security.stackexchange.com/questions/10452/dns-zone-transfer-attack</a><br>[3] <a href="https://www.alibabacloud.com/help/zh/faq-detail/37529.html" target="_blank" rel="noopener">https://www.alibabacloud.com/help/zh/faq-detail/37529.html</a><br>[4] <a href="http://www.ruanyifeng.com/blog/2016/06/dns.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2016/06/dns.html</a><br>[5] <a href="https://www.cnblogs.com/kevingrace/p/7060119.html" target="_blank" rel="noopener">https://www.cnblogs.com/kevingrace/p/7060119.html</a><br>[6] <a href="http://www.4hou.com/web/13129.html" target="_blank" rel="noopener">http://www.4hou.com/web/13129.html</a></p>
@@ -550,6 +550,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/26/数模之图论算法/" rel="prev" title="数模之图论算法">
+                数模之图论算法 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -650,7 +654,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

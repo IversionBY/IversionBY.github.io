@@ -1,0 +1,1335 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="图论是一个很庞大的理论分支，涉及到的算法很多。前面已经了解到了NetworkX这个很强大的图论计算库，里面内置了很多的算法，可以用来解决实际生活中的问题。这篇文章主要介绍三种图论中的基础算法，算法代码是从参考文献中直接引用的，这里做个记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数模之图论算法">
+<meta property="og:url" content="http://lypto.me/2018/12/26/数模之图论算法/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="图论是一个很庞大的理论分支，涉及到的算法很多。前面已经了解到了NetworkX这个很强大的图论计算库，里面内置了很多的算法，可以用来解决实际生活中的问题。这篇文章主要介绍三种图论中的基础算法，算法代码是从参考文献中直接引用的，这里做个记录。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/图论算法/output_3_0.png">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/图论算法/output_6_0.png">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/图论算法/output_8_0.png">
+<meta property="og:updated_time" content="2018-12-26T02:16:42.843Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数模之图论算法">
+<meta name="twitter:description" content="图论是一个很庞大的理论分支，涉及到的算法很多。前面已经了解到了NetworkX这个很强大的图论计算库，里面内置了很多的算法，可以用来解决实际生活中的问题。这篇文章主要介绍三种图论中的基础算法，算法代码是从参考文献中直接引用的，这里做个记录。">
+<meta name="twitter:image" content="http://lypto.me/myimages/数模编程/图论算法/output_3_0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2018/12/26/数模之图论算法/">
+
+
+
+
+
+  <title>数模之图论算法 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/26/数模之图论算法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数模之图论算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T10:13:23+08:00">
+                Dec 26 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/26/数模之图论算法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/26/数模之图论算法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>图论是一个很庞大的理论分支，涉及到的算法很多。前面已经了解到了NetworkX这个很强大的图论计算库，里面内置了很多的算法，可以用来解决实际生活中的问题。这篇文章主要介绍三种图论中的基础算法，算法代码是从参考文献中直接引用的，这里做个记录。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="关键路径"><a href="#关键路径" class="headerlink" title="关键路径"></a>关键路径</h1><p>要说明这个问题，先摆三个概念：</p>
+<ul>
+<li>以顶点表示事件</li>
+<li>以有向边表示活动</li>
+<li>边上的权值表示活动的开销</li>
+</ul>
+<p>而关键路径指的就是遍历整个图中从既定的起点到终点的路劲，权重和做大的一条路径。关键活动就是其路径上的边。可以形象的理解，在一个工程项目中，我们往往需要找到影响工程时间的关键路径，那么对关键路径进行优化，就可以缩短时间啊，提高效率。下面是一个利用继承NetworkX的原生类实现的计算关键路径和关键活动的例子。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CPM</span><span class="params">(nx.DiGraph)</span>:</span> </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span> </span><br><span class="line">        super().__init__() </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        self._critical_path_length = <span class="number">-1</span> </span><br><span class="line">        self._criticalPath = <span class="keyword">None</span> </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_node</span><span class="params">(self, *args, **kwargs)</span>:</span> </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().add_node(*args, **kwargs) </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_nodes_from</span><span class="params">(self, *args, **kwargs)</span>:</span> </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().add_nodes_from(*args, **kwargs) </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_edge</span><span class="params">(self, *args)</span>:</span>  <span class="comment"># , **kwargs): </span></span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().add_edge(*args)  <span class="comment"># , **kwargs) </span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_edges_from</span><span class="params">(self, *args, **kwargs)</span>:</span> </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().add_edges_from(*args, **kwargs) </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove_node</span><span class="params">(self, *args, **kwargs)</span>:</span> </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().remove_node(*args, **kwargs) </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove_nodes_from</span><span class="params">(self, *args, **kwargs)</span>:</span> </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().remove_nodes_from(*args, **kwargs) </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove_edge</span><span class="params">(self, *args)</span>:</span>  <span class="comment"># , **kwargs): </span></span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().remove_edge(*args)  <span class="comment"># , **kwargs) </span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">remove_edges_from</span><span class="params">(self, *args, **kwargs)</span>:</span> </span><br><span class="line">        self._dirty = <span class="keyword">True</span> </span><br><span class="line">        super().remove_edges_from(*args, **kwargs) </span><br><span class="line">     </span><br><span class="line">    <span class="comment">#根据前向拓扑排序算弧的最早发生时间 </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_forward</span><span class="params">(self)</span>:</span> </span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> nx.topological_sort(self): </span><br><span class="line">            es = max([self.node[j][<span class="string">'EF'</span>] <span class="keyword">for</span> j <span class="keyword">in</span> self.predecessors(n)], default=<span class="number">0</span>) </span><br><span class="line">            self.add_node(n, ES=es, EF=es + self.node[n][<span class="string">'duration'</span>]) </span><br><span class="line">             </span><br><span class="line">    <span class="comment">#根据前向拓扑排序算弧的最迟发生时间 </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_backward</span><span class="params">(self)</span>:</span> </span><br><span class="line">        <span class="comment">#for n in nx.topological_sort(self, reverse=True): </span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> list(reversed(list(nx.topological_sort(self)))): </span><br><span class="line">            lf = min([self.node[j][<span class="string">'LS'</span>] <span class="keyword">for</span> j <span class="keyword">in</span> self.successors(n)], default=self._critical_path_length) </span><br><span class="line">            self.add_node(n, LS=lf - self.node[n][<span class="string">'duration'</span>], LF=lf) </span><br><span class="line">     </span><br><span class="line">    <span class="comment">#最早发生时间=最迟发生时间,则判断该节点为关键路径上的关键活动 </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_compute_critical_path</span><span class="params">(self)</span>:</span> </span><br><span class="line">        graph = set() </span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> self: </span><br><span class="line">            <span class="keyword">if</span> self.node[n][<span class="string">'EF'</span>] == self.node[n][<span class="string">'LF'</span>]: </span><br><span class="line">                graph.add(n) </span><br><span class="line">        self._criticalPath = self.subgraph(graph) </span><br><span class="line"> </span><br><span class="line"><span class="meta">    @property </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">critical_path_length</span><span class="params">(self)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self._dirty: </span><br><span class="line">            self._update() </span><br><span class="line">        <span class="keyword">return</span> self._critical_path_length </span><br><span class="line"> </span><br><span class="line"><span class="meta">    @property </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">critical_path</span><span class="params">(self)</span>:</span> </span><br><span class="line">        <span class="keyword">if</span> self._dirty: </span><br><span class="line">            self._update() </span><br><span class="line">        <span class="keyword">return</span> sorted(self._criticalPath, key=<span class="keyword">lambda</span> x: self.node[x][<span class="string">'ES'</span>]) </span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_update</span><span class="params">(self)</span>:</span> </span><br><span class="line">        self._forward() </span><br><span class="line">        self._critical_path_length = max(nx.get_node_attributes(self, <span class="string">'EF'</span>).values()) </span><br><span class="line">        self._backward() </span><br><span class="line">        self._compute_critical_path() </span><br><span class="line">        self._dirty = <span class="keyword">False</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>: </span><br><span class="line">     </span><br><span class="line">    <span class="comment">#构建graph </span></span><br><span class="line">    G = CPM() </span><br><span class="line">    G.add_node(<span class="string">'A'</span>, duration=<span class="number">5</span>) </span><br><span class="line">    G.add_node(<span class="string">'B'</span>, duration=<span class="number">2</span>) </span><br><span class="line">    G.add_node(<span class="string">'C'</span>, duration=<span class="number">4</span>) </span><br><span class="line">    G.add_node(<span class="string">'D'</span>, duration=<span class="number">4</span>) </span><br><span class="line">    G.add_node(<span class="string">'E'</span>, duration=<span class="number">3</span>) </span><br><span class="line">    G.add_node(<span class="string">'F'</span>, duration=<span class="number">7</span>) </span><br><span class="line">    G.add_node(<span class="string">'G'</span>, duration=<span class="number">4</span>) </span><br><span class="line"> </span><br><span class="line">    G.add_edges_from([ </span><br><span class="line">        (<span class="string">'A'</span>, <span class="string">'B'</span>), </span><br><span class="line">        (<span class="string">'A'</span>, <span class="string">'C'</span>), </span><br><span class="line">        (<span class="string">'C'</span>,<span class="string">'D'</span>), </span><br><span class="line">        (<span class="string">'C'</span>,<span class="string">'E'</span>), </span><br><span class="line">        (<span class="string">'C'</span>,<span class="string">'G'</span>), </span><br><span class="line">        (<span class="string">'B'</span>,<span class="string">'D'</span>), </span><br><span class="line">        (<span class="string">'D'</span>,<span class="string">'F'</span>), </span><br><span class="line">        (<span class="string">'E'</span>,<span class="string">'F'</span>), </span><br><span class="line">        (<span class="string">'G'</span>,<span class="string">'F'</span>), </span><br><span class="line">    ])   </span><br><span class="line">    pos=nx.spring_layout(G) </span><br><span class="line">     </span><br><span class="line">    <span class="comment">#显示graph </span></span><br><span class="line"></span><br><span class="line">    edge_labels = nx.get_edge_attributes(G,<span class="string">'duration'</span>) </span><br><span class="line">    nx.draw_networkx_nodes(G,pos) </span><br><span class="line">    nx.draw_networkx_labels(G,pos) </span><br><span class="line">    nx.draw_networkx_edges(G,pos) </span><br><span class="line">    nx.draw_networkx_edge_labels(G, pos,edge_labels) </span><br><span class="line">    plt.title(<span class="string">'AOE网络'</span>)</span><br><span class="line">    plt.axis(<span class="string">'on'</span>) </span><br><span class="line">    plt.xticks([]) </span><br><span class="line">    plt.yticks([]) </span><br><span class="line">    plt.show() </span><br><span class="line">     </span><br><span class="line">     </span><br><span class="line">    print(<span class="string">'关键活动为:'</span>) </span><br><span class="line">    print(G.critical_path_length, G.critical_path) </span><br><span class="line"> </span><br><span class="line">    G.add_node(<span class="string">'D'</span>, duration=<span class="number">2</span>) </span><br><span class="line">    print(<span class="string">'\n修改D活动持续时间4为2后的关键活动为:'</span>) </span><br><span class="line">print(G.critical_path_length, G.critical_path)</span><br></pre></td></tr></table></figure>
+<p><img src="/myimages/数模编程/图论算法/output_3_0.png" alt="png"></p>
+<pre><code>关键活动为:
+20 [&#39;A&#39;, &#39;C&#39;, &#39;D&#39;, &#39;G&#39;, &#39;F&#39;]
+
+修改D活动持续时间4为2后的关键活动为:
+20 [&#39;A&#39;, &#39;C&#39;, &#39;G&#39;, &#39;F&#39;]
+</code></pre><h1 id="最大流问题"><a href="#最大流问题" class="headerlink" title="最大流问题"></a>最大流问题</h1><p>最大流问题，说的是在图中，边为约束，也即从其前继节点到后继节点的最大流量。那么最大流问题，就是选定一个初始节点,目地节点，计算它们间的最大流量，使其满足路径上的所有约束。以下是使用NetworkX实现的求解最大流问题的代码。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> networkx <span class="keyword">as</span> nx</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.rcParams[<span class="string">'font.sans-serif'</span>]=[<span class="string">'SimHei'</span>] <span class="comment">#用来正常显示中文标签</span></span><br><span class="line">plt.rcParams[<span class="string">'axes.unicode_minus'</span>]=<span class="keyword">False</span> <span class="comment">#用来正常显示负号</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#构建graph </span></span><br><span class="line">G = nx.DiGraph() </span><br><span class="line">G.add_edge(<span class="string">'x'</span>,<span class="string">'a'</span>, capacity=<span class="number">3.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'x'</span>,<span class="string">'b'</span>, capacity=<span class="number">1.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'a'</span>,<span class="string">'c'</span>, capacity=<span class="number">3.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'b'</span>,<span class="string">'c'</span>, capacity=<span class="number">5.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'b'</span>,<span class="string">'d'</span>, capacity=<span class="number">4.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'d'</span>,<span class="string">'e'</span>, capacity=<span class="number">2.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'c'</span>,<span class="string">'y'</span>, capacity=<span class="number">2.0</span>) </span><br><span class="line">G.add_edge(<span class="string">'e'</span>,<span class="string">'y'</span>, capacity=<span class="number">3.0</span>) </span><br><span class="line">pos=nx.spring_layout(G) </span><br><span class="line"> </span><br><span class="line"><span class="comment">#显示graph </span></span><br><span class="line">edge_labels = nx.get_edge_attributes(G,<span class="string">'capacity'</span>) </span><br><span class="line">nx.draw_networkx_nodes(G,pos) </span><br><span class="line">nx.draw_networkx_labels(G,pos) </span><br><span class="line">nx.draw_networkx_edges(G,pos) </span><br><span class="line">nx.draw_networkx_edge_labels(G, pos,edge_labels) </span><br><span class="line">plt.axis(<span class="string">'on'</span>) </span><br><span class="line">plt.xticks([]) </span><br><span class="line">plt.yticks([]) </span><br><span class="line">plt.show() </span><br><span class="line"> </span><br><span class="line"><span class="comment">#求最大流 </span></span><br><span class="line">flow_value, flow_dict = nx.maximum_flow(G, <span class="string">'x'</span>, <span class="string">'y'</span>) </span><br><span class="line">print(<span class="string">"最大流值: "</span>,flow_value) </span><br><span class="line">print(<span class="string">"最大流流经途径: "</span>,flow_dict)</span><br></pre></td></tr></table></figure>
+<p><img src="/myimages/数模编程/图论算法/output_6_0.png" alt="png"></p>
+<pre><code>最大流值:  3.0
+最大流流经途径:  {&#39;x&#39;: {&#39;a&#39;: 2.0, &#39;b&#39;: 1.0}, &#39;a&#39;: {&#39;c&#39;: 2.0}, &#39;b&#39;: {&#39;c&#39;: 0, &#39;d&#39;: 1.0}, &#39;c&#39;: {&#39;y&#39;: 2.0}, &#39;d&#39;: {&#39;e&#39;: 1.0}, &#39;e&#39;: {&#39;y&#39;: 1.0}, &#39;y&#39;: {}}
+</code></pre><h1 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h1><p>拓扑排序面对的问题是那些节点间具有明显的先后时序性的问题。可以这么直观的理解：我们大学有很多课程，其中一些课程需要有先修课，就如同概率论和高数。那么我们必须先学习高数才可以学概率论。这样的问题就十分适合使用拓扑排序算法。它就是找出我们学习根据先后顺序依次列出节点的过程。算法本身采用减边的策略。所以可能会出现很多种不同的序列，但是都是合理的拓扑排序。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">DG = nx.DiGraph([(<span class="string">'a'</span>, <span class="string">'b'</span>), (<span class="string">'a'</span>, <span class="string">'c'</span>),(<span class="string">'b'</span>, <span class="string">'e'</span>), (<span class="string">'b'</span>, <span class="string">'d'</span>),(<span class="string">'c'</span>, <span class="string">'e'</span>), (<span class="string">'c'</span>, <span class="string">'d'</span>),(<span class="string">'d'</span>, <span class="string">'f'</span>), (<span class="string">'f'</span>, <span class="string">'g'</span>), (<span class="string">'e'</span>, <span class="string">'g'</span>)]) </span><br><span class="line"> </span><br><span class="line"><span class="comment">#显示graph </span></span><br><span class="line">nx.draw_spring(DG,with_labels=<span class="keyword">True</span>) </span><br><span class="line">plt.title(<span class="string">'有向无环图'</span>) </span><br><span class="line">plt.axis(<span class="string">'on'</span>) </span><br><span class="line">plt.xticks([]) </span><br><span class="line">plt.yticks([]) </span><br><span class="line">plt.show() </span><br><span class="line"> </span><br><span class="line"><span class="comment">#这个graph拓扑排序序列有很多，可以直接列出一个排序，也可以把所有列出</span></span><br><span class="line"><span class="comment">#列出一个</span></span><br><span class="line">print(<span class="string">'扑排序序列:\n '</span>,list(nx.topological_sort(DG))) </span><br><span class="line"><span class="comment">#列出所有</span></span><br><span class="line">print(<span class="string">"所有可能的拓扑排序:"</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> list(nx.all_topological_sorts(DG)):</span><br><span class="line">    print(i)</span><br><span class="line"><span class="comment">#逆拓扑排序</span></span><br><span class="line">print(<span class="string">'逆扑排序序列:\n'</span>,list(reversed(list(nx.topological_sort(DG)))))</span><br></pre></td></tr></table></figure>
+<p><img src="/myimages/数模编程/图论算法/output_8_0.png" alt="png"></p>
+<pre><code>扑排序序列:
+  [&#39;a&#39;, &#39;c&#39;, &#39;b&#39;, &#39;d&#39;, &#39;f&#39;, &#39;e&#39;, &#39;g&#39;]
+所有可能的拓扑排序:
+[&#39;a&#39;, &#39;c&#39;, &#39;b&#39;, &#39;d&#39;, &#39;f&#39;, &#39;e&#39;, &#39;g&#39;]
+[&#39;a&#39;, &#39;c&#39;, &#39;b&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;]
+[&#39;a&#39;, &#39;c&#39;, &#39;b&#39;, &#39;e&#39;, &#39;d&#39;, &#39;f&#39;, &#39;g&#39;]
+[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;f&#39;, &#39;e&#39;, &#39;g&#39;]
+[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;]
+[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;e&#39;, &#39;d&#39;, &#39;f&#39;, &#39;g&#39;]
+逆扑排序序列:
+ [&#39;g&#39;, &#39;e&#39;, &#39;f&#39;, &#39;d&#39;, &#39;b&#39;, &#39;c&#39;, &#39;a&#39;]
+</code></pre><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p>[1]<a href="https://www.cnblogs.com/wushaogui/p/9222828.html" target="_blank" rel="noopener">https://www.cnblogs.com/wushaogui/p/9222828.html</a>  </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/26/数模之图论算法/">数模之图论算法</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月26日 - 10:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月26日 - 10:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/26/数模之图论算法/" title="数模之图论算法">http://lypto.me/2018/12/26/数模之图论算法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/23/常见的DNS攻击手段/" rel="next" title="常见的DNS攻击手段">
+                <i class="fa fa-chevron-left"></i> 常见的DNS攻击手段
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/26/数模之动态规划/" rel="prev" title="数模之动态规划">
+                数模之动态规划 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关键路径"><span class="nav-number">1.</span> <span class="nav-text">关键路径</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#最大流问题"><span class="nav-number">2.</span> <span class="nav-text">最大流问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#拓扑排序"><span class="nav-number">3.</span> <span class="nav-text">拓扑排序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/26/数模之图论算法/';
+          this.page.identifier = '2018/12/26/数模之图论算法/';
+          this.page.title = '数模之图论算法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
