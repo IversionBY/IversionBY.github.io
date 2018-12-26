@@ -96,16 +96,19 @@
 
 
 
-<meta name="description" content="Please remember that. The Titanic was not supposed to sink, but it did.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Blog of 1ypt0">
-<meta property="og:url" content="http://lypto.me/tags/docker/index.html">
+<meta name="description" content="层次分析模型是一种将经验判断和数学分析结合的建模方式，用来解决一些比较抽象的无法定量分析的问题。其核心是构造一致性判断矩阵。整个算法流程其实不是特别难理解，只不过其中涉及到了一些线性代数的知识，让我恶补了一下线代。下面对层次分析算法进行一个学习记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数模之层次分析">
+<meta property="og:url" content="http://lypto.me/2018/12/26/数模之层次分析/index.html">
 <meta property="og:site_name" content="Blog of 1ypt0">
-<meta property="og:description" content="Please remember that. The Titanic was not supposed to sink, but it did.">
+<meta property="og:description" content="层次分析模型是一种将经验判断和数学分析结合的建模方式，用来解决一些比较抽象的无法定量分析的问题。其核心是构造一致性判断矩阵。整个算法流程其实不是特别难理解，只不过其中涉及到了一些线性代数的知识，让我恶补了一下线代。下面对层次分析算法进行一个学习记录。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/数模编程/层次规划/1.png">
+<meta property="og:updated_time" content="2018-12-26T09:34:53.124Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Blog of 1ypt0">
-<meta name="twitter:description" content="Please remember that. The Titanic was not supposed to sink, but it did.">
+<meta name="twitter:title" content="数模之层次分析">
+<meta name="twitter:description" content="层次分析模型是一种将经验判断和数学分析结合的建模方式，用来解决一些比较抽象的无法定量分析的问题。其核心是构造一致性判断矩阵。整个算法流程其实不是特别难理解，只不过其中涉及到了一些线性代数的知识，让我恶补了一下线代。下面对层次分析算法进行一个学习记录。">
+<meta name="twitter:image" content="http://lypto.me/myimages/数模编程/层次规划/1.png">
 
 
 
@@ -133,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://lypto.me/tags/docker/">
+  <link rel="canonical" href="http://lypto.me/2018/12/26/数模之层次分析/">
 
 
 
 
 
-  <title>标签: docker | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>数模之层次分析 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -174,7 +177,7 @@
   
     
   
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -300,42 +303,263 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h1>docker<small>标签</small>
-      </h1>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/26/数模之层次分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数模之层次分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-26T17:21:34+08:00">
+                Dec 26 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/26/数模之层次分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/26/数模之层次分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  976
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <blockquote>
+<p>层次分析模型是一种将经验判断和数学分析结合的建模方式，用来解决一些比较抽象的无法定量分析的问题。其核心是构造一致性判断矩阵。整个算法流程其实不是特别难理解，只不过其中涉及到了一些线性代数的知识，让我恶补了一下线代。下面对层次分析算法进行一个学习记录。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>既然提到层次分析，那自然得放一张图，让我们了解一下怎么个分层法。</p>
+<p><img src="/myimages/数模编程/层次规划/1.png" alt="image.png"></p>
+<blockquote>
+<p>这里以《数学建模算法与程序》这本书的原图为例</p>
+</blockquote>
+<p>其实不难理解，我们把整个分析流程分为目标层，方案层，准则层。也就是将一些判断因素作为准测放在了准测层里面。通过准则层的一致性判断矩阵的权重来指导我们最后的目标层的选择。网上已经有很多对这一建模方案的教程（参考文献已经给出的了一些笔者认为解释得比较不错的链接），这里仅仅列出我们的算法步骤和一个笔者在网上搜罗的比较贴近原理的参考代码（参考文献【1】），但是它少了层次总排序校验部分，笔者做了修改，现把代码给出如下：</p>
+<p>层次分析法的算法流程和步骤：</p>
+<ul>
+<li>建立层次结构模型；</li>
+<li>构造判断(成对比较)矩阵；</li>
+<li>层次单排序及其一致性检验；</li>
+<li>层次总排序及其一致性检验</li>
+</ul>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">RI_dict = &#123;<span class="number">1</span>: <span class="number">0</span>, <span class="number">2</span>: <span class="number">0</span>, <span class="number">3</span>: <span class="number">0.58</span>, <span class="number">4</span>: <span class="number">0.90</span>, <span class="number">5</span>: <span class="number">1.12</span>, <span class="number">6</span>: <span class="number">1.24</span>, <span class="number">7</span>: <span class="number">1.32</span>, <span class="number">8</span>: <span class="number">1.41</span>, <span class="number">9</span>: <span class="number">1.45</span>, <span class="number">10</span>: <span class="number">1.49</span>, <span class="number">11</span>: <span class="number">1.51</span>&#125;</span><br><span class="line">CI_list=[]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_w</span><span class="params">(array)</span>:</span></span><br><span class="line">    row = array.shape[<span class="number">0</span>]  <span class="comment"># 计算出阶数</span></span><br><span class="line">    a_axis_0_sum = array.sum(axis=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># print(a_axis_0_sum)</span></span><br><span class="line">    b = array / a_axis_0_sum  <span class="comment"># 新的矩阵b</span></span><br><span class="line">    <span class="comment"># print(b)</span></span><br><span class="line">    b_axis_0_sum = b.sum(axis=<span class="number">0</span>)</span><br><span class="line">    b_axis_1_sum = b.sum(axis=<span class="number">1</span>)  <span class="comment"># 每一行的特征向量</span></span><br><span class="line">    <span class="comment"># print(b_axis_1_sum)</span></span><br><span class="line">    w = b_axis_1_sum / row  <span class="comment"># 归一化处理(特征向量)</span></span><br><span class="line">    nw = w * row</span><br><span class="line">    AW = (w * array).sum(axis=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># print(AW)</span></span><br><span class="line">    max_max = sum(AW / (row * w))</span><br><span class="line">    <span class="comment"># print(max_max)</span></span><br><span class="line">    CI = (max_max - row) / (row - <span class="number">1</span>)</span><br><span class="line">    CI_list.append(CI)</span><br><span class="line">    CR = CI / RI_dict[row]</span><br><span class="line">    <span class="keyword">if</span> CR &lt; <span class="number">0.1</span>:</span><br><span class="line">        <span class="comment"># print(round(CR, 3))</span></span><br><span class="line">        <span class="comment"># print('满足一致性')</span></span><br><span class="line">        <span class="comment"># print(np.max(w))</span></span><br><span class="line">        <span class="comment"># print(sorted(w,reverse=True))</span></span><br><span class="line">        <span class="comment"># print(max_max)</span></span><br><span class="line">        <span class="comment"># print('特征向量:%s' % w)</span></span><br><span class="line">        <span class="keyword">return</span> w</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(round(CR, <span class="number">3</span>))</span><br><span class="line">        print(<span class="string">'不满足一致性，请进行修改'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(array)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> type(array) <span class="keyword">is</span> np.ndarray:</span><br><span class="line">        <span class="keyword">return</span> get_w(array)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">'请输入numpy对象'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    </span><br><span class="line">    e = np.array([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">5</span>, <span class="number">5</span>], [<span class="number">1</span> / <span class="number">2</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">3</span>], [<span class="number">1</span> / <span class="number">7</span>, <span class="number">1</span> / <span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span> / <span class="number">2</span>, <span class="number">1</span> / <span class="number">3</span>], [<span class="number">1</span> / <span class="number">5</span>, <span class="number">1</span> / <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span> / <span class="number">5</span>, <span class="number">1</span> / <span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>]]) <span class="comment">#准则层成对比较矩阵</span></span><br><span class="line">    a = np.array([[<span class="number">1</span>, <span class="number">1</span> / <span class="number">3</span>, <span class="number">1</span> / <span class="number">8</span>], [<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span> / <span class="number">3</span>], [<span class="number">8</span>, <span class="number">3</span>, <span class="number">1</span>]])  <span class="comment">#三个候选方案针对准则1的比较矩阵</span></span><br><span class="line">    b = np.array([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>], [<span class="number">1</span> / <span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>], [<span class="number">1</span> / <span class="number">5</span>, <span class="number">1</span> / <span class="number">2</span>, <span class="number">1</span>]])  <span class="comment">#三个候选方案针对准则2的比较矩阵</span></span><br><span class="line">    c = np.array([[<span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>], [<span class="number">1</span>, <span class="number">1</span>, <span class="number">3</span>], [<span class="number">1</span> / <span class="number">3</span>, <span class="number">1</span> / <span class="number">3</span>, <span class="number">1</span>]])      <span class="comment">#三个候选方案针对准则3的比较矩阵</span></span><br><span class="line">    d = np.array([[<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>], [<span class="number">1</span> / <span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span> / <span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>]])      <span class="comment">#三个候选方案针对准则4的比较矩阵</span></span><br><span class="line">    f = np.array([[<span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span> / <span class="number">2</span>], [<span class="number">1</span> / <span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span> / <span class="number">4</span>], [<span class="number">2</span>, <span class="number">4</span>, <span class="number">1</span>]])  <span class="comment">#三个候选方案针对准则5的比较矩阵</span></span><br><span class="line">    e = main(e)</span><br><span class="line">    a = main(a)</span><br><span class="line">    b = main(b)</span><br><span class="line">    c = main(c)</span><br><span class="line">    d = main(d)</span><br><span class="line">    f = main(f)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        res = np.array([a, b, c, d, f])</span><br><span class="line">        <span class="comment">#计算总排序的一致性</span></span><br><span class="line">        fina_RI=RI_dict[a.shape[<span class="number">0</span>]]</span><br><span class="line">        fina_CI=CI_list[<span class="number">1</span>:]</span><br><span class="line">        fina_CR=sum(np.array(fina_CI)/fina_RI*e)</span><br><span class="line">        <span class="keyword">if</span> fina_CR&lt;<span class="number">1</span>:</span><br><span class="line">            ret = (np.transpose(res) * e).sum(axis=<span class="number">1</span>)</span><br><span class="line">            print(ret)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">'计算总排序的一致性不符合要求'</span>)</span><br><span class="line">    <span class="keyword">except</span> TypeError:</span><br><span class="line">        print(<span class="string">'数据有误，可能不满足一致性，请进行修改'</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>[0.31878206 0.23919592 0.44202202]
+</code></pre><p>在这个例子中我们可以看到权重最高的第三项将会是我们选择的方案。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="http://www.cnblogs.com/yhll/yhll/p/9967726.html" target="_blank" rel="noopener">http://www.cnblogs.com/yhll/yhll/p/9967726.html</a><br>[2] <a href="https://zhuanlan.zhihu.com/p/39993228" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/39993228</a></p>
 
-      <h2 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2018/08/12/redis未授权访问/" itemprop="url">
-              
-                <span itemprop="name">redis未授权访问</span>
-              
-            </a>
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
         
-      </h2>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-12T11:02:58+08:00" content="Aug 12 2018">
-          08-12
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2018/12/26/数模之层次分析/">数模之层次分析</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2018年12月26日 - 17:12
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2018年12月26日 - 17:12
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2018/12/26/数模之层次分析/" title="数模之层次分析">http://lypto.me/2018/12/26/数模之层次分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/26/数模之动态规划/" rel="next" title="数模之动态规划">
+                <i class="fa fa-chevron-left"></i> 数模之动态规划
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -343,6 +567,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -361,8 +596,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
           <p class="site-author-name" itemprop="name">1ypt0</p>
@@ -517,6 +761,22 @@
       </div></section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -614,6 +874,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
 
   
 
@@ -631,6 +895,18 @@
       <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2018/12/26/数模之层次分析/';
+          this.page.identifier = '2018/12/26/数模之层次分析/';
+          this.page.title = '数模之层次分析';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
@@ -1009,26 +1285,6 @@
 
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

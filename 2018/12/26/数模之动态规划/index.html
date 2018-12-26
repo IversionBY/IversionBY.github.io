@@ -103,7 +103,7 @@
 <meta property="og:site_name" content="Blog of 1ypt0">
 <meta property="og:description" content="第一次比较感性的认识动态规划的时候是在一年多以前的数据结构课堂上。初始的时候觉得特别绕，虽然现在也一样，那些年看的动态规划，只还记得一句话：全局最优包含局部最优。现在重新梳理动态规划的有关知识，对这句话有了更深的理解。动态规划的思想就是至下而上分析，从上而下推导的过程。这句话相当的绕，甚至是个病句。如果这样理解动态规划就会舒服很多：假如我要到达一个目的地，我需要从目的地出发分析我的每一步最优解来">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-26T02:43:08.167Z">
+<meta property="og:updated_time" content="2018-12-26T02:51:17.142Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数模之动态规划">
 <meta name="twitter:description" content="第一次比较感性的认识动态规划的时候是在一年多以前的数据结构课堂上。初始的时候觉得特别绕，虽然现在也一样，那些年看的动态规划，只还记得一句话：全局最优包含局部最优。现在重新梳理动态规划的有关知识，对这句话有了更深的理解。动态规划的思想就是至下而上分析，从上而下推导的过程。这句话相当的绕，甚至是个病句。如果这样理解动态规划就会舒服很多：假如我要到达一个目的地，我需要从目的地出发分析我的每一步最优解来">
@@ -435,7 +435,7 @@
 <li>状态（state）：很好理解，我们需要将待解决问题抽象成很多个状态，每个状态代表了一个子结构。</li>
 <li>状态转移方程（state transition equation）：描述状态间转化关系的的表达式，包括状态转移需要满足的条件。</li>
 </ul>
-<p>很多时候只要我们能够从问题出发，抽象出以上两个组件。那么运用动态规划解决问题就是板上钉钉的事情了。动态规划难在哪呢？以作者不成熟的理解，其一：就是对状态的抽象，我们需要将实践的问题抽象到一个个状态，每个状态互补重叠。其二：描述每个状态转移的条件和方程式。动态规划没有统一的标准模型，就体现在不同的问题有不同的状态转移方程式，条件也不尽相同。</p>
+<p>很多时候只要我们能够从问题出发，抽象出以上两个组件。那么运用动态规划解决问题就是板上钉钉的事情了。动态规划难在哪呢？以作者不成熟的理解，其一：就是对状态的抽象，我们需要将实践的问题抽象到一个个状态，每个状态互不重叠。其二：描述每个状态转移的条件和方程式。动态规划没有统一的标准模型，就体现在不同的问题有不同的状态转移方程式，条件也不尽相同。</p>
 <p>对动态规划的具体概念仍有模糊的话可以去看下参考链接[2]的那篇博文，里面有个入门级硬币的例子，作者翻译得很好。</p>
 <h1 id="常见的动态规划问题"><a href="#常见的动态规划问题" class="headerlink" title="常见的动态规划问题"></a>常见的动态规划问题</h1><p>在对动态规划问题有了一定的理解后，我们来看看常见的动态规划问题的状态和状态转移方程式如何构造的。当然作者才疏，无法概括所有的问题，参看链接[1]里面有一些大佬搜集的动态规划的解题思路和代码，有兴趣的话可以去看下。作为出学者，仅列出几个背包类求解问题的思路。</p>
 <h2 id="0-1背包问题"><a href="#0-1背包问题" class="headerlink" title="0/1背包问题"></a>0/1背包问题</h2><p>每个物品只有一件，取或者不取（0/1），只有者两种选择。</p>
@@ -464,7 +464,6 @@
 <p>更多的背包问题，可以参看背包问题九讲（参考文献【3】）。</p>
 </blockquote>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1]<a href="https://github.com/billryan/algorithm-exercise/tree/master/zh-hans/dynamic_programming" target="_blank" rel="noopener">https://github.com/billryan/algorithm-exercise/tree/master/zh-hans/dynamic_programming</a><br>[2]<a href="http://www.hawstein.com/posts/dp-novice-to-advanced.html" target="_blank" rel="noopener">http://www.hawstein.com/posts/dp-novice-to-advanced.html</a><br>[3]<a href="https://www.kancloud.cn/kancloud/pack" target="_blank" rel="noopener">https://www.kancloud.cn/kancloud/pack</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -547,6 +546,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/26/数模之层次分析/" rel="prev" title="数模之层次分析">
+                数模之层次分析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -645,7 +648,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-count">40</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
