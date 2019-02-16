@@ -1,0 +1,1350 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="web,后渗透,日志,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="本篇文章主要记录在内网渗透过程中日志清理技术。一个真正成功的渗透测试是一个达到目后实现全身而退。要想做到全身而退，那么适宜的日志清理技术是一个十分关键的步骤。">
+<meta name="keywords" content="web,后渗透,日志">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日志隐匿">
+<meta property="og:url" content="http://lypto.me/2019/02/16/日志隐匿/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="本篇文章主要记录在内网渗透过程中日志清理技术。一个真正成功的渗透测试是一个达到目后实现全身而退。要想做到全身而退，那么适宜的日志清理技术是一个十分关键的步骤。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/日志清除/index1.PNG">
+<meta property="og:updated_time" content="2019-02-16T08:17:00.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="日志隐匿">
+<meta name="twitter:description" content="本篇文章主要记录在内网渗透过程中日志清理技术。一个真正成功的渗透测试是一个达到目后实现全身而退。要想做到全身而退，那么适宜的日志清理技术是一个十分关键的步骤。">
+<meta name="twitter:image" content="http://lypto.me/myimages/日志清除/index1.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2019/02/16/日志隐匿/">
+
+
+
+
+
+  <title>日志隐匿 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2019/02/16/日志隐匿/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">日志隐匿</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-16T16:05:32+08:00">
+                Feb 16 2019
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/渗透/" itemprop="url" rel="index">
+                    <span itemprop="name">渗透</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/16/日志隐匿/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/02/16/日志隐匿/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/日志清除/index1.PNG" height="450" width="450"></p>
+<blockquote>
+<p>本篇文章主要记录在内网渗透过程中日志清理技术。一个真正成功的渗透测试是一个达到目后实现全身而退。要想做到全身而退，那么适宜的日志清理技术是一个十分关键的步骤。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h1><p>通过微软图形化工具，可以看到windows的日志系统大致分为以下五种：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">应用程序</span><br><span class="line">安全</span><br><span class="line">Setup</span><br><span class="line">系统</span><br><span class="line">Forwarded events</span><br></pre></td></tr></table></figure></p>
+<h2 id="常见的windows应用日志保存位置"><a href="#常见的windows应用日志保存位置" class="headerlink" title="常见的windows应用日志保存位置"></a>常见的windows应用日志保存位置</h2><blockquote>
+<p>由于不同的windows发行版具体位置可能有些许不一致，可以通过注册表查看具体的日志存位置：HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/Eventlog</p>
+</blockquote>
+<p>下面为windows Server 2012 和windows 10 的日志位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- system</span><br><span class="line">%SystemRoot%\system32\winevt\Logs\System.evtx</span><br><span class="line">- Security</span><br><span class="line">%SystemRoot%\System32\winevt\Logs\Security.evtx</span><br><span class="line">- HardwareEvents</span><br><span class="line">%systemroot%\system32\winevt\logs\HardwareEvents.evtx</span><br><span class="line">- Application</span><br><span class="line">%SystemRoot%\system32\winevt\Logs\Application.evtx</span><br></pre></td></tr></table></figure></p>
+<h2 id="常用的日志操作命令"><a href="#常用的日志操作命令" class="headerlink" title="常用的日志操作命令"></a>常用的日志操作命令</h2><blockquote>
+<p><a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/cc732848(v=ws.11" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/cc732848(v=ws.11</a>)</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- 默认视图格式（xml）查看最近的10条 security 记录,可以通过查看xml格式获得日志对应的EventRecordID</span><br><span class="line">wevtutil.exe qe Security /rd:true /c:10</span><br><span class="line"></span><br><span class="line">- 以txt视图格式查看最近的10条application记录</span><br><span class="line">wevtutil.exe qe Application /rd:true /c:10 /f:txt</span><br><span class="line"></span><br><span class="line">- 导出Security所有日志并保存为1.evtx</span><br><span class="line">wevtutil.exe epl Security 1.evtx</span><br><span class="line"></span><br><span class="line">- 删除Security下的单条日志(EventRecordID=1112)，并保存为1.evtx</span><br><span class="line">wevtutil epl Security 1.evtx &quot;/q:*[System [(EventRecordID!=1112)]]&quot;</span><br><span class="line"></span><br><span class="line">- 删除Security下的多条日志(EventRecordID为13030、13031和13032)，结果保存为1.evtx</span><br><span class="line">wevtutil epl Security 1.evtx &quot;/q:*[System [(EventRecordID&gt;13032) or (EventRecordID&lt;13030)]]&quot;</span><br><span class="line"></span><br><span class="line">- 删除SystemTime为2018-08-10T03:20:00至2018-08-10T03:21:00之间的日志，结果保存为1.evtx</span><br><span class="line">wevtutil epl Security 1.evtx &quot;/q:*[System [TimeCreated[@SystemTime &gt;&apos;2018-08-10T03:21:00&apos; or @SystemTime &lt;&apos;2018-08-10T03:20:00&apos;]]]&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="windows日志隐匿"><a href="#windows日志隐匿" class="headerlink" title="windows日志隐匿"></a>windows日志隐匿</h2><blockquote>
+<p>windows后渗透日志相关现成的工具<br>[1]clearlog(<a href="http://ntsecurity.nu/toolbox/clearlogs/" target="_blank" rel="noopener">http://ntsecurity.nu/toolbox/clearlogs/</a>)<br>[2]phant0m(<a href="https://artofpwn.com/phant0m-killing-windows-event-log.html" target="_blank" rel="noopener">https://artofpwn.com/phant0m-killing-windows-event-log.html</a>)<br>[3]Elsave(<a href="http://www.ibt.ku.dk/jesper/elsave/" target="_blank" rel="noopener">http://www.ibt.ku.dk/jesper/elsave/</a>)</p>
+</blockquote>
+<h3 id="删除指定日志"><a href="#删除指定日志" class="headerlink" title="删除指定日志"></a>删除指定日志</h3><p>在Windows日志中记录了很多操作事件，为了方便用户对它们的管理，每种类型的事件都赋予了一个惟一的编号，这就是事件ID。一个完美的攻击流程是不再目标系统上留下攻击者的任何蛛丝马迹。这就要求我们对日志有选择的删除，制造不曾来过的假象。然而在windwos10系统上做到非全盘删除日志有一定的技术难度。大致流程如下：</p>
+<blockquote>
+<p>具体可以参考三号学生前辈的系列文章：<a href="https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E5%8D%95%E6%9D%A1%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4/" target="_blank" rel="noopener">https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E5%8D%95%E6%9D%A1%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4/</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 有选择的将日志文件导出（过滤掉hacker操作后的日志）</span><br><span class="line">2. 将导出的日志文件对原日志文件进行替换操作。</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="阻止进程产生日志"><a href="#阻止进程产生日志" class="headerlink" title="阻止进程产生日志"></a>阻止进程产生日志</h3><p>windows日志服务的对应的宿主进程为 Services.exe，大致的实现思路如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1、定位eventlog服务对应进程svchost.exe的pid</span><br><span class="line"></span><br><span class="line">2、遍历该进程中的所有线程</span><br><span class="line"></span><br><span class="line">3、判断线程是否满足条件</span><br><span class="line"></span><br><span class="line">4. 调用API终止满足条件的线程</span><br></pre></td></tr></table></figure></p>
+<p>上述工具[2]就是实现了上述的流程的自动化工具。更多的细节可以点进工具主页。</p>
+<h3 id="组织实时日志记录"><a href="#组织实时日志记录" class="headerlink" title="组织实时日志记录"></a>组织实时日志记录</h3><p>在大型的企业架构上，相关组件的日志是实时采集并集中处理的，如ELK，上述的windows日志隐匿操作知识在这里就比较局限。在这个时候做到行踪隐匿比较费劲。大致有两种思路，其一是完全拿下日志集中处理的服务器，这样就可以为所欲为。其二，找到客户机的日志agent，通过进程注入hook,忽略修改日志报备的细节。可以说实时日志记录的大型架构下的渗透要做到无痕的难度大了许多。笔者对这类大型架构的接触很少，没有相关的实战操作，所以这部分只能待日后阅历上来后，继续完善。</p>
+<h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><p>windows和linux的日志机制有较大的区别。linux下的日志目录比较规范<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">删除/var/log下的文件即可: </span><br><span class="line">rm -f -r /var/log</span><br></pre></td></tr></table></figure></p>
+<p>但是linux下有bash的历史命令记录，这点不要忘记<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export HISTSIZE=0</span><br><span class="line">or</span><br><span class="line">shred -zu /root/.bash_history</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1]<a href="https://artofpwn.com/phant0m-killing-windows-event-log.html" target="_blank" rel="noopener">https://artofpwn.com/phant0m-killing-windows-event-log.html</a><br>[2]<a href="https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E5%8D%95%E6%9D%A1%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4/" target="_blank" rel="noopener">https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E5%8D%95%E6%9D%A1%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4/</a><br>[3]<a href="https://threathunter.org/topic/593eb1bbb33ad233198afcfa" target="_blank" rel="noopener">https://threathunter.org/topic/593eb1bbb33ad233198afcfa</a><br>[4]<a href="http://www.4hou.com/penetration/5998.html" target="_blank" rel="noopener">http://www.4hou.com/penetration/5998.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2019/02/16/日志隐匿/">日志隐匿</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2019年02月16日 - 16:02
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2019年02月16日 - 16:02
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2019/02/16/日志隐匿/" title="日志隐匿">http://lypto.me/2019/02/16/日志隐匿/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/后渗透/" rel="tag"># 后渗透</a>
+          
+            <a href="/tags/日志/" rel="tag"># 日志</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/14/域渗透（二）/" rel="next" title="域渗透（二）">
+                <i class="fa fa-chevron-left"></i> 域渗透（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#windows"><span class="nav-number">1.</span> <span class="nav-text">windows</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的windows应用日志保存位置"><span class="nav-number">1.1.</span> <span class="nav-text">常见的windows应用日志保存位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的日志操作命令"><span class="nav-number">1.2.</span> <span class="nav-text">常用的日志操作命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windows日志隐匿"><span class="nav-number">1.3.</span> <span class="nav-text">windows日志隐匿</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除指定日志"><span class="nav-number">1.3.1.</span> <span class="nav-text">删除指定日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻止进程产生日志"><span class="nav-number">1.3.2.</span> <span class="nav-text">阻止进程产生日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组织实时日志记录"><span class="nav-number">1.3.3.</span> <span class="nav-text">组织实时日志记录</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux"><span class="nav-number">2.</span> <span class="nav-text">Linux</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2019/02/16/日志隐匿/';
+          this.page.identifier = '2019/02/16/日志隐匿/';
+          this.page.title = '日志隐匿';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
