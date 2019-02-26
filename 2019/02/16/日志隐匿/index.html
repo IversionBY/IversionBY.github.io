@@ -105,7 +105,7 @@
 <meta property="og:description" content="本篇文章主要记录在内网渗透过程中日志清理技术。一个真正成功的渗透测试是一个达到目后实现全身而退。要想做到全身而退，那么适宜的日志清理技术是一个十分关键的步骤。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lypto.me/myimages/日志清除/index1.PNG">
-<meta property="og:updated_time" content="2019-02-16T08:17:00.016Z">
+<meta property="og:updated_time" content="2019-02-17T07:36:06.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="日志隐匿">
 <meta name="twitter:description" content="本篇文章主要记录在内网渗透过程中日志清理技术。一个真正成功的渗透测试是一个达到目后实现全身而退。要想做到全身而退，那么适宜的日志清理技术是一个十分关键的步骤。">
@@ -407,7 +407,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1.2k
+                  1.9k
                 </span>
               
 
@@ -423,7 +423,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  4
+                  7
                 </span>
               
             </div>
@@ -465,7 +465,8 @@
 <p>上述工具[2]就是实现了上述的流程的自动化工具。更多的细节可以点进工具主页。</p>
 <h3 id="组织实时日志记录"><a href="#组织实时日志记录" class="headerlink" title="组织实时日志记录"></a>组织实时日志记录</h3><p>在大型的企业架构上，相关组件的日志是实时采集并集中处理的，如ELK，上述的windows日志隐匿操作知识在这里就比较局限。在这个时候做到行踪隐匿比较费劲。大致有两种思路，其一是完全拿下日志集中处理的服务器，这样就可以为所欲为。其二，找到客户机的日志agent，通过进程注入hook,忽略修改日志报备的细节。可以说实时日志记录的大型架构下的渗透要做到无痕的难度大了许多。笔者对这类大型架构的接触很少，没有相关的实战操作，所以这部分只能待日后阅历上来后，继续完善。</p>
 <h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><p>windows和linux的日志机制有较大的区别。linux下的日志目录比较规范<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">删除/var/log下的文件即可: </span><br><span class="line">rm -f -r /var/log</span><br></pre></td></tr></table></figure></p>
-<p>但是linux下有bash的历史命令记录，这点不要忘记<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export HISTSIZE=0</span><br><span class="line">or</span><br><span class="line">shred -zu /root/.bash_history</span><br></pre></td></tr></table></figure></p>
+<p>linux常用日志介绍<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">- 对于明文的Apache文件，通过正则表达式就可以搞定：</span><br><span class="line">sed –i &apos;s/192.168.1.3/192.168.1.4/g&apos; /var/log/apache/ access.log</span><br><span class="line">sed –i &apos;s/192.168.1.3/192.168.1.4/g&apos; /var/log/apache/error_log</span><br><span class="line">其中192.168.1.3是我们的IP，192.168.1.4使我们伪造的IP。</span><br><span class="line"></span><br><span class="line">MySQL日志文件</span><br><span class="line">log-error=/var/log/mysql/mysql_error.log #错误日志</span><br><span class="line">log=/var/log/mysql/mysql.log#最好注释掉，会产生大量的日志，包括每一个执行的sql及环境变量的改变等等</span><br><span class="line">log-bin=/var/log/mysql/mysql_bin.log # 用于备份恢复，或主从复制.这里不涉及。</span><br><span class="line">log-slow-queries=/var/log/mysql/mysql_slow.log #慢查询日志</span><br><span class="line">log-error=/var/log/mysql/mysqld.log</span><br><span class="line">pid-file=/var/run/mysqld/mysqld.pid</span><br><span class="line"></span><br><span class="line">sed –i &apos;s/192.168.1.3/192.168.1.4/g&apos;</span><br><span class="line">/var/log/mysql/mysql_slow.log</span><br><span class="line">至于二进制日志文件，需要登录mysql client来修改删除，建议这种操作最先执行。</span><br><span class="line"></span><br><span class="line">php日志修改</span><br><span class="line">sed –i &apos;s/192.168.1.3/192.168.1.4/g&apos;</span><br><span class="line">/var/log/apache/php_error.log</span><br><span class="line">最后就是Linux的日志文件了，这个比较多，记录的也比较复杂，我的环境是CentOS 6.3。我现在只把和渗透有关的文件列出来，主要在/etc/logrotate.d/syslog中</span><br><span class="line"></span><br><span class="line">/var/log/maillog，该日志文件记录了每一个发送到系统或从系统发出的电子邮件的活动，它可以用来查看用户使用哪个系统发送工具或把数据发送到哪个系统</span><br><span class="line"></span><br><span class="line">var/log/messages，该文件的格式是每一行包含日期、主机名、程序名，后面是包含PID或内核标识的方括号，一个冒号和一个空格</span><br><span class="line"></span><br><span class="line">/var/log/wtmp，该日志文件永久记录每个用户登录、注销及系统的启动，停机的事件。该日志文件可以用来查看用户的登录记录，last命令就通过访问这个文件获得这些信息，并以反序从后向前显示用户的登录记录，last也能根据用户，终端tty或时间显示相应的记录</span><br><span class="line"></span><br><span class="line">/var/run/utmp，该日志文件记录有关当前登录的每个用户的信息，因此这个文件会随着用户登录和注销系统而不断变化，它只保留当时联机的用户记录，不会为用户保留永久的记录。系统中需要查询当前用户状态的程序，如who、w、users、finger等就需要访问这个文件</span><br><span class="line"></span><br><span class="line">/var/log/xferlog，该日志文件记录FTP会话，可以显示出用户向FTP服务器或从服务器拷贝了什么文件。该文件会显示用户拷贝到服务器上的用来入侵服务器的恶意程序，以及该用户拷贝了哪些文件供他使用。</span><br></pre></td></tr></table></figure></p>
+<p>linux下有bash的历史命令记录，这点不要忘记<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 修改history保存历史命令个数</span><br><span class="line">export HISTSIZE=0</span><br><span class="line">- 使用0覆盖history历史文件</span><br><span class="line">shred -zu /root/.bash_history</span><br><span class="line">- 修改history命令历史记录保存文件为空文件</span><br><span class="line">export HISTFILE=/dev/null</span><br></pre></td></tr></table></figure></p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1]<a href="https://artofpwn.com/phant0m-killing-windows-event-log.html" target="_blank" rel="noopener">https://artofpwn.com/phant0m-killing-windows-event-log.html</a><br>[2]<a href="https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E5%8D%95%E6%9D%A1%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4/" target="_blank" rel="noopener">https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E5%8D%95%E6%9D%A1%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4/</a><br>[3]<a href="https://threathunter.org/topic/593eb1bbb33ad233198afcfa" target="_blank" rel="noopener">https://threathunter.org/topic/593eb1bbb33ad233198afcfa</a><br>[4]<a href="http://www.4hou.com/penetration/5998.html" target="_blank" rel="noopener">http://www.4hou.com/penetration/5998.html</a></p>
 
       
@@ -513,7 +514,7 @@
   </li>
   <li class="post-copyright-author">
     <strong>最后更新:</strong>
-    2019年02月16日 - 16:02
+    2019年02月17日 - 15:02
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
@@ -559,6 +560,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/26/权限维持杂谈/" rel="prev" title="权限维持杂谈">
+                权限维持杂谈 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -657,7 +662,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-count">45</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -679,7 +684,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

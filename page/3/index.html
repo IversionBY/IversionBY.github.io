@@ -312,6 +312,166 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/12/05/python-matplotlib-画图/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/05/python-matplotlib-画图/" itemprop="url">python matplotlib 画图</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T23:55:41+08:00">
+                Dec 5 2018
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/05/python-matplotlib-画图/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/05/python-matplotlib-画图/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="常规操作"><a href="#常规操作" class="headerlink" title="常规操作"></a>常规操作</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.rcParams[<span class="string">'font.sans-serif'</span>]=[<span class="string">'SimHei'</span>] <span class="comment">#用来正常显示中文标签</span></span><br><span class="line">plt.rcParams[<span class="string">'axes.unicode_minus'</span>]=<span class="keyword">False</span> <span class="comment">#用来正常显示负号</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#绘图数据生成</span></span><br><span class="line">x = np.linspace(<span class="number">-10</span>,<span class="number">10</span>,<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置整体画布样式,可使用print(plt.style.available)</span></span><br><span class="line"><span class="comment">#plt.style.use('ggplot')</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#定制化线条样式和颜色,参数名可以全程也可以缩写，如linestyle==ls;lineweight==lw......</span></span><br><span class="line">plt.plot(x,np.cos(x),ls=<span class="string">'-'</span>,color=<span class="string">"#000000"</span>,label=<span class="string">"cos(x)"</span>)</span><br><span class="line">plt.plot(x,np.sin(x),ls=<span class="string">':'</span>,color=<span class="string">"r"</span>,label=<span class="string">"sin(x)"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置显示标注的位置</span></span><br><span class="line">plt.legend(loc=<span class="string">'best'</span>,title=<span class="string">'图例'</span>)    </span><br><span class="line"></span><br><span class="line"><span class="comment">#设置x,y轴的标注范围</span></span><br><span class="line">plt.xlim([<span class="number">0</span>,<span class="number">10</span>])                            </span><br><span class="line">plt.ylim(<span class="number">-1</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置x,y轴的label以及边框美化,注意到字符串支持letax语法</span></span><br><span class="line">box=dict(facecolor=<span class="string">'#6959CD'</span>,pad=<span class="number">2</span>,alpha=<span class="number">.4</span>)</span><br><span class="line">plt.xlabel(<span class="string">"$x$"</span>,fontsize=<span class="number">20</span>,bbox=box)                            </span><br><span class="line">plt.ylabel(<span class="string">"$y=sin(x) or cos(x)$"</span>,fontsize=<span class="number">20</span>,bbox=box)   </span><br><span class="line"></span><br><span class="line"><span class="comment">#设置网格线</span></span><br><span class="line">plt.grid(c=<span class="string">"gray"</span>,ls=<span class="string">':'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#绘制参考基准线，垂直于x轴或者垂直于y轴</span></span><br><span class="line">plt.axhline(<span class="number">0.25</span>,ls=<span class="string">'-'</span>,lw=<span class="number">2</span>,c=<span class="string">'y'</span>)</span><br><span class="line">plt.axvline(<span class="number">4</span>,ls=<span class="string">'-'</span>,lw=<span class="number">2</span>,c=<span class="string">'y'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#绘制参考区域</span></span><br><span class="line">plt.axvspan(xmin=<span class="number">6</span>,xmax=<span class="number">8</span>,facecolor=<span class="string">'gray'</span>,alpha=<span class="number">.6</span>)</span><br><span class="line">plt.axhspan(ymin=<span class="number">-0.5</span>,ymax=<span class="number">0</span>,facecolor=<span class="string">'gray'</span>,alpha=<span class="number">.6</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#添加无指向性文本</span></span><br><span class="line">plt.text(<span class="number">2.8</span>,<span class="number">0.25</span>,<span class="string">"无指向"</span>,color=<span class="string">'r'</span>,bbox=box)</span><br><span class="line"><span class="comment">#添加指向性文本,注意到arrowprops指示被注释内容的箭头的属性字典</span></span><br><span class="line">plt.annotate(<span class="string">"max--有指向"</span>,xy=(np.pi/<span class="number">2</span>,<span class="number">1</span>),xytext=(<span class="number">3</span>,<span class="number">0.75</span>),color=<span class="string">'b'</span>,bbox=box,arrowprops=dict(arrowstyle=<span class="string">'-&gt;'</span>,connectionstyle=<span class="string">'arc3'</span>,color=<span class="string">'b'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#添加文章标题</span></span><br><span class="line">plt.rcParams[<span class="string">'font.sans-serif'</span>]=[<span class="string">'SimHei'</span>] <span class="comment">#用来正常显示中文标签</span></span><br><span class="line">plt.rcParams[<span class="string">'axes.unicode_minus'</span>]=<span class="keyword">False</span> <span class="comment">#用来正常显示负号</span></span><br><span class="line">plt.title(<span class="string">"plot类常规作图"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/05/python-matplotlib-画图/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+	<div>
+      
+	</div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/11/29/让数据结构pythonic/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1957,191 +2117,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lypto.me/2018/06/25/linux-C-API-笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="1ypt0">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/109.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog of 1ypt0">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/25/linux-C-API-笔记/" itemprop="url">linux C API 笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-25T15:28:17+08:00">
-                Jun 25 2018
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/06/25/linux-C-API-笔记/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/25/linux-C-API-笔记/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  4.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长</span>
-                
-                <span title="阅读时长">
-                  16
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img style="margin: auto;" src="/myimages/linux_c_api/index.png" height="400" width="400">  </p>
-<blockquote>
-<p>linuxc编程的应用范围比较广，最近学习操作系统，把上机和可编程中用到的一些函数API做一些笔记和摘录，方便日后复习。上机的相关代码在:<a href="https://github.com/IversionBY/linux_systemlearning_c_programe/" target="_blank" rel="noopener">https://github.com/IversionBY/linux_systemlearning_c_programe/</a></p>
-</blockquote>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/25/linux-C-API-笔记/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-	<div>
-      
-	</div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2188,7 +2163,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-count">45</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2210,7 +2185,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">44</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

