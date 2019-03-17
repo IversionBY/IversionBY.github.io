@@ -1,0 +1,1454 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="web,DDOS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Blog of 1ypt0" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/lypto.ico?v=5.1.1">
+
+
+
+
+
+
+<meta name="description" content="最近在不少春招的面试题看到DDOS相关的内容，之前虽说对DDOS也有了解，但是仔细想想，发现仍旧是停留在比较表面的层次，所以有了这篇学习记录。">
+<meta name="keywords" content="web,DDOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拒绝服务攻击小结">
+<meta property="og:url" content="http://lypto.me/2019/03/17/拒绝服务攻击小结/index.html">
+<meta property="og:site_name" content="Blog of 1ypt0">
+<meta property="og:description" content="最近在不少春招的面试题看到DDOS相关的内容，之前虽说对DDOS也有了解，但是仔细想想，发现仍旧是停留在比较表面的层次，所以有了这篇学习记录。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lypto.me/myimages/拒绝服务攻击/index.jpg">
+<meta property="og:updated_time" content="2019-03-17T04:26:28.553Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="拒绝服务攻击小结">
+<meta name="twitter:description" content="最近在不少春招的面试题看到DDOS相关的内容，之前虽说对DDOS也有了解，但是仔细想想，发现仍旧是停留在比较表面的层次，所以有了这篇学习记录。">
+<meta name="twitter:image" content="http://lypto.me/myimages/拒绝服务攻击/index.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":0,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lypto.me/2019/03/17/拒绝服务攻击小结/">
+
+
+
+
+
+  <title>拒绝服务攻击小结 | Blog of 1ypt0</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?75f42badbf01deec39184b95290bc71d";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/IversionBY"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog of 1ypt0</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://lypto.me/2019/03/17/拒绝服务攻击小结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="1ypt0">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/109.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog of 1ypt0">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拒绝服务攻击小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-17T12:24:52+08:00">
+                Mar 17 2019
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/web安全/" itemprop="url" rel="index">
+                    <span itemprop="name">web安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/17/拒绝服务攻击小结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/03/17/拒绝服务攻击小结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img style="margin: auto;" src="/myimages/拒绝服务攻击/index.jpg" height="450" width="450"></p>
+<blockquote>
+<p>最近在不少春招的面试题看到DDOS相关的内容，之前虽说对DDOS也有了解，但是仔细想想，发现仍旧是停留在比较表面的层次，所以有了这篇学习记录。<br><a id="more"></a></p>
+</blockquote>
+<h1 id="0x01-序"><a href="#0x01-序" class="headerlink" title="0x01 序"></a>0x01 序</h1><p>只要是能够让服务器因为CPU，链接数达到上限等原因而导致服务器拒绝正常请求的攻击就是拒绝服务攻击。更具拒绝服务攻击的实现方式的不同，或者说攻击所在的网络层次不同，可以将其细分为很多种，从网上找到一张表格，让我对DOS攻击刮目相看。本文将收集整理几种比较常见的，也是业界讨论最多的DOS攻击方式，包括原理和防御手段。</p>
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr class="firstRow">
+<td style="text-align: center;" dir="LTR" width="191" height="27"><strong>OSI &nbsp; 层级&nbsp;</strong></td>
+<td style="text-align: center;" dir="LTR" width="407.6666666666667"><strong>攻击内容&nbsp;</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" rowspan="11" width="190.66666666666666" height="295">Network Based (2-4层)&nbsp;</td>
+<td style="text-align: center;" dir="LTR" width="407.6666666666667">IP Fragment&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Tear Drop&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">SYN Flood (Dirt Jumper)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">TCP (connection) Flood&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">e.g. SYN-ACK, ACK &amp; PUSH-ACK, RST or &nbsp; FIN and Fragmented ACK&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Christmas Tree</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Fake Session</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">LAND&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Redirect Traffic Attack&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">ICMP Flood, Ping Floods and SMURF &nbsp; Attacks&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Ping of Death ICMP&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" rowspan="4" width="191" height="107">DNS&nbsp; based &nbsp; (4层)&nbsp;</td>
+<td style="text-align: center;" dir="LTR" width="407.6666666666667">UDP Flood&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">UDP Fragment&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">DNS Flood (Distributed and DNS &nbsp; Blacklisting)</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">e.g. DNS UDP Flood, DNS Query Flood and &nbsp; DNS NXDOMAIN Flood&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" rowspan="2" width="191" height="54">SSL/TLS based (5–6层)&nbsp;</td>
+<td style="text-align: center;" dir="LTR" width="407.6666666666667">SSL Floods, Malformed SSL (e.g. empty SSL HELLO)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">SSL THC attack (Extending from SSL &nbsp; Renegotiation vulnerability)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" rowspan="8" width="191" height="214">Application based (6–7层)&nbsp;</td>
+<td style="text-align: center;" dir="LTR" width="407.6666666666667">Slowloris (Nuclear DDoSer, Slowhttptest)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Keep-Dead&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Slow POST (R-U-Dead-Yet, Tor Hammer, &nbsp; Nuclear DDoSer, Slowhttptest)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">HashDoS&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">Apache Killer (Slowhttptest)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">HTTP GET Flood, Recursive GET Flood (Web &nbsp; Scraping), Dirt Jumper (HTTP Flood)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">#RefRef (exploit SQLi - OWASP Top 10 &nbsp; vulnerability as entry)&nbsp;</td>
+</tr>
+<tr>
+<td style="text-align: center;" dir="LTR" width="430" height="27">XML “Bomb” (DTD attack), XML External &nbsp; Entity DoS&nbsp;</td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="0x02-TCP-Flood"><a href="#0x02-TCP-Flood" class="headerlink" title="0x02 TCP Flood"></a>0x02 TCP Flood</h1><p>TCP Flood 大致分为以下两种：</p>
+<ul>
+<li>SYN Flood </li>
+<li>ACK Flood</li>
+</ul>
+<h2 id="SYN-Flood"><a href="#SYN-Flood" class="headerlink" title="SYN Flood"></a>SYN Flood</h2><p>学习过计网的同学应该知道，<code>SYN</code>标记位用来同步序列号，出现在TCP链接建立之初。SYN Flood攻击就是利用了TCP链接的过程，发送大量包含虚假源IP的SYN包，让服务器保持大量的半链接状态，半链接状态下的系统资源在等待重试期间一直保留，从而消耗服务端资源。</p>
+<h3 id="防御手段"><a href="#防御手段" class="headerlink" title="防御手段"></a>防御手段</h3><blockquote>
+<p>具体移步参考文献[1]</p>
+</blockquote>
+<h5 id="1-无效连接监视释放。"><a href="#1-无效连接监视释放。" class="headerlink" title="1. 无效连接监视释放。"></a>1. 无效连接监视释放。</h5><ul>
+<li>缩短SYN Timeout时间</li>
+<li>更具主机并发能力设置连接阀值，达到阈值时拆除</li>
+</ul>
+<h5 id="2-延缓TCB（线程控制块）分配方法，降低半连接资源消耗"><a href="#2-延缓TCB（线程控制块）分配方法，降低半连接资源消耗" class="headerlink" title="2. 延缓TCB（线程控制块）分配方法，降低半连接资源消耗"></a>2. 延缓TCB（线程控制块）分配方法，降低半连接资源消耗</h5><ul>
+<li>Syn Cookie技术</li>
+<li>Syn Cache技术</li>
+</ul>
+<h5 id="3-使用SYN-Proxy防火墙，有些操作系统不提供上述的解决方案，那么使用一些商业的防火墙可以比较好的实现上述的防御方法。"><a href="#3-使用SYN-Proxy防火墙，有些操作系统不提供上述的解决方案，那么使用一些商业的防火墙可以比较好的实现上述的防御方法。" class="headerlink" title="3. 使用SYN Proxy防火墙，有些操作系统不提供上述的解决方案，那么使用一些商业的防火墙可以比较好的实现上述的防御方法。"></a>3. 使用SYN Proxy防火墙，有些操作系统不提供上述的解决方案，那么使用一些商业的防火墙可以比较好的实现上述的防御方法。</h5><h2 id="ACK-Flood"><a href="#ACK-Flood" class="headerlink" title="ACK Flood"></a>ACK Flood</h2><p> ack flood攻击利用的是三次握手的第二段，也就是TCP标志位syn和ack都置1，攻击主机伪造海量的 虚假ack包发送给目标主机，目标主机每收到一个带有 ack标志位的数据包时，都会去自己的TCP连接表中查看有没有与ack的发送者建立连接 ，如果有则发送三次握手的第三段ack+seq完成三次握手，成功 建立TCP连接。如果没有则发送ack+rst 断开连接。但是在这个过程中会消耗一定的CUP计算资源，如果瞬间 收到海量的syn+ack数据包将会 消耗大量的cpu资源使得正常的连接无法建立或者增加延迟，甚至造成服务器瘫痪、死机。</p>
+<h3 id="防御手段-1"><a href="#防御手段-1" class="headerlink" title="防御手段"></a>防御手段</h3><h5 id="1-对称性检测法，这种攻击的一个十分明显的特新就是三次握手的第一次SYN的进入包要远远小于SYN-ACK的进入包。"><a href="#1-对称性检测法，这种攻击的一个十分明显的特新就是三次握手的第一次SYN的进入包要远远小于SYN-ACK的进入包。" class="headerlink" title="1. 对称性检测法，这种攻击的一个十分明显的特新就是三次握手的第一次SYN的进入包要远远小于SYN/ACK的进入包。"></a>1. 对称性检测法，这种攻击的一个十分明显的特新就是三次握手的第一次SYN的进入包要远远小于SYN/ACK的进入包。</h5><h5 id="2-防火墙状态hash表的维持。通过维护一张表示活跃度的连接状态表，对大量不活跃的链接进行拒绝或者不响应。"><a href="#2-防火墙状态hash表的维持。通过维护一张表示活跃度的连接状态表，对大量不活跃的链接进行拒绝或者不响应。" class="headerlink" title="2. 防火墙状态hash表的维持。通过维护一张表示活跃度的连接状态表，对大量不活跃的链接进行拒绝或者不响应。"></a>2. 防火墙状态hash表的维持。通过维护一张表示活跃度的连接状态表，对大量不活跃的链接进行拒绝或者不响应。</h5><h1 id="0x03-DNS-Flood"><a href="#0x03-DNS-Flood" class="headerlink" title="0x03 DNS Flood"></a>0x03 DNS Flood</h1><p>在理解了DNS逐层查询的流程后，理解DNS Flood相对就比较简单。因为DNS协议是没有认证机制的，这就导致容易被黑客利用。我们就分析一下这两类服务可能面临的DNS攻击风险。第一类：黑客伪造客户端源IP发送大量的DNS请求报文，造成DNS request flood攻击。DNS request flood是当前最常见的DNS攻击，这类攻击可以针对缓存服务器，也可以针对授权服务器。第二类：黑客伪造成授权服务器发送大量的DNS回应报文，造成DNS reply flood攻击。下面就从这两个攻击展开叙述DNS Flood。</p>
+<h2 id="DNS-Request-Flood"><a href="#DNS-Request-Flood" class="headerlink" title="DNS Request Flood"></a>DNS Request Flood</h2><p>DNS request flood攻击原理其实很简单，就是黑客控制僵尸网络向DNS服务器发送大量的不存在域名的解析请求，最终导致服务器因大量DNS请求而超载，无法继续响应正常用户的DNS请求，从而达到攻击的目的。在DNS request flood攻击过程中，攻击的目标可能是DNS授权服务器，也可能是DNS缓存服务器。黑客伪造的客户端IP地址可能是虚假源IP地址，也可能是现网真实存在的IP地址。</p>
+<h3 id="防御手段-2"><a href="#防御手段-2" class="headerlink" title="防御手段"></a>防御手段</h3><h5 id="1-TC源认证主动防御。"><a href="#1-TC源认证主动防御。" class="headerlink" title="1. TC源认证主动防御。"></a>1. TC源认证主动防御。</h5><p>达到请求阀值后，将TC标志位设为1，要求用户以TCP方式重发查询请求</p>
+<h5 id="2-直接重传被动防御"><a href="#2-直接重传被动防御" class="headerlink" title="2. 直接重传被动防御"></a>2. 直接重传被动防御</h5><p>达到阀值后，系统在第一次收到DNS请求后，就会记录DNS请求的域名、源IP等基本信息，并HASH成一个值，记录到系统一张表里。后续一定时间戳内，如果再收到这个HASH值相同的DNS请求，就认定为重传包，放行。时间戳会随着收到的每一个相同HASH值的DNS请求包而不断的刷新。</p>
+<h5 id="3-CNAME模式"><a href="#3-CNAME模式" class="headerlink" title="3. CNAME模式"></a>3. CNAME模式</h5><p>达到阀值后，将请求的域名使用CANME DNS记录重定向到本身，等待用户再次查询CANME记录的域名，如果是正常的查询流量就再次将域名重定向回来。利用到一般的攻击流量是不会重新查询的特征。</p>
+<h2 id="DNS-Reply-Flood"><a href="#DNS-Reply-Flood" class="headerlink" title="DNS Reply Flood"></a>DNS Reply Flood</h2><p>DNS服务器收到DNS reply报文时，不管自己有没有发出去过解析请求，都会对这些DNS reply报文进行处理。DNS reply flood就是黑客发送大量的DNS reply报文到DNS缓存服务器，导致缓存服务器因为处理这些DNS reply报文而资源耗尽，影响正常业务。DNS reply flood大多都是虚假源攻击，直接攻击缓存服务器，当然还有一种攻击手段叫做DNS反射，可以达到攻击主机的目的。黑客将自己的源IP地址伪造成被攻击目标的IP地址，然后向一系列网络中开放的DNS服务器发送大量的查询请求。通过伪造DNS请求报文的源IP地址，控制DNS回应报文的流向，这些DNS回应报文就会都被引导到被攻击目标，导致被攻击目标的网络拥塞，拒绝服务。而开放式的DNS服务器在全球有超过几千万台，这些服务器接入带宽往往都比较高，而且，DNS reply报文大小通常也是DNS request报文的几倍甚至几十倍，还可达到放大攻击的效果。对于控制成千上万台僵尸主机的黑客来说，制造几G乃至数十G的DNS攻击流量并不太困难。</p>
+<h3 id="上述两种攻击的区别："><a href="#上述两种攻击的区别：" class="headerlink" title="上述两种攻击的区别："></a>上述两种攻击的区别：</h3><p>1、传统DNS reply flood一般攻击目标是DNS缓存服务器；而DNS反射攻击一般攻击目标是客户端。</p>
+<p>2、传统DNS reply flood大多是虚假源攻击，而DNS反射攻击中，DNS请求是真实的，所以DNS回应报文也都是真实的，是由网络中真实的DNS服务器发出的，属于真实源攻击。这种情况下，再使用前面刚讲过的源认证方式，对于DNS反射攻击就不适用了。</p>
+<h3 id="上述两种攻击防御手段"><a href="#上述两种攻击防御手段" class="headerlink" title="上述两种攻击防御手段"></a>上述两种攻击防御手段</h3><h5 id="1-域名限速"><a href="#1-域名限速" class="headerlink" title="1. 域名限速"></a>1. 域名限速</h5><h5 id="2-源IP限速"><a href="#2-源IP限速" class="headerlink" title="2. 源IP限速"></a>2. 源IP限速</h5><h5 id="3-记录请求会话表，将查询请求查表，如果不匹配则是攻击流量"><a href="#3-记录请求会话表，将查询请求查表，如果不匹配则是攻击流量" class="headerlink" title="3. 记录请求会话表，将查询请求查表，如果不匹配则是攻击流量"></a>3. 记录请求会话表，将查询请求查表，如果不匹配则是攻击流量</h5><h5 id="4-验证源IP的合法性，达到阀值后，用户第一次请求阻断，发送DNS-request查询源IP真实性，通过再继续之前逻辑流"><a href="#4-验证源IP的合法性，达到阀值后，用户第一次请求阻断，发送DNS-request查询源IP真实性，通过再继续之前逻辑流" class="headerlink" title="4. 验证源IP的合法性，达到阀值后，用户第一次请求阻断，发送DNS request查询源IP真实性，通过再继续之前逻辑流"></a>4. 验证源IP的合法性，达到阀值后，用户第一次请求阻断，发送DNS request查询源IP真实性，通过再继续之前逻辑流</h5><h1 id="0x04-HTTP-Flood（Challenge-Collapsar）"><a href="#0x04-HTTP-Flood（Challenge-Collapsar）" class="headerlink" title="0x04 HTTP Flood（Challenge Collapsar）"></a>0x04 HTTP Flood（Challenge Collapsar）</h1><p>CC攻击发生在 TCP/IP 协议的第七层，一般方式是在很短的时间里对网站发起大量请求，消耗目标服务器的资源，使目标网站负载过高而不能访问。CC攻击和UDP Flood, TCP SYN Flood这类位于TCP/IP第四层的攻击相比，对自己的资源消耗更少，对服务器的攻击强度更高，有四两拨千斤的效果。通常发起CC攻击是使用专门的攻击工具，同时模拟成多个用户，向目标网站发起多个请求，一般这些软件为了防止地址被屏蔽，还内置通过代理攻击的功能。可以通过多个代理服务器对目标发起攻击，使封IP的防御方式变的失效。</p>
+<h2 id="防御手段-3"><a href="#防御手段-3" class="headerlink" title="防御手段"></a>防御手段</h2><h5 id="1-Http头中还会带有Referer，UserAgent等多项信息。检测发起请求时工具还是正常浏览器。"><a href="#1-Http头中还会带有Referer，UserAgent等多项信息。检测发起请求时工具还是正常浏览器。" class="headerlink" title="1. Http头中还会带有Referer，UserAgent等多项信息。检测发起请求时工具还是正常浏览器。"></a>1. Http头中还会带有Referer，UserAgent等多项信息。检测发起请求时工具还是正常浏览器。</h5><h5 id="2-通过302跳转在请求头中加入token"><a href="#2-通过302跳转在请求头中加入token" class="headerlink" title="2. 通过302跳转在请求头中加入token"></a>2. 通过302跳转在请求头中加入token</h5><p>首先为每个访问者定义一个字符串，保存在Cookies中作为Token，必须要带有正确的Token才可以访问后端服务。当用户第一次访问时，会检测到用户的Cookies里面并没有这个Token，则返回一个302重定向，目标地址为当前页面，同时在返回的Http头中加入set cookies字段，对Cookies进行设置，使用户带有这个Token。一般浏览器支持重定向，而CC软件不一定像浏览器支持这些跳转操作。</p>
+<h5 id="3-在页面中嵌入JavaScript来设置token并跳转。"><a href="#3-在页面中嵌入JavaScript来设置token并跳转。" class="headerlink" title="3. 在页面中嵌入JavaScript来设置token并跳转。"></a>3. 在页面中嵌入JavaScript来设置token并跳转。</h5><p>因为cc软件基本不具有js渲染的功能，所以这样可以很好的防止CC攻击。</p>
+<h3 id="关于token设置的原则："><a href="#关于token设置的原则：" class="headerlink" title="关于token设置的原则："></a>关于token设置的原则：</h3><ol>
+<li>不同性，每个IP地址的Token不同 </li>
+<li>健壮性，无法伪造，不可预测，不可绕过</li>
+<li>一致性，即对相同的客户端，每次生成的Token相同</li>
+</ol>
+<h1 id="0x05-DDOS"><a href="#0x05-DDOS" class="headerlink" title="0x05 DDOS"></a>0x05 DDOS</h1><p>DDOS的全名是分要布式拒绝服务攻击，攻击的发动需要有一大群可控的肉鸡。根据最近几年的案例，DDOS利用的肉鸡源多是一些嵌入式的联网设备，如存在漏洞的摄像头，路由器等。防御的手段看到一篇腾讯部门的文章，感觉总结得满全面的。</p>
+<blockquote>
+<p>参考：：<a href="https://www.zhihu.com/question/19581905/answer/578131116" target="_blank" rel="noopener">https://www.zhihu.com/question/19581905/answer/578131116</a></p>
+</blockquote>
+<h2 id="防御手段-4"><a href="#防御手段-4" class="headerlink" title="防御手段"></a>防御手段</h2><h5 id="1-采用高性能的网络设备"><a href="#1-采用高性能的网络设备" class="headerlink" title="1. 采用高性能的网络设备"></a>1. 采用高性能的网络设备</h5><h5 id="2-保证服务器系统的安全首先要确保服务器软件没有任何漏洞，防止攻击者入侵。"><a href="#2-保证服务器系统的安全首先要确保服务器软件没有任何漏洞，防止攻击者入侵。" class="headerlink" title="2. 保证服务器系统的安全首先要确保服务器软件没有任何漏洞，防止攻击者入侵。"></a>2. 保证服务器系统的安全首先要确保服务器软件没有任何漏洞，防止攻击者入侵。</h5><h5 id="3-充足的网络带宽保证。"><a href="#3-充足的网络带宽保证。" class="headerlink" title="3. 充足的网络带宽保证。"></a>3. 充足的网络带宽保证。</h5><h5 id="4-把网站做成静态页面或者伪静态。"><a href="#4-把网站做成静态页面或者伪静态。" class="headerlink" title="4. 把网站做成静态页面或者伪静态。"></a>4. 把网站做成静态页面或者伪静态。</h5><h5 id="5-增强操作系统的TCP-IP栈"><a href="#5-增强操作系统的TCP-IP栈" class="headerlink" title="5. 增强操作系统的TCP/IP栈"></a>5. 增强操作系统的TCP/IP栈</h5><h5 id="6-HTTP-请求的拦截HTTP-请求的特征一般有两种：IP-地址和-User-Agent-字段。"><a href="#6-HTTP-请求的拦截HTTP-请求的特征一般有两种：IP-地址和-User-Agent-字段。" class="headerlink" title="6. HTTP 请求的拦截HTTP 请求的特征一般有两种：IP 地址和 User Agent 字段。"></a>6. HTTP 请求的拦截HTTP 请求的特征一般有两种：IP 地址和 User Agent 字段。</h5><h5 id="7-部署CDN"><a href="#7-部署CDN" class="headerlink" title="7. 部署CDN"></a>7. 部署CDN</h5><h5 id="8-隐藏服务器的真实IP，使用CDN的ip地址做解析"><a href="#8-隐藏服务器的真实IP，使用CDN的ip地址做解析" class="headerlink" title="8. 隐藏服务器的真实IP，使用CDN的ip地址做解析"></a>8. 隐藏服务器的真实IP，使用CDN的ip地址做解析</h5><h5 id="9-定期检查企业网骨干需要定期检查主要的网络节点。"><a href="#9-定期检查企业网骨干需要定期检查主要的网络节点。" class="headerlink" title="9. 定期检查企业网骨干需要定期检查主要的网络节点。"></a>9. 定期检查企业网骨干需要定期检查主要的网络节点。</h5><h5 id="10-利用专业的安全防护产品。"><a href="#10-利用专业的安全防护产品。" class="headerlink" title="10. 利用专业的安全防护产品。"></a>10. 利用专业的安全防护产品。</h5><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/bill_lee_sh_cn/article/details/6065704" target="_blank" rel="noopener">https://blog.csdn.net/bill_lee_sh_cn/article/details/6065704</a><br>[2] <a href="https://www.jianshu.com/p/dff5a0d537d8" target="_blank" rel="noopener">https://www.jianshu.com/p/dff5a0d537d8</a><br>[3] <a href="http://www.zhiding.cn/techwalker/documents/J9UpWRDfVYHE5WsKHS2hlN_bH8qtYoiIEWO_a1TSMjjg" target="_blank" rel="noopener">http://www.zhiding.cn/techwalker/documents/J9UpWRDfVYHE5WsKHS2hlN_bH8qtYoiIEWO_a1TSMjjg</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+	<div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文标题:</strong>
+    <a href="/2019/03/17/拒绝服务攻击小结/">拒绝服务攻击小结</a>
+  </li>
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    1ypt0
+  </li>
+  <li class="post-copyright-author">
+    <strong>发布时间:</strong>
+    2019年03月17日 - 12:03
+  </li>
+  <li class="post-copyright-author">
+    <strong>最后更新:</strong>
+    2019年03月17日 - 12:03
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://lypto.me/2019/03/17/拒绝服务攻击小结/" title="拒绝服务攻击小结">http://lypto.me/2019/03/17/拒绝服务攻击小结/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/DDOS/" rel="tag"># DDOS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/13/腾讯实习安全岗面经/" rel="next" title="腾讯实习安全岗面经">
+                <i class="fa fa-chevron-left"></i> 腾讯实习安全岗面经
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/109.jpg" alt="1ypt0">
+          <p class="site-author-name" itemprop="name">1ypt0</p>
+           
+              <p class="site-description motion-element" itemprop="description">Please remember that. The Titanic was not supposed to sink, but it did.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">48</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=857896&auto=0&height=66"></iframe>
+
+<div align="left" font-family:="" "arial","microsoft="" yahei","����","����",sans-serif="">
+
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/IversionBY" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:mini.lypto@gmail.com" target="_blank" title="GMail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  GMail
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/littelpotato" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.xdsec.club/" title="XDSEC" target="_blank">XDSEC</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cesslab.club/#/" title="cesslab" target="_blank">cesslab</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://firmianay.github.io/" title="超哥" target="_blank">超哥</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://nen9ma0.github.io/" title="大能猫" target="_blank">大能猫</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://dimo233.github.io/" title="去师" target="_blank">去师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.k0rz3n.com" title="天师" target="_blank">天师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://notwo1f.github.io/" title="武师" target="_blank">武师</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://1phan.cc/" title="1phan" target="_blank">1phan</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.sky3.pw/" title="sky" target="_blank">sky</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lookupes.com/" title="lookup" target="_blank">lookup</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://herbwen.com/" title="文师" target="_blank">文师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </div></section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-序"><span class="nav-number">1.</span> <span class="nav-text">0x01 序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-TCP-Flood"><span class="nav-number">2.</span> <span class="nav-text">0x02 TCP Flood</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SYN-Flood"><span class="nav-number">2.1.</span> <span class="nav-text">SYN Flood</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#防御手段"><span class="nav-number">2.1.1.</span> <span class="nav-text">防御手段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-无效连接监视释放。"><span class="nav-number">2.1.1.0.1.</span> <span class="nav-text">1. 无效连接监视释放。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-延缓TCB（线程控制块）分配方法，降低半连接资源消耗"><span class="nav-number">2.1.1.0.2.</span> <span class="nav-text">2. 延缓TCB（线程控制块）分配方法，降低半连接资源消耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-使用SYN-Proxy防火墙，有些操作系统不提供上述的解决方案，那么使用一些商业的防火墙可以比较好的实现上述的防御方法。"><span class="nav-number">2.1.1.0.3.</span> <span class="nav-text">3. 使用SYN Proxy防火墙，有些操作系统不提供上述的解决方案，那么使用一些商业的防火墙可以比较好的实现上述的防御方法。</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACK-Flood"><span class="nav-number">2.2.</span> <span class="nav-text">ACK Flood</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#防御手段-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">防御手段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-对称性检测法，这种攻击的一个十分明显的特新就是三次握手的第一次SYN的进入包要远远小于SYN-ACK的进入包。"><span class="nav-number">2.2.1.0.1.</span> <span class="nav-text">1. 对称性检测法，这种攻击的一个十分明显的特新就是三次握手的第一次SYN的进入包要远远小于SYN/ACK的进入包。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-防火墙状态hash表的维持。通过维护一张表示活跃度的连接状态表，对大量不活跃的链接进行拒绝或者不响应。"><span class="nav-number">2.2.1.0.2.</span> <span class="nav-text">2. 防火墙状态hash表的维持。通过维护一张表示活跃度的连接状态表，对大量不活跃的链接进行拒绝或者不响应。</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-DNS-Flood"><span class="nav-number">3.</span> <span class="nav-text">0x03 DNS Flood</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS-Request-Flood"><span class="nav-number">3.1.</span> <span class="nav-text">DNS Request Flood</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#防御手段-2"><span class="nav-number">3.1.1.</span> <span class="nav-text">防御手段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-TC源认证主动防御。"><span class="nav-number">3.1.1.0.1.</span> <span class="nav-text">1. TC源认证主动防御。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-直接重传被动防御"><span class="nav-number">3.1.1.0.2.</span> <span class="nav-text">2. 直接重传被动防御</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-CNAME模式"><span class="nav-number">3.1.1.0.3.</span> <span class="nav-text">3. CNAME模式</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS-Reply-Flood"><span class="nav-number">3.2.</span> <span class="nav-text">DNS Reply Flood</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#上述两种攻击的区别："><span class="nav-number">3.2.1.</span> <span class="nav-text">上述两种攻击的区别：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上述两种攻击防御手段"><span class="nav-number">3.2.2.</span> <span class="nav-text">上述两种攻击防御手段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-域名限速"><span class="nav-number">3.2.2.0.1.</span> <span class="nav-text">1. 域名限速</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-源IP限速"><span class="nav-number">3.2.2.0.2.</span> <span class="nav-text">2. 源IP限速</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-记录请求会话表，将查询请求查表，如果不匹配则是攻击流量"><span class="nav-number">3.2.2.0.3.</span> <span class="nav-text">3. 记录请求会话表，将查询请求查表，如果不匹配则是攻击流量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-验证源IP的合法性，达到阀值后，用户第一次请求阻断，发送DNS-request查询源IP真实性，通过再继续之前逻辑流"><span class="nav-number">3.2.2.0.4.</span> <span class="nav-text">4. 验证源IP的合法性，达到阀值后，用户第一次请求阻断，发送DNS request查询源IP真实性，通过再继续之前逻辑流</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-HTTP-Flood（Challenge-Collapsar）"><span class="nav-number">4.</span> <span class="nav-text">0x04 HTTP Flood（Challenge Collapsar）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#防御手段-3"><span class="nav-number">4.1.</span> <span class="nav-text">防御手段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Http头中还会带有Referer，UserAgent等多项信息。检测发起请求时工具还是正常浏览器。"><span class="nav-number">4.1.0.0.1.</span> <span class="nav-text">1. Http头中还会带有Referer，UserAgent等多项信息。检测发起请求时工具还是正常浏览器。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-通过302跳转在请求头中加入token"><span class="nav-number">4.1.0.0.2.</span> <span class="nav-text">2. 通过302跳转在请求头中加入token</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-在页面中嵌入JavaScript来设置token并跳转。"><span class="nav-number">4.1.0.0.3.</span> <span class="nav-text">3. 在页面中嵌入JavaScript来设置token并跳转。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于token设置的原则："><span class="nav-number">4.1.1.</span> <span class="nav-text">关于token设置的原则：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x05-DDOS"><span class="nav-number">5.</span> <span class="nav-text">0x05 DDOS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#防御手段-4"><span class="nav-number">5.1.</span> <span class="nav-text">防御手段</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-采用高性能的网络设备"><span class="nav-number">5.1.0.0.1.</span> <span class="nav-text">1. 采用高性能的网络设备</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-保证服务器系统的安全首先要确保服务器软件没有任何漏洞，防止攻击者入侵。"><span class="nav-number">5.1.0.0.2.</span> <span class="nav-text">2. 保证服务器系统的安全首先要确保服务器软件没有任何漏洞，防止攻击者入侵。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-充足的网络带宽保证。"><span class="nav-number">5.1.0.0.3.</span> <span class="nav-text">3. 充足的网络带宽保证。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-把网站做成静态页面或者伪静态。"><span class="nav-number">5.1.0.0.4.</span> <span class="nav-text">4. 把网站做成静态页面或者伪静态。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-增强操作系统的TCP-IP栈"><span class="nav-number">5.1.0.0.5.</span> <span class="nav-text">5. 增强操作系统的TCP/IP栈</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-HTTP-请求的拦截HTTP-请求的特征一般有两种：IP-地址和-User-Agent-字段。"><span class="nav-number">5.1.0.0.6.</span> <span class="nav-text">6. HTTP 请求的拦截HTTP 请求的特征一般有两种：IP 地址和 User Agent 字段。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-部署CDN"><span class="nav-number">5.1.0.0.7.</span> <span class="nav-text">7. 部署CDN</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-隐藏服务器的真实IP，使用CDN的ip地址做解析"><span class="nav-number">5.1.0.0.8.</span> <span class="nav-text">8. 隐藏服务器的真实IP，使用CDN的ip地址做解析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-定期检查企业网骨干需要定期检查主要的网络节点。"><span class="nav-number">5.1.0.0.9.</span> <span class="nav-text">9. 定期检查企业网骨干需要定期检查主要的网络节点。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10-利用专业的安全防护产品。"><span class="nav-number">5.1.0.0.10.</span> <span class="nav-text">10. 利用专业的安全防护产品。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">1ypt0</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/velocity/1.3.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://iversion lee.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://lypto.me/2019/03/17/拒绝服务攻击小结/';
+          this.page.identifier = '2019/03/17/拒绝服务攻击小结/';
+          this.page.title = '拒绝服务攻击小结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://iversion lee.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a1fe7273de6e47ad9f9802a493c2cccf",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+
+  
+
+  
+
+</div><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end --></body></html>
