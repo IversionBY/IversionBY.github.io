@@ -1,0 +1,9 @@
+<script>
+    window.write("ok");
+    alert("ok");
+    window.addEventListener('message', (e) => {
+        const data = e.data;
+        console.log(data);
+        window.write(data)
+    });
+</script>
